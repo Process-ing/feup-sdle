@@ -1,10 +1,9 @@
 # SDLE Second Assignment
 
-SDLE Second Assignment of group T&lt;m&gt;&lt;n&gt;G&lt;p&gt;&lt;q&gt;.
+SDLE Second Assignment of group T02G01.
 
 Group members:
 
-1. &lt;first name&gt; &lt;family name&gt; (&lt;email address&gt;)
-2. &lt;first name&gt; &lt;family name&gt; (&lt;email address&gt;)
-3. &lt;first name&gt; &lt;family name&gt; (&lt;email address&gt;)
-4. &lt;first name&gt; &lt;family name&gt; (&lt;email address&gt;)
+1. Bruno Oliveira (up202208700@up.pt)
+2. Dário Guimarães (up202502543@up.pt)
+3. Henrique Fernandes (up202204988@up.pt)
