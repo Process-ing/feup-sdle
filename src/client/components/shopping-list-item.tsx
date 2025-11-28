@@ -22,7 +22,7 @@ export function ShoppingListItem({
 			<div className="flex-1">
 				<h3 className="font-semibold text-foreground">{item.name}</h3>
 				<p
-					className={`text-sm font-medium ${item.acquiredQuantity == item.totalQuantity ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+					className={`text-sm font-medium ${item.acquiredQuantity === item.totalQuantity ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
 				>
 					{item.acquiredQuantity} / {item.totalQuantity} acquired
 				</p>

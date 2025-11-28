@@ -1,4 +1,5 @@
-// Mock store for shopping lists and items
+import { db } from "./db";
+
 export interface ShoppingItem {
 	id: string;
 	name: string;
@@ -13,11 +14,19 @@ export interface ShoppingList {
 	createdAt: Date;
 }
 
-// In-memory store (mock implementation)
 const lists = new Map<string, ShoppingList>();
 
+const initializeStore = async () => {
+	// Load all lists from the database into memory
+	const allLists = await db.getAllLists();
+	allLists.forEach((list) => {
+		lists.set(list.id, { ...list, createdAt: new Date(list.createdAt) });
+	});
+};
+
 export const store = {
-	createList: (name: string): ShoppingList => {
+	createList: async (name: string): Promise<ShoppingList> => {
+		// Create a new list with a unique ID
 		const id = Math.random().toString(36).substring(2, 9);
 		const list: ShoppingList = {
 			id,
@@ -25,26 +34,39 @@ export const store = {
 			items: [],
 			createdAt: new Date(),
 		};
+		await db.createList(list);
 		lists.set(id, list);
 		return list;
 	},
 
-	getList: (id: string): ShoppingList | undefined => {
-		return lists.get(id);
+	getList: async (id: string): Promise<ShoppingList | undefined> => {
+		// If the list is already in memory, return it
+		if (lists.has(id)) {
+			return lists.get(id);
+		}
+
+		// Otherwise, fetch it from the database
+		const list = await db.getList(id);
+		if (list) {
+			lists.set(list.id, { ...list, createdAt: new Date(list.createdAt) });
+		}
+		return list;
 	},
 
 	getAllLists: (): ShoppingList[] => {
 		return Array.from(lists.values());
 	},
 
-	addItem: (
+	addItem: async (
 		listId: string,
 		name: string,
 		quantity: number,
-	): ShoppingItem | null => {
-		const list = lists.get(listId);
+	): Promise<ShoppingItem | null> => {
+		// Fetch the list
+		const list = await store.getList(listId);
 		if (!list) return null;
 
+		// Create the new item
 		const item: ShoppingItem = {
 			id: Math.random().toString(36).substring(2, 9),
 			name,
@@ -52,49 +74,74 @@ export const store = {
 			acquiredQuantity: 0,
 		};
 
+		// Add the item to the list and update the database
 		list.items.push(item);
+		await db.updateList(list);
 		return item;
 	},
 
-	updateItemQuantity: (
+	updateItem: async (
 		listId: string,
 		itemId: string,
 		totalQuantity: number,
 		acquiredQuantity: number,
-	): boolean => {
-		const list = lists.get(listId);
+	): Promise<boolean> => {
+		// Fetch the list
+		const list = await store.getList(listId);
 		if (!list) return false;
 
+		// Find the item in the list
 		const item = list.items.find((i) => i.id === itemId);
 		if (!item) return false;
 
+		// Update the fields
 		item.totalQuantity = totalQuantity;
 		item.acquiredQuantity = Math.min(acquiredQuantity, totalQuantity);
+		await db.updateList(list);
 		return true;
 	},
 
-	acquireItems: (listId: string, itemId: string, quantity: number): boolean => {
-		const list = lists.get(listId);
+	incrementItem: async (
+		listId: string,
+		itemId: string,
+		quantity: number,
+	): Promise<boolean> => {
+		// Fetch the list
+		const list = await store.getList(listId);
 		if (!list) return false;
 
+		// Find the item in the list
 		const item = list.items.find((i) => i.id === itemId);
 		if (!item) return false;
 
+		// Increment the acquired quantity
 		item.acquiredQuantity = Math.min(
 			item.acquiredQuantity + quantity,
 			item.totalQuantity,
 		);
+		await db.updateList(list);
 		return true;
 	},
 
-	deleteItem: (listId: string, itemId: string): boolean => {
-		const list = lists.get(listId);
+	deleteItem: async (listId: string, itemId: string): Promise<boolean> => {
+		// Fetch the list
+		const list = await store.getList(listId);
 		if (!list) return false;
 
+		// Find the index of the item to delete
 		const index = list.items.findIndex((i) => i.id === itemId);
 		if (index === -1) return false;
 
+		// Remove the item from the list and update the database
 		list.items.splice(index, 1);
+		await db.updateList(list);
 		return true;
 	},
+
+	deleteList: async (id: string): Promise<void> => {
+		await db.deleteList(id);
+		lists.delete(id);
+	},
 };
+
+initializeStore();
