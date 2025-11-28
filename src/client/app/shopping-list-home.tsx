@@ -23,14 +23,18 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 	const [listName, setListName] = useState("");
 
 	useEffect(() => {
-		setLists(store.getAllLists());
+		const fetchLists = async () => {
+			await new Promise((resolve) => setTimeout(resolve, 50)); // give time for store to init
+			setLists(store.getAllLists());
+		};
+		fetchLists();
 	}, []);
 
-	const handleCreateList = (e: React.FormEvent) => {
+	const handleCreateList = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!listName.trim()) return;
 
-		const newList = store.createList(listName);
+		const newList = await store.createList(listName);
 		setLists(store.getAllLists());
 		setListName("");
 		onSelect(newList);
@@ -38,7 +42,7 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 
 	return (
 		<main className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 md:p-8">
-			<div className="max-w-2xl mx-auto">
+			<div className="max-w-3xl mx-auto">
 				<div className="text-center mb-8">
 					<div className="flex items-center justify-center gap-3 mb-4">
 						<ShoppingCart className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
