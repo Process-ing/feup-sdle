@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message ShoppingListItem {
+    string id = 1;
+    string name = 2;
+    int32 total_quantity = 3;
+    int32 acquired_quantity = 4;
+}
+
+message ShoppingList {
+    string id = 1;
+    string name = 2;
+    repeated ShoppingListItem items = 3;
+}
