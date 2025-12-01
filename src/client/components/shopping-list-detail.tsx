@@ -62,13 +62,12 @@ export function ShoppingListDetail({
 		setItemQuantity("1");
 		await refreshList();
 
-		// TODO(Process-ing): Remove this
 		webSocket.send(JSON.stringify({
-			type: "new_item",
+			type: "add-item",
 			listId: list.id,
 			item: {
 				name: itemName,
-				quantity: quantity,
+				quantity,
 			},
 		}));
 	};
