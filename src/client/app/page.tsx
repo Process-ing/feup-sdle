@@ -7,7 +7,6 @@ import { useContext } from "react";
 
 export default function HomePage() {
   const router = useRouter();
-  const ws = useContext(WebSocketContext);
 
 	return (
 		<ShoppingListHome onSelect={(list) => router.push(`/list/${list.id}`)} />

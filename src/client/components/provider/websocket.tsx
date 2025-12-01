@@ -16,8 +16,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     };
 
     websocket.onmessage = (event: { data: string; }) => {
-      const data = JSON.parse(event.data);
-      console.log("Received data:", data);
+      console.log("Received data:", event.data);
     };
 
     websocket.onclose = () => {

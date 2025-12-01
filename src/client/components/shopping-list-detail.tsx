@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { type ShoppingList, store } from "@/lib/store";
 import { useWebSocket } from "./provider/websocket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
+import { ShoppingList as ShoppingListProto, ShoppingListItem as ShoppingListItemProto } from "@/lib/proto/shopping-list";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -62,14 +63,17 @@ export function ShoppingListDetail({
 		setItemQuantity("1");
 		await refreshList();
 
-		webSocket.send(JSON.stringify({
-			type: "add-item",
-			listId: list.id,
-			item: {
-				name: itemName,
-				quantity,
-			},
-		}));
+		const item = ShoppingListItemProto.create({
+			id: list.id,
+			name: itemName,
+			totalQuantity: quantity,
+			acquiredQuantity: 0,
+		})
+
+		const buffer = ShoppingListProto.encode(item).finish();
+		console.log("Adding item via WebSocket:", itemName, quantity, buffer);
+
+		webSocket.send(buffer);
 	};
 
 	const handleAcquireItem = async (itemId: string, quantity: number) => {
