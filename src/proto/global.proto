@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "gitlab.up.pt/classes/sdle/2025/t2/g01";
+
+import "shopping.proto";
+
+message Entity {
+    oneof payload {
+        ShoppingList shopping_list = 1;
+        ShoppingItem shopping_list_item = 2;
+    }
+}

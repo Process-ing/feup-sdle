@@ -7,5 +7,5 @@ export default function ListPage() {
 	const router = useRouter();
 	const { id }: { id: string } = useParams();
 
-	return <ShoppingListDetail listId={id} onBack={() => router.push("/")} />;
+	return <ShoppingListDetail listId={id} onBack={() => router.push("/")} />
 }
