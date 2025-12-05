@@ -1,5 +1,5 @@
 import { type DBSchema, type IDBPDatabase, openDB } from "idb";
-import type { ShoppingList } from "./store";
+import type { ShoppingList } from "@/types";
 
 const DB_NAME = "shopping-lists-db";
 const DB_VERSION = 1;

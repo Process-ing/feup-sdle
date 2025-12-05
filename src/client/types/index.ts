@@ -1,13 +1,7 @@
-export interface ShoppingItem {
-    id: string;
-    name: string;
-    totalQuantity: number;
-    acquiredQuantity: number;
-}
+import ShoppingItem from "./shopping-item";
+import ShoppingList from "./shopping-list";
 
-export interface ShoppingList {
-    id: string;
-    name: string;
-    items: ShoppingItem[];
-    createdAt: Date;
+export {
+    type ShoppingList,
+    type ShoppingItem,
 }

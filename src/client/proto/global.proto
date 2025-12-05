@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "src/client/proto/shopping-list.proto";
+
+message Entity {
+    oneof payload {
+        ShoppingList shopping_list = 1;
+        ShoppingListItem shopping_list_item = 2;
+    }
+}
