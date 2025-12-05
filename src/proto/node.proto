@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option go_package = "gitlab.up.pt/classes/sdle/2025/t2/g01";
+
+message Request {
+  string origin = 1; // id of the node that sent the request
+  oneof request_type {
+    RequestPing ping = 11;
+    RequestFetchRing fetch_ring = 12;
+    RequestGetHashSpace get_hash_space = 13;
+    RequestGossipJoin gossip_join = 14;
+    RequestGet get = 15;
+    RequestPut put = 16;
+    RequestDelete delete = 17;
+    RequestHas has = 18;
+  }
+}
+
+
+// Membership requests
+
+message RequestPing {
+}
+
+message RequestFetchRing {
+}
+
+message RequestGetHashSpace {
+  int32 start_hash_space = 1;
+  int32 end_hash_space = 2;
+}
+
+message RequestGossipJoin {
+  string new_node_addr = 1;
+  repeated int32 tokens = 2;
+}
+
+// CRUD requests
+
+message RequestGet {
+  string key = 1;
+}
+
+message RequestPut {
+  string key = 1;
+  bytes value = 2;
+}
+
+message RequestDelete {
+  string key = 1;
+}
+
+message RequestHas {
+  string key = 1;
+}
+
+// Replies
+
+message Reply {
+  bool ok = 1;
+  string error = 2;
+  bytes value = 3;
+}
+
