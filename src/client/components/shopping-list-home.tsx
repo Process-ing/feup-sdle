@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
-import { useWebProtocolSocket } from "./provider/protocol-socket";
+import { useProtocolSocket } from "./provider/protocol-socket";
 
 interface ShoppingListHomeProps {
 	onSelect: (list: ShoppingList) => void;
@@ -23,7 +23,7 @@ interface ShoppingListHomeProps {
 export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 	const [lists, setLists] = useState<ShoppingList[]>([]);
 	const [listName, setListName] = useState("");
-	const socket = useWebProtocolSocket();
+	const socket = useProtocolSocket();
 
 	useEffect(() => {
 		console.log('Lists:', lists)
@@ -42,8 +42,7 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 		if (!listName.trim()) return;
 
 		const newList = await db.createList(listName);
-		if (socket)
-			socket.send(newList);
+		socket.send(newList);
 
 		setLists(await db.getAllLists());
 		setListName("");

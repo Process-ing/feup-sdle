@@ -13,7 +13,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useWebProtocolSocket } from "./provider/protocol-socket";
+import { useProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
 import { ShoppingItem, ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
@@ -33,7 +33,7 @@ export function ShoppingListDetail({
 	const [notFound, setNotFound] = useState(false);
 	const [itemName, setItemName] = useState("");
 	const [itemQuantity, setItemQuantity] = useState("1");
-	const socket = useWebProtocolSocket();
+	const socket = useProtocolSocket();
 
 	const refreshItems = useCallback(async () => {
 		if (!list) return;
@@ -47,8 +47,6 @@ export function ShoppingListDetail({
 
 		setItems(loadedItems.filter((item) => item !== undefined));
 	}, [list]);
-
-
 
 	useEffect(() => {
 		const refreshList = async () => {
@@ -78,8 +76,7 @@ export function ShoppingListDetail({
 
 		list.addItem(item.id);
 		await db.updateList(list);
-		if (socket)
-			socket.send(list);
+		socket.send(list);
 
 		setItemName("");
 		setItemQuantity("1");
@@ -97,8 +94,7 @@ export function ShoppingListDetail({
 
 		item.acquiredQuantity = newAcquired;
 		await db.updateItem(item);
-		if (socket)
-			socket.send(item)
+		socket.send(item)
 
 		await refreshItems();
 	};
@@ -113,8 +109,7 @@ export function ShoppingListDetail({
 
 		item.totalQuantity = newTotal;
 		await db.updateItem(item);
-		if (socket)
-			socket.send(item);
+		socket.send(item);
 
 		await refreshItems();
 	};
@@ -125,8 +120,7 @@ export function ShoppingListDetail({
 
 		list.removeItem(itemId);
 		await db.updateList(list);
-		if (socket)
-			socket.send(list);
+		socket.send(list);
 
 		await refreshItems();
 	};
