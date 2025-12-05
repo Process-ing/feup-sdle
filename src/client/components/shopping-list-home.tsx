@@ -12,8 +12,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { store } from "@/lib/store";
 import { ShoppingList } from "@/types";
+import { db } from "@/lib/storage/db";
 
 interface ShoppingListHomeProps {
 	onSelect: (list: ShoppingList) => void;
@@ -24,9 +24,13 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 	const [listName, setListName] = useState("");
 
 	useEffect(() => {
+		console.log('Lists:', lists)
+	}, [lists]);
+
+	useEffect(() => {
 		const fetchLists = async () => {
 			await new Promise((resolve) => setTimeout(resolve, 50)); // give time for store to init
-			setLists(store.getAllLists());
+			setLists(await db.getAllLists());
 		};
 		fetchLists();
 	}, []);
@@ -35,8 +39,8 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 		e.preventDefault();
 		if (!listName.trim()) return;
 
-		const newList = await store.createList(listName);
-		setLists(store.getAllLists());
+		const newList = await db.createList(listName);
+		setLists(await db.getAllLists());
 		setListName("");
 		onSelect(newList);
 	};
@@ -77,7 +81,7 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 					</CardHeader>
 					<CardContent>
 						<div className="space-y-2">
-							{lists.map((list) => (
+							{lists.map((list) =>
 								<button
 									type="button"
 									key={list.id}
@@ -90,14 +94,14 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 												{list.name}
 											</h3>
 											<p className="text-sm text-muted-foreground">
-												{list.items.length}{" "}
-												{list.items.length === 1 ? "item" : "items"}
+												{list.itemIds.length}{" "}
+												{list.itemIds.length === 1 ? "item" : "items"}
 											</p>
 										</div>
 										<ShoppingCart className="w-5 h-5 text-muted-foreground" />
 									</div>
 								</button>
-							))}
+							)}
 						</div>
 					</CardContent>
 				</Card>

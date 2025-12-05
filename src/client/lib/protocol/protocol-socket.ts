@@ -1,3 +1,3 @@
 interface ProtocolSocket {
-    sendTo(entity: ProtocolEntity, recipientId: string): void;  // TODO: Change to use proper node identification
+    send(entity: ProtocolEntity): void;  // TODO: Change to use proper node identification
 }

@@ -2,10 +2,6 @@
 
 ROOT_DIR=$(dirname "$0")/..
 
-# Generate JavaScript code from the proto files
-pbjs -t static-module -w commonjs -o "$ROOT_DIR/client/lib/proto/shopping.js" "$ROOT_DIR/proto/shopping.proto"
-pbjs -t static-module -w commonjs -o "$ROOT_DIR/client/lib/proto/global.js" "$ROOT_DIR/proto/global.proto"
-
-# Generate TypeScript definitions from the generated JavaScript code
-pbts -o "$ROOT_DIR/client/lib/proto/shopping.d.ts" "$ROOT_DIR/client/lib/proto/shopping.js"
+# Generate JavaScript/TypeScript code from the proto files
+pbjs -t static-module -w es6 -o "$ROOT_DIR/client/lib/proto/global.js" "$ROOT_DIR/proto/global.proto"
 pbts -o "$ROOT_DIR/client/lib/proto/global.d.ts" "$ROOT_DIR/client/lib/proto/global.js"

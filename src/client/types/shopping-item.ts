@@ -1,3 +1,5 @@
+import { ShoppingItem as ShoppingItemProto } from "@/lib/proto/global";
+
 export default class ShoppingItem implements ProtocolEntity {
     id: string;
     name: string;
@@ -12,7 +14,13 @@ export default class ShoppingItem implements ProtocolEntity {
     }
 
     serialize(): Uint8Array {
-        // Serialization logic here
-        return new Uint8Array();
+        const proto = new ShoppingItemProto({
+            id: this.id,
+            name: this.name,
+            totalQuantity: this.totalQuantity,
+            acquiredQuantity: this.acquiredQuantity,
+        });
+
+        return ShoppingItemProto.encode(proto).finish();
     }
 }

@@ -7,7 +7,7 @@ export interface IEntity {
     shoppingList?: (IShoppingList|null);
 
     /** Entity shoppingListItem */
-    shoppingListItem?: (IShoppingListItem|null);
+    shoppingListItem?: (IShoppingItem|null);
 }
 
 /** Represents an Entity. */
@@ -23,7 +23,7 @@ export class Entity implements IEntity {
     public shoppingList?: (IShoppingList|null);
 
     /** Entity shoppingListItem. */
-    public shoppingListItem?: (IShoppingListItem|null);
+    public shoppingListItem?: (IShoppingItem|null);
 
     /** Entity payload. */
     public payload?: ("shoppingList"|"shoppingListItem");
@@ -106,115 +106,115 @@ export class Entity implements IEntity {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a ShoppingListItem. */
-export interface IShoppingListItem {
+/** Properties of a ShoppingItem. */
+export interface IShoppingItem {
 
-    /** ShoppingListItem id */
+    /** ShoppingItem id */
     id?: (string|null);
 
-    /** ShoppingListItem name */
+    /** ShoppingItem name */
     name?: (string|null);
 
-    /** ShoppingListItem totalQuantity */
+    /** ShoppingItem totalQuantity */
     totalQuantity?: (number|null);
 
-    /** ShoppingListItem acquiredQuantity */
+    /** ShoppingItem acquiredQuantity */
     acquiredQuantity?: (number|null);
 }
 
-/** Represents a ShoppingListItem. */
-export class ShoppingListItem implements IShoppingListItem {
+/** Represents a ShoppingItem. */
+export class ShoppingItem implements IShoppingItem {
 
     /**
-     * Constructs a new ShoppingListItem.
+     * Constructs a new ShoppingItem.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IShoppingListItem);
+    constructor(properties?: IShoppingItem);
 
-    /** ShoppingListItem id. */
+    /** ShoppingItem id. */
     public id: string;
 
-    /** ShoppingListItem name. */
+    /** ShoppingItem name. */
     public name: string;
 
-    /** ShoppingListItem totalQuantity. */
+    /** ShoppingItem totalQuantity. */
     public totalQuantity: number;
 
-    /** ShoppingListItem acquiredQuantity. */
+    /** ShoppingItem acquiredQuantity. */
     public acquiredQuantity: number;
 
     /**
-     * Creates a new ShoppingListItem instance using the specified properties.
+     * Creates a new ShoppingItem instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns ShoppingListItem instance
+     * @returns ShoppingItem instance
      */
-    public static create(properties?: IShoppingListItem): ShoppingListItem;
+    public static create(properties?: IShoppingItem): ShoppingItem;
 
     /**
-     * Encodes the specified ShoppingListItem message. Does not implicitly {@link ShoppingListItem.verify|verify} messages.
-     * @param message ShoppingListItem message or plain object to encode
+     * Encodes the specified ShoppingItem message. Does not implicitly {@link ShoppingItem.verify|verify} messages.
+     * @param message ShoppingItem message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IShoppingListItem, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: IShoppingItem, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Encodes the specified ShoppingListItem message, length delimited. Does not implicitly {@link ShoppingListItem.verify|verify} messages.
-     * @param message ShoppingListItem message or plain object to encode
+     * Encodes the specified ShoppingItem message, length delimited. Does not implicitly {@link ShoppingItem.verify|verify} messages.
+     * @param message ShoppingItem message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encodeDelimited(message: IShoppingListItem, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encodeDelimited(message: IShoppingItem, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a ShoppingListItem message from the specified reader or buffer.
+     * Decodes a ShoppingItem message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns ShoppingListItem
+     * @returns ShoppingItem
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ShoppingListItem;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ShoppingItem;
 
     /**
-     * Decodes a ShoppingListItem message from the specified reader or buffer, length delimited.
+     * Decodes a ShoppingItem message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns ShoppingListItem
+     * @returns ShoppingItem
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ShoppingListItem;
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ShoppingItem;
 
     /**
-     * Verifies a ShoppingListItem message.
+     * Verifies a ShoppingItem message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * Creates a ShoppingListItem message from a plain object. Also converts values to their respective internal types.
+     * Creates a ShoppingItem message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
-     * @returns ShoppingListItem
+     * @returns ShoppingItem
      */
-    public static fromObject(object: { [k: string]: any }): ShoppingListItem;
+    public static fromObject(object: { [k: string]: any }): ShoppingItem;
 
     /**
-     * Creates a plain object from a ShoppingListItem message. Also converts values to other types if specified.
-     * @param message ShoppingListItem
+     * Creates a plain object from a ShoppingItem message. Also converts values to other types if specified.
+     * @param message ShoppingItem
      * @param [options] Conversion options
      * @returns Plain object
      */
-    public static toObject(message: ShoppingListItem, options?: $protobuf.IConversionOptions): { [k: string]: any };
+    public static toObject(message: ShoppingItem, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * Converts this ShoppingListItem to JSON.
+     * Converts this ShoppingItem to JSON.
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * Gets the default type url for ShoppingListItem
+     * Gets the default type url for ShoppingItem
      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns The default type url
      */

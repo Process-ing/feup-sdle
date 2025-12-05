@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { WebSocketProvider } from "@/components/provider/websocket";
+import { WebProtocolSocketProvider } from "@/components/provider/websocket";
 import Header from "@/components/ui/header";
 
 const geistSans = Geist({
@@ -32,9 +32,7 @@ export default function RootLayout({
 				<main className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 md:p-8">
 					<div className="max-w-3xl mx-auto">
 						<Header />
-						<WebSocketProvider>
-							{children}
-						</WebSocketProvider>
+						{children}
 					</div>
 				</main>
 			</body>

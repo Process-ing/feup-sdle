@@ -1,22 +1,20 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-"use strict";
-
-var $protobuf = require("protobufjs/minimal");
+import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-$root.Entity = (function() {
+export const Entity = $root.Entity = (() => {
 
     /**
      * Properties of an Entity.
      * @exports IEntity
      * @interface IEntity
      * @property {IShoppingList|null} [shoppingList] Entity shoppingList
-     * @property {IShoppingListItem|null} [shoppingListItem] Entity shoppingListItem
+     * @property {IShoppingItem|null} [shoppingListItem] Entity shoppingListItem
      */
 
     /**
@@ -29,7 +27,7 @@ $root.Entity = (function() {
      */
     function Entity(properties) {
         if (properties)
-            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -44,14 +42,14 @@ $root.Entity = (function() {
 
     /**
      * Entity shoppingListItem.
-     * @member {IShoppingListItem|null|undefined} shoppingListItem
+     * @member {IShoppingItem|null|undefined} shoppingListItem
      * @memberof Entity
      * @instance
      */
     Entity.prototype.shoppingListItem = null;
 
     // OneOf field names bound to virtual getters and setters
-    var $oneOfFields;
+    let $oneOfFields;
 
     /**
      * Entity payload.
@@ -91,7 +89,7 @@ $root.Entity = (function() {
         if (message.shoppingList != null && Object.hasOwnProperty.call(message, "shoppingList"))
             $root.ShoppingList.encode(message.shoppingList, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
         if (message.shoppingListItem != null && Object.hasOwnProperty.call(message, "shoppingListItem"))
-            $root.ShoppingListItem.encode(message.shoppingListItem, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            $root.ShoppingItem.encode(message.shoppingListItem, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
         return writer;
     };
 
@@ -122,9 +120,9 @@ $root.Entity = (function() {
     Entity.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.Entity();
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Entity();
         while (reader.pos < end) {
-            var tag = reader.uint32();
+            let tag = reader.uint32();
             if (tag === error)
                 break;
             switch (tag >>> 3) {
@@ -133,7 +131,7 @@ $root.Entity = (function() {
                     break;
                 }
             case 2: {
-                    message.shoppingListItem = $root.ShoppingListItem.decode(reader, reader.uint32());
+                    message.shoppingListItem = $root.ShoppingItem.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -171,11 +169,11 @@ $root.Entity = (function() {
     Entity.verify = function verify(message) {
         if (typeof message !== "object" || message === null)
             return "object expected";
-        var properties = {};
+        let properties = {};
         if (message.shoppingList != null && message.hasOwnProperty("shoppingList")) {
             properties.payload = 1;
             {
-                var error = $root.ShoppingList.verify(message.shoppingList);
+                let error = $root.ShoppingList.verify(message.shoppingList);
                 if (error)
                     return "shoppingList." + error;
             }
@@ -185,7 +183,7 @@ $root.Entity = (function() {
                 return "payload: multiple values";
             properties.payload = 1;
             {
-                var error = $root.ShoppingListItem.verify(message.shoppingListItem);
+                let error = $root.ShoppingItem.verify(message.shoppingListItem);
                 if (error)
                     return "shoppingListItem." + error;
             }
@@ -204,7 +202,7 @@ $root.Entity = (function() {
     Entity.fromObject = function fromObject(object) {
         if (object instanceof $root.Entity)
             return object;
-        var message = new $root.Entity();
+        let message = new $root.Entity();
         if (object.shoppingList != null) {
             if (typeof object.shoppingList !== "object")
                 throw TypeError(".Entity.shoppingList: object expected");
@@ -213,7 +211,7 @@ $root.Entity = (function() {
         if (object.shoppingListItem != null) {
             if (typeof object.shoppingListItem !== "object")
                 throw TypeError(".Entity.shoppingListItem: object expected");
-            message.shoppingListItem = $root.ShoppingListItem.fromObject(object.shoppingListItem);
+            message.shoppingListItem = $root.ShoppingItem.fromObject(object.shoppingListItem);
         }
         return message;
     };
@@ -230,14 +228,14 @@ $root.Entity = (function() {
     Entity.toObject = function toObject(message, options) {
         if (!options)
             options = {};
-        var object = {};
+        let object = {};
         if (message.shoppingList != null && message.hasOwnProperty("shoppingList")) {
             object.shoppingList = $root.ShoppingList.toObject(message.shoppingList, options);
             if (options.oneofs)
                 object.payload = "shoppingList";
         }
         if (message.shoppingListItem != null && message.hasOwnProperty("shoppingListItem")) {
-            object.shoppingListItem = $root.ShoppingListItem.toObject(message.shoppingListItem, options);
+            object.shoppingListItem = $root.ShoppingItem.toObject(message.shoppingListItem, options);
             if (options.oneofs)
                 object.payload = "shoppingListItem";
         }
@@ -273,87 +271,87 @@ $root.Entity = (function() {
     return Entity;
 })();
 
-$root.ShoppingListItem = (function() {
+export const ShoppingItem = $root.ShoppingItem = (() => {
 
     /**
-     * Properties of a ShoppingListItem.
-     * @exports IShoppingListItem
-     * @interface IShoppingListItem
-     * @property {string|null} [id] ShoppingListItem id
-     * @property {string|null} [name] ShoppingListItem name
-     * @property {number|null} [totalQuantity] ShoppingListItem totalQuantity
-     * @property {number|null} [acquiredQuantity] ShoppingListItem acquiredQuantity
+     * Properties of a ShoppingItem.
+     * @exports IShoppingItem
+     * @interface IShoppingItem
+     * @property {string|null} [id] ShoppingItem id
+     * @property {string|null} [name] ShoppingItem name
+     * @property {number|null} [totalQuantity] ShoppingItem totalQuantity
+     * @property {number|null} [acquiredQuantity] ShoppingItem acquiredQuantity
      */
 
     /**
-     * Constructs a new ShoppingListItem.
-     * @exports ShoppingListItem
-     * @classdesc Represents a ShoppingListItem.
-     * @implements IShoppingListItem
+     * Constructs a new ShoppingItem.
+     * @exports ShoppingItem
+     * @classdesc Represents a ShoppingItem.
+     * @implements IShoppingItem
      * @constructor
-     * @param {IShoppingListItem=} [properties] Properties to set
+     * @param {IShoppingItem=} [properties] Properties to set
      */
-    function ShoppingListItem(properties) {
+    function ShoppingItem(properties) {
         if (properties)
-            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
 
     /**
-     * ShoppingListItem id.
+     * ShoppingItem id.
      * @member {string} id
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @instance
      */
-    ShoppingListItem.prototype.id = "";
+    ShoppingItem.prototype.id = "";
 
     /**
-     * ShoppingListItem name.
+     * ShoppingItem name.
      * @member {string} name
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @instance
      */
-    ShoppingListItem.prototype.name = "";
+    ShoppingItem.prototype.name = "";
 
     /**
-     * ShoppingListItem totalQuantity.
+     * ShoppingItem totalQuantity.
      * @member {number} totalQuantity
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @instance
      */
-    ShoppingListItem.prototype.totalQuantity = 0;
+    ShoppingItem.prototype.totalQuantity = 0;
 
     /**
-     * ShoppingListItem acquiredQuantity.
+     * ShoppingItem acquiredQuantity.
      * @member {number} acquiredQuantity
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @instance
      */
-    ShoppingListItem.prototype.acquiredQuantity = 0;
+    ShoppingItem.prototype.acquiredQuantity = 0;
 
     /**
-     * Creates a new ShoppingListItem instance using the specified properties.
+     * Creates a new ShoppingItem instance using the specified properties.
      * @function create
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
-     * @param {IShoppingListItem=} [properties] Properties to set
-     * @returns {ShoppingListItem} ShoppingListItem instance
+     * @param {IShoppingItem=} [properties] Properties to set
+     * @returns {ShoppingItem} ShoppingItem instance
      */
-    ShoppingListItem.create = function create(properties) {
-        return new ShoppingListItem(properties);
+    ShoppingItem.create = function create(properties) {
+        return new ShoppingItem(properties);
     };
 
     /**
-     * Encodes the specified ShoppingListItem message. Does not implicitly {@link ShoppingListItem.verify|verify} messages.
+     * Encodes the specified ShoppingItem message. Does not implicitly {@link ShoppingItem.verify|verify} messages.
      * @function encode
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
-     * @param {IShoppingListItem} message ShoppingListItem message or plain object to encode
+     * @param {IShoppingItem} message ShoppingItem message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    ShoppingListItem.encode = function encode(message, writer) {
+    ShoppingItem.encode = function encode(message, writer) {
         if (!writer)
             writer = $Writer.create();
         if (message.id != null && Object.hasOwnProperty.call(message, "id"))
@@ -368,35 +366,35 @@ $root.ShoppingListItem = (function() {
     };
 
     /**
-     * Encodes the specified ShoppingListItem message, length delimited. Does not implicitly {@link ShoppingListItem.verify|verify} messages.
+     * Encodes the specified ShoppingItem message, length delimited. Does not implicitly {@link ShoppingItem.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
-     * @param {IShoppingListItem} message ShoppingListItem message or plain object to encode
+     * @param {IShoppingItem} message ShoppingItem message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    ShoppingListItem.encodeDelimited = function encodeDelimited(message, writer) {
+    ShoppingItem.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
     };
 
     /**
-     * Decodes a ShoppingListItem message from the specified reader or buffer.
+     * Decodes a ShoppingItem message from the specified reader or buffer.
      * @function decode
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {ShoppingListItem} ShoppingListItem
+     * @returns {ShoppingItem} ShoppingItem
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    ShoppingListItem.decode = function decode(reader, length, error) {
+    ShoppingItem.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingListItem();
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingItem();
         while (reader.pos < end) {
-            var tag = reader.uint32();
+            let tag = reader.uint32();
             if (tag === error)
                 break;
             switch (tag >>> 3) {
@@ -425,30 +423,30 @@ $root.ShoppingListItem = (function() {
     };
 
     /**
-     * Decodes a ShoppingListItem message from the specified reader or buffer, length delimited.
+     * Decodes a ShoppingItem message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {ShoppingListItem} ShoppingListItem
+     * @returns {ShoppingItem} ShoppingItem
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    ShoppingListItem.decodeDelimited = function decodeDelimited(reader) {
+    ShoppingItem.decodeDelimited = function decodeDelimited(reader) {
         if (!(reader instanceof $Reader))
             reader = new $Reader(reader);
         return this.decode(reader, reader.uint32());
     };
 
     /**
-     * Verifies a ShoppingListItem message.
+     * Verifies a ShoppingItem message.
      * @function verify
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    ShoppingListItem.verify = function verify(message) {
+    ShoppingItem.verify = function verify(message) {
         if (typeof message !== "object" || message === null)
             return "object expected";
         if (message.id != null && message.hasOwnProperty("id"))
@@ -467,17 +465,17 @@ $root.ShoppingListItem = (function() {
     };
 
     /**
-     * Creates a ShoppingListItem message from a plain object. Also converts values to their respective internal types.
+     * Creates a ShoppingItem message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {ShoppingListItem} ShoppingListItem
+     * @returns {ShoppingItem} ShoppingItem
      */
-    ShoppingListItem.fromObject = function fromObject(object) {
-        if (object instanceof $root.ShoppingListItem)
+    ShoppingItem.fromObject = function fromObject(object) {
+        if (object instanceof $root.ShoppingItem)
             return object;
-        var message = new $root.ShoppingListItem();
+        let message = new $root.ShoppingItem();
         if (object.id != null)
             message.id = String(object.id);
         if (object.name != null)
@@ -490,18 +488,18 @@ $root.ShoppingListItem = (function() {
     };
 
     /**
-     * Creates a plain object from a ShoppingListItem message. Also converts values to other types if specified.
+     * Creates a plain object from a ShoppingItem message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
-     * @param {ShoppingListItem} message ShoppingListItem
+     * @param {ShoppingItem} message ShoppingItem
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    ShoppingListItem.toObject = function toObject(message, options) {
+    ShoppingItem.toObject = function toObject(message, options) {
         if (!options)
             options = {};
-        var object = {};
+        let object = {};
         if (options.defaults) {
             object.id = "";
             object.name = "";
@@ -520,35 +518,35 @@ $root.ShoppingListItem = (function() {
     };
 
     /**
-     * Converts this ShoppingListItem to JSON.
+     * Converts this ShoppingItem to JSON.
      * @function toJSON
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-    ShoppingListItem.prototype.toJSON = function toJSON() {
+    ShoppingItem.prototype.toJSON = function toJSON() {
         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
     /**
-     * Gets the default type url for ShoppingListItem
+     * Gets the default type url for ShoppingItem
      * @function getTypeUrl
-     * @memberof ShoppingListItem
+     * @memberof ShoppingItem
      * @static
      * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns {string} The default type url
      */
-    ShoppingListItem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    ShoppingItem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
         if (typeUrlPrefix === undefined) {
             typeUrlPrefix = "type.googleapis.com";
         }
-        return typeUrlPrefix + "/ShoppingListItem";
+        return typeUrlPrefix + "/ShoppingItem";
     };
 
-    return ShoppingListItem;
+    return ShoppingItem;
 })();
 
-$root.ShoppingList = (function() {
+export const ShoppingList = $root.ShoppingList = (() => {
 
     /**
      * Properties of a ShoppingList.
@@ -570,7 +568,7 @@ $root.ShoppingList = (function() {
     function ShoppingList(properties) {
         this.itemIds = [];
         if (properties)
-            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -628,7 +626,7 @@ $root.ShoppingList = (function() {
         if (message.name != null && Object.hasOwnProperty.call(message, "name"))
             writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
         if (message.itemIds != null && message.itemIds.length)
-            for (var i = 0; i < message.itemIds.length; ++i)
+            for (let i = 0; i < message.itemIds.length; ++i)
                 writer.uint32(/* id 3, wireType 2 =*/26).string(message.itemIds[i]);
         return writer;
     };
@@ -660,9 +658,9 @@ $root.ShoppingList = (function() {
     ShoppingList.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList();
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList();
         while (reader.pos < end) {
-            var tag = reader.uint32();
+            let tag = reader.uint32();
             if (tag === error)
                 break;
             switch (tag >>> 3) {
@@ -724,7 +722,7 @@ $root.ShoppingList = (function() {
         if (message.itemIds != null && message.hasOwnProperty("itemIds")) {
             if (!Array.isArray(message.itemIds))
                 return "itemIds: array expected";
-            for (var i = 0; i < message.itemIds.length; ++i)
+            for (let i = 0; i < message.itemIds.length; ++i)
                 if (!$util.isString(message.itemIds[i]))
                     return "itemIds: string[] expected";
         }
@@ -742,7 +740,7 @@ $root.ShoppingList = (function() {
     ShoppingList.fromObject = function fromObject(object) {
         if (object instanceof $root.ShoppingList)
             return object;
-        var message = new $root.ShoppingList();
+        let message = new $root.ShoppingList();
         if (object.id != null)
             message.id = String(object.id);
         if (object.name != null)
@@ -751,7 +749,7 @@ $root.ShoppingList = (function() {
             if (!Array.isArray(object.itemIds))
                 throw TypeError(".ShoppingList.itemIds: array expected");
             message.itemIds = [];
-            for (var i = 0; i < object.itemIds.length; ++i)
+            for (let i = 0; i < object.itemIds.length; ++i)
                 message.itemIds[i] = String(object.itemIds[i]);
         }
         return message;
@@ -769,7 +767,7 @@ $root.ShoppingList = (function() {
     ShoppingList.toObject = function toObject(message, options) {
         if (!options)
             options = {};
-        var object = {};
+        let object = {};
         if (options.arrays || options.defaults)
             object.itemIds = [];
         if (options.defaults) {
@@ -782,7 +780,7 @@ $root.ShoppingList = (function() {
             object.name = message.name;
         if (message.itemIds && message.itemIds.length) {
             object.itemIds = [];
-            for (var j = 0; j < message.itemIds.length; ++j)
+            for (let j = 0; j < message.itemIds.length; ++j)
                 object.itemIds[j] = message.itemIds[j];
         }
         return object;
@@ -817,4 +815,4 @@ $root.ShoppingList = (function() {
     return ShoppingList;
 })();
 
-module.exports = $root;
+export { $root as default };

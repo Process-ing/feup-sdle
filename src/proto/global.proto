@@ -5,6 +5,6 @@ import "shopping.proto";
 message Entity {
     oneof payload {
         ShoppingList shopping_list = 1;
-        ShoppingListItem shopping_list_item = 2;
+        ShoppingItem shopping_list_item = 2;
     }
 }

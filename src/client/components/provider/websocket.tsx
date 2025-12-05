@@ -1,48 +1,30 @@
 'use client';
 
+import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export const WebSocketContext = createContext<WebSocket | null>(null);
+export const WebProtocolSocketContext = createContext<WebProtocolSocket | null>(null);
 
-export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [ws, setWs] = useState<WebSocket | null>(null);
+export const WebProtocolSocketProvider = ({ children }: { children: React.ReactNode }) => {
+  const [socket, setSocket] = useState<WebProtocolSocket | null>(null);
 
   useEffect(() => {
     const websocketUrl = "ws://localhost:8080/ws";
     const websocket = new WebSocket(websocketUrl);
 
-    websocket.onopen = () => {
-      console.log("Connected to server");
-    };
+    const protocolSocket = new WebProtocolSocket(websocket);
 
-    websocket.onmessage = (event: { data: string; }) => {
-      console.log("Received data:", event.data);
-    };
-
-    websocket.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    setWs(websocket);
-    console.log("WebSocket initialized");
-
-    return () => {
-      websocket.close();
-      console.log("WebSocket connection closed on unmount");
-    };
+    setSocket(protocolSocket);
   }, []);
 
   return (
-    <WebSocketContext.Provider value={ws}>
+    <WebProtocolSocketContext.Provider value={socket}>
       {children}
-    </WebSocketContext.Provider>
+    </WebProtocolSocketContext.Provider>
   )
 }
 
-export const useWebSocket = (): WebSocket => {
-  const webSocket = useContext(WebSocketContext);
-  if (!webSocket) {
-    throw new Error("useWebSocket must be used within a WebSocketProvider");
-  }
-  return webSocket;
+export const useWebProtocolSocket = (): WebProtocolSocket | null => {
+  const socket = useContext(WebProtocolSocketContext);
+  return socket;
 }
