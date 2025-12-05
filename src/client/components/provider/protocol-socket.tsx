@@ -1,7 +1,7 @@
 'use client';
 
 import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const WebProtocolSocketContext = createContext<WebProtocolSocket | null>(null);
 

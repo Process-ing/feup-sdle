@@ -13,7 +13,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useWebProtocolSocket } from "./provider/websocket";
+import { useWebProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
 import { ShoppingItem, ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
