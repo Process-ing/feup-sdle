@@ -124,8 +124,8 @@ export interface IShoppingList {
     /** ShoppingList name */
     name?: (string|null);
 
-    /** ShoppingList items */
-    items?: (IShoppingListItem[]|null);
+    /** ShoppingList itemIds */
+    itemIds?: (string[]|null);
 }
 
 /** Represents a ShoppingList. */
@@ -143,8 +143,8 @@ export class ShoppingList implements IShoppingList {
     /** ShoppingList name. */
     public name: string;
 
-    /** ShoppingList items. */
-    public items: IShoppingListItem[];
+    /** ShoppingList itemIds. */
+    public itemIds: string[];
 
     /**
      * Creates a new ShoppingList instance using the specified properties.

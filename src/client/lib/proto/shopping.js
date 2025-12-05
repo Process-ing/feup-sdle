@@ -1,13 +1,15 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-import * as $protobuf from "protobufjs/minimal";
+"use strict";
+
+var $protobuf = require("protobufjs/minimal");
 
 // Common aliases
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const ShoppingListItem = $root.ShoppingListItem = (() => {
+$root.ShoppingListItem = (function() {
 
     /**
      * Properties of a ShoppingListItem.
@@ -29,7 +31,7 @@ export const ShoppingListItem = $root.ShoppingListItem = (() => {
      */
     function ShoppingListItem(properties) {
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -128,9 +130,9 @@ export const ShoppingListItem = $root.ShoppingListItem = (() => {
     ShoppingListItem.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingListItem();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingListItem();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             if (tag === error)
                 break;
             switch (tag >>> 3) {
@@ -211,7 +213,7 @@ export const ShoppingListItem = $root.ShoppingListItem = (() => {
     ShoppingListItem.fromObject = function fromObject(object) {
         if (object instanceof $root.ShoppingListItem)
             return object;
-        let message = new $root.ShoppingListItem();
+        var message = new $root.ShoppingListItem();
         if (object.id != null)
             message.id = String(object.id);
         if (object.name != null)
@@ -235,7 +237,7 @@ export const ShoppingListItem = $root.ShoppingListItem = (() => {
     ShoppingListItem.toObject = function toObject(message, options) {
         if (!options)
             options = {};
-        let object = {};
+        var object = {};
         if (options.defaults) {
             object.id = "";
             object.name = "";
@@ -282,7 +284,7 @@ export const ShoppingListItem = $root.ShoppingListItem = (() => {
     return ShoppingListItem;
 })();
 
-export const ShoppingList = $root.ShoppingList = (() => {
+$root.ShoppingList = (function() {
 
     /**
      * Properties of a ShoppingList.
@@ -290,7 +292,7 @@ export const ShoppingList = $root.ShoppingList = (() => {
      * @interface IShoppingList
      * @property {string|null} [id] ShoppingList id
      * @property {string|null} [name] ShoppingList name
-     * @property {Array.<IShoppingListItem>|null} [items] ShoppingList items
+     * @property {Array.<string>|null} [itemIds] ShoppingList itemIds
      */
 
     /**
@@ -302,9 +304,9 @@ export const ShoppingList = $root.ShoppingList = (() => {
      * @param {IShoppingList=} [properties] Properties to set
      */
     function ShoppingList(properties) {
-        this.items = [];
+        this.itemIds = [];
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -326,12 +328,12 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.prototype.name = "";
 
     /**
-     * ShoppingList items.
-     * @member {Array.<IShoppingListItem>} items
+     * ShoppingList itemIds.
+     * @member {Array.<string>} itemIds
      * @memberof ShoppingList
      * @instance
      */
-    ShoppingList.prototype.items = $util.emptyArray;
+    ShoppingList.prototype.itemIds = $util.emptyArray;
 
     /**
      * Creates a new ShoppingList instance using the specified properties.
@@ -361,9 +363,9 @@ export const ShoppingList = $root.ShoppingList = (() => {
             writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
         if (message.name != null && Object.hasOwnProperty.call(message, "name"))
             writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
-        if (message.items != null && message.items.length)
-            for (let i = 0; i < message.items.length; ++i)
-                $root.ShoppingListItem.encode(message.items[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+        if (message.itemIds != null && message.itemIds.length)
+            for (var i = 0; i < message.itemIds.length; ++i)
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.itemIds[i]);
         return writer;
     };
 
@@ -394,9 +396,9 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             if (tag === error)
                 break;
             switch (tag >>> 3) {
@@ -409,9 +411,9 @@ export const ShoppingList = $root.ShoppingList = (() => {
                     break;
                 }
             case 3: {
-                    if (!(message.items && message.items.length))
-                        message.items = [];
-                    message.items.push($root.ShoppingListItem.decode(reader, reader.uint32()));
+                    if (!(message.itemIds && message.itemIds.length))
+                        message.itemIds = [];
+                    message.itemIds.push(reader.string());
                     break;
                 }
             default:
@@ -455,14 +457,12 @@ export const ShoppingList = $root.ShoppingList = (() => {
         if (message.name != null && message.hasOwnProperty("name"))
             if (!$util.isString(message.name))
                 return "name: string expected";
-        if (message.items != null && message.hasOwnProperty("items")) {
-            if (!Array.isArray(message.items))
-                return "items: array expected";
-            for (let i = 0; i < message.items.length; ++i) {
-                let error = $root.ShoppingListItem.verify(message.items[i]);
-                if (error)
-                    return "items." + error;
-            }
+        if (message.itemIds != null && message.hasOwnProperty("itemIds")) {
+            if (!Array.isArray(message.itemIds))
+                return "itemIds: array expected";
+            for (var i = 0; i < message.itemIds.length; ++i)
+                if (!$util.isString(message.itemIds[i]))
+                    return "itemIds: string[] expected";
         }
         return null;
     };
@@ -478,20 +478,17 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.fromObject = function fromObject(object) {
         if (object instanceof $root.ShoppingList)
             return object;
-        let message = new $root.ShoppingList();
+        var message = new $root.ShoppingList();
         if (object.id != null)
             message.id = String(object.id);
         if (object.name != null)
             message.name = String(object.name);
-        if (object.items) {
-            if (!Array.isArray(object.items))
-                throw TypeError(".ShoppingList.items: array expected");
-            message.items = [];
-            for (let i = 0; i < object.items.length; ++i) {
-                if (typeof object.items[i] !== "object")
-                    throw TypeError(".ShoppingList.items: object expected");
-                message.items[i] = $root.ShoppingListItem.fromObject(object.items[i]);
-            }
+        if (object.itemIds) {
+            if (!Array.isArray(object.itemIds))
+                throw TypeError(".ShoppingList.itemIds: array expected");
+            message.itemIds = [];
+            for (var i = 0; i < object.itemIds.length; ++i)
+                message.itemIds[i] = String(object.itemIds[i]);
         }
         return message;
     };
@@ -508,9 +505,9 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.toObject = function toObject(message, options) {
         if (!options)
             options = {};
-        let object = {};
+        var object = {};
         if (options.arrays || options.defaults)
-            object.items = [];
+            object.itemIds = [];
         if (options.defaults) {
             object.id = "";
             object.name = "";
@@ -519,10 +516,10 @@ export const ShoppingList = $root.ShoppingList = (() => {
             object.id = message.id;
         if (message.name != null && message.hasOwnProperty("name"))
             object.name = message.name;
-        if (message.items && message.items.length) {
-            object.items = [];
-            for (let j = 0; j < message.items.length; ++j)
-                object.items[j] = $root.ShoppingListItem.toObject(message.items[j], options);
+        if (message.itemIds && message.itemIds.length) {
+            object.itemIds = [];
+            for (var j = 0; j < message.itemIds.length; ++j)
+                object.itemIds[j] = message.itemIds[j];
         }
         return object;
     };
@@ -556,4 +553,4 @@ export const ShoppingList = $root.ShoppingList = (() => {
     return ShoppingList;
 })();
 
-export { $root as default };
+module.exports = $root;

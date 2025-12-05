@@ -10,6 +10,5 @@ message ShoppingListItem {
 message ShoppingList {
     string id = 1;
     string name = 2;
-    repeated ShoppingListItem items = 3;
+    repeated string itemIds = 3;
 }
-
