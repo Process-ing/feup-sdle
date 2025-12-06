@@ -1,6 +1,7 @@
 package node
 
 import (
+	"fmt"
 	"path/filepath"
 	"sdle-server/ringview"
 	"sdle-server/storage"
@@ -51,8 +52,9 @@ func New(id string, baseDir string) (*Node, error) {
 	}, nil
 }
 
+// Get the current ring view from a target node and update the local ring view
 func (n *Node) UpdateRingView(targetAddr string) error {
-	resp, err := n.SendFetchRing(targetAddr)
+	resp, err := n.sendFetchRing(targetAddr)
 
 	if err != nil {
 		return err
@@ -72,9 +74,35 @@ func (n *Node) UpdateRingView(targetAddr string) error {
 	return nil
 }
 
+// Adds the new node to the ring - first get the current ring view from a target node, then imports the data for its tokens and finally adds itself to the ring (using gossip to inform other nodes)
 func (n *Node) JoinToRing(targetAddr string) error {
+	n.UpdateRingView(targetAddr)
+
 	tokens := n.ringView.JoinToRing(n.GetAddress())
-	println("Node "+n.id+" joined the ring with tokens:", tokens)
-	println("New ring view:", n.ringView.ToString())
+
+	fmt.Println("Node "+n.id+" joined the ring with tokens:", tokens)
+
+	for _, token := range tokens {
+		// TODO:
+		// The code should find the node responsible for the given token,
+		// request the data for that token from the responsible node,
+		// and then store the received data in the local storage.
+
+		fmt.Println("Node " + n.id + " would request data for token " + fmt.Sprint(token) + " from the responsible node.")
+	}
+
+	gossipAddrs := []string{targetAddr}
+	for _, nodeAddr := range gossipAddrs {
+		n.sendJoinGossip(nodeAddr, n.GetAddress(), tokens)
+	}
+
 	return nil
+}
+
+func (n *Node) GetAddress() string {
+	return n.addr
+}
+
+func (n *Node) GetID() string {
+	return n.id
 }

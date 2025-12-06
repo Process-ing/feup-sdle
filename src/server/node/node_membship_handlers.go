@@ -15,7 +15,7 @@ func (n *Node) handlePing(req *pb.Request) error {
 		},
 	}
 
-	return n.SendResponseOK(response)
+	return n.sendResponseOK(response)
 }
 
 func (n *Node) handleFetchRing(req *pb.Request) error {
@@ -29,15 +29,15 @@ func (n *Node) handleFetchRing(req *pb.Request) error {
 		},
 	}
 
-	return n.SendResponseOK(response)
+	return n.sendResponseOK(response)
 }
 
 func (n *Node) handleGetHashSpace(req *pb.Request) error {
 	println("Node " + n.addr + " received GetHashSpace from " + req.Origin)
-	return n.SendResponseError("GetHashSpace not implemented")
+	return n.sendResponseError("GetHashSpace not implemented")
 }
 
 func (n *Node) handleGossipJoin(req *pb.Request) error {
 	println("Node " + n.addr + " received GossipJoin from " + req.Origin)
-	return n.SendResponseError("GossipJoin not implemented")
+	return n.sendResponseError("GossipJoin not implemented")
 }

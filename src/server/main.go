@@ -40,7 +40,7 @@ func main() {
 			}
 		}(i, nd)
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(300 * time.Millisecond)
 
 		if i == 0 {
 			continue

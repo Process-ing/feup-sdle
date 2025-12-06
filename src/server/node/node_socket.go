@@ -22,7 +22,7 @@ func (n *Node) StartReceiving() error {
 
 		var req pb.Request
 		if err := proto.Unmarshal(msgBytes, &req); err != nil {
-			_ = n.SendResponseError("failed to unmarshal request: " + err.Error())
+			_ = n.sendResponseError("failed to unmarshal request: " + err.Error())
 			continue
 		}
 
@@ -53,12 +53,12 @@ func (n *Node) StartReceiving() error {
 			n.handleHas(&req)
 
 		default:
-			_ = n.SendResponseError("unknown request type")
+			_ = n.sendResponseError("unknown request type")
 		}
 	}
 }
 
-func (n *Node) SendRequest(peerAddr string, request proto.Message, timeout time.Duration) (*pb.Response, error) {
+func (n *Node) sendRequest(peerAddr string, request proto.Message, timeout time.Duration) (*pb.Response, error) {
 	// println("Node " + n.id + " sending request to " + peerAddr)
 	reqSock, err := zmq4.NewSocket(zmq4.REQ)
 	if err != nil {
@@ -96,27 +96,27 @@ func (n *Node) SendRequest(peerAddr string, request proto.Message, timeout time.
 	return &resp, nil
 }
 
-func (n *Node) SendPing(peerAddr string) (*pb.Response, error) {
+func (n *Node) sendPing(peerAddr string) (*pb.Response, error) {
 	pingReq := &pb.Request{
 		Origin: n.addr,
 		RequestType: &pb.Request_Ping{
 			Ping: &pb.RequestPing{},
 		},
 	}
-	return n.SendRequest(peerAddr, pingReq, 0)
+	return n.sendRequest(peerAddr, pingReq, 0)
 }
 
-func (n *Node) SendFetchRing(peerAddr string) (*pb.Response, error) {
+func (n *Node) sendFetchRing(peerAddr string) (*pb.Response, error) {
 	req := &pb.Request{
 		Origin: n.addr,
 		RequestType: &pb.Request_FetchRing{
 			FetchRing: &pb.RequestFetchRing{},
 		},
 	}
-	return n.SendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 0)
 }
 
-func (n *Node) SendGetHashSpace(peerAddr string, startHashSpace int, endHashSpace int) (*pb.Response, error) {
+func (n *Node) sendGetHashSpace(peerAddr string, startHashSpace int, endHashSpace int) (*pb.Response, error) {
 	req := &pb.Request{
 		Origin: n.addr,
 		RequestType: &pb.Request_GetHashSpace{
@@ -126,10 +126,10 @@ func (n *Node) SendGetHashSpace(peerAddr string, startHashSpace int, endHashSpac
 			},
 		},
 	}
-	return n.SendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 0)
 }
 
-func (n *Node) SendJoinGossip(peerAddr string, newNodeAddr string, tokens []uint64) (*pb.Reply, error) {
+func (n *Node) sendJoinGossip(peerAddr string, newNodeAddr string, tokens []uint64) (*pb.Response, error) {
 	req := &pb.Request{
 		Origin: n.addr,
 		RequestType: &pb.Request_GossipJoin{
@@ -139,10 +139,10 @@ func (n *Node) SendJoinGossip(peerAddr string, newNodeAddr string, tokens []uint
 			},
 		},
 	}
-	return n.SendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 0)
 }
 
-func (n *Node) SendResponseOK(response *pb.Response) error {
+func (n *Node) sendResponseOK(response *pb.Response) error {
 
 	response.Ok = true
 
@@ -151,7 +151,7 @@ func (n *Node) SendResponseOK(response *pb.Response) error {
 	return err
 }
 
-func (n *Node) SendResponseError(errStr string) error {
+func (n *Node) sendResponseError(errStr string) error {
 	resp := &pb.Response{Ok: false, Error: errStr}
 	buffer, _ := proto.Marshal(resp)
 	_, err := n.repSock.SendBytes(buffer, 0)
@@ -170,8 +170,4 @@ func (n *Node) StopReceiving() error {
 		firstErr = err
 	}
 	return firstErr
-}
-
-func (n *Node) GetAddress() string {
-	return n.addr
 }
