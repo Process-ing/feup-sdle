@@ -2,19 +2,19 @@ package crdt
 
 import "fmt"
 
-type AWORset[E comparable, V comparable] struct {
-	id        E
-	dotKernel *DotKernel[E, V]
+type AWORset[V comparable] struct {
+	id        string
+	dotKernel *DotKernel[V]
 }
 
-func NewAWORset[E comparable, V comparable](id E) *AWORset[E, V] {
-	return &AWORset[E, V]{
-		dotKernel: NewDotKernel[E, V](),
+func NewAWORset[V comparable](id string) *AWORset[V] {
+	return &AWORset[V]{
+		dotKernel: NewDotKernel[V](),
 		id:        id,
 	}
 }
 
-func (set *AWORset[E, V]) GetAll() []V {
+func (set *AWORset[V]) GetAll() []V {
 	values := make([]V, 0)
 	for _, value := range set.dotKernel.dotValues {
 		values = append(values, value)
@@ -22,7 +22,7 @@ func (set *AWORset[E, V]) GetAll() []V {
 	return values
 }
 
-func (set *AWORset[E, V]) Contains(value V) bool {
+func (set *AWORset[V]) Contains(value V) bool {
 	for _, dotValue := range set.dotKernel.dotValues {
 		if dotValue == value {
 			return true
@@ -32,8 +32,8 @@ func (set *AWORset[E, V]) Contains(value V) bool {
 	return false
 }
 
-func (set *AWORset[E, V]) Add(value V) *AWORset[E, V] {
-	delta := NewAWORset[E, V](set.id)
+func (set *AWORset[V]) Add(value V) *AWORset[V] {
+	delta := NewAWORset[V](set.id)
 
 	delta.dotKernel = set.dotKernel.RemoveValue(value) // Remove existing value to avoid duplicates
 	dkAdd := set.dotKernel.Add(set.id, value)
@@ -42,22 +42,22 @@ func (set *AWORset[E, V]) Add(value V) *AWORset[E, V] {
 	return delta
 }
 
-func (set *AWORset[E, V]) Remove(value V) *AWORset[E, V] {
-	delta := NewAWORset[E, V](set.id)
+func (set *AWORset[V]) Remove(value V) *AWORset[V] {
+	delta := NewAWORset[V](set.id)
 	delta.dotKernel = set.dotKernel.RemoveValue(value)
 	return delta
 }
 
-func (set *AWORset[E, V]) Reset() *AWORset[E, V] {
-	delta := NewAWORset[E, V](set.id)
+func (set *AWORset[V]) Reset() *AWORset[V] {
+	delta := NewAWORset[V](set.id)
 	delta.dotKernel = set.dotKernel.Reset()
 	return delta
 }
 
-func (set *AWORset[E, V]) Merge(other *AWORset[E, V]) {
+func (set *AWORset[V]) Merge(other *AWORset[V]) {
 	set.dotKernel.Join(other.dotKernel)
 }
 
-func (set *AWORset[E, V]) String() string {
+func (set *AWORset[V]) String() string {
 	return fmt.Sprintf("AWORSet{id: %v, dotKernel: %v}", set.id, set.dotKernel)
 }

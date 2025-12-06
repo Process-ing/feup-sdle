@@ -2,40 +2,40 @@ package crdt
 
 import "fmt"
 
-type DotKernel[E comparable, V comparable] struct {
-	dotValues  map[Dot[E]]V
-	dotContext *DotContext[E]
+type DotKernel[V comparable] struct {
+	dotValues  map[Dot]V
+	dotContext *DotContext
 }
 
-func NewDotKernel[E comparable, V comparable]() *DotKernel[E, V] {
-	return &DotKernel[E, V]{
-		dotValues:  make(map[Dot[E]]V),
-		dotContext: NewDotContext[E](),
+func NewDotKernel[V comparable]() *DotKernel[V] {
+	return &DotKernel[V]{
+		dotValues:  make(map[Dot]V),
+		dotContext: NewDotContext(),
 	}
 }
 
-func (dk *DotKernel[E, V]) Context() *DotContext[E] {
+func (dk *DotKernel[V]) Context() *DotContext {
 	return dk.dotContext
 }
 
-func (dk *DotKernel[E, V]) DotAdd(replicaID E, value V) Dot[E] {
-	dot := dk.dotContext.MakeDot(replicaID)
+func (dk *DotKernel[V]) DotAdd(id string, value V) Dot {
+	dot := dk.dotContext.MakeDot(id)
 	dk.dotValues[dot] = value
 	return dot
 }
 
-func (dk *DotKernel[E, V]) Add(replicaID E, value V) *DotKernel[E, V] {
-	dot := dk.DotAdd(replicaID, value)
+func (dk *DotKernel[V]) Add(id string, value V) *DotKernel[V] {
+	dot := dk.DotAdd(id, value)
 
-	delta := NewDotKernel[E, V]()
+	delta := NewDotKernel[V]()
 	delta.dotValues[dot] = value
 	delta.dotContext.InsertDot(dot)
 
 	return delta
 }
 
-func (dk *DotKernel[E, V]) RemoveDot(dot Dot[E]) *DotKernel[E, V] {
-	delta := NewDotKernel[E, V]()
+func (dk *DotKernel[V]) RemoveDot(dot Dot) *DotKernel[V] {
+	delta := NewDotKernel[V]()
 
 	if _, ok := dk.dotValues[dot]; ok {
 		delete(dk.dotValues, dot)
@@ -46,8 +46,8 @@ func (dk *DotKernel[E, V]) RemoveDot(dot Dot[E]) *DotKernel[E, V] {
 }
 
 // Removes any dot that has matching value
-func (dk *DotKernel[E, V]) RemoveValue(value V) *DotKernel[E, V] {
-	delta := NewDotKernel[E, V]()
+func (dk *DotKernel[V]) RemoveValue(value V) *DotKernel[V] {
+	delta := NewDotKernel[V]()
 
 	for dot, dotValue := range dk.dotValues {
 		if dotValue == value { // Remove value
@@ -59,8 +59,8 @@ func (dk *DotKernel[E, V]) RemoveValue(value V) *DotKernel[E, V] {
 	return delta
 }
 
-func (dk *DotKernel[E, V]) Reset() *DotKernel[E, V] {
-	delta := NewDotKernel[E, V]()
+func (dk *DotKernel[V]) Reset() *DotKernel[V] {
+	delta := NewDotKernel[V]()
 
 	for dot := range dk.dotValues {
 		delta.dotContext.InsertDotCompact(dot, false)
@@ -72,7 +72,7 @@ func (dk *DotKernel[E, V]) Reset() *DotKernel[E, V] {
 }
 
 // Merges the kernel with another, preferring the values of other on conflicts
-func (dk *DotKernel[E, V]) Join(other *DotKernel[E, V]) {
+func (dk *DotKernel[V]) Join(other *DotKernel[V]) {
 	for dot := range dk.dotValues {
 		if other.dotContext.Knows(dot) { // If in context, remove
 			delete(dk.dotValues, dot)
@@ -89,6 +89,6 @@ func (dk *DotKernel[E, V]) Join(other *DotKernel[E, V]) {
 	dk.dotContext.Join(other.dotContext)
 }
 
-func (dk *DotKernel[E, V]) String() string {
+func (dk *DotKernel[V]) String() string {
 	return fmt.Sprintf("DotKernel{dotValues: %v, dotContext: %v}", dk.dotValues, dk.dotContext)
 }

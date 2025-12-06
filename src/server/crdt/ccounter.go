@@ -4,17 +4,17 @@ import "fmt"
 
 type CCounter struct {
 	id 	      string
-	dotKernel *DotKernel[string, uint64]
+	dotKernel *DotKernel[uint64]
 }
 
 func NewCCounter(id string) *CCounter {
 	return &CCounter{
 		id: id,
-		dotKernel: NewDotKernel[string, uint64](),
+		dotKernel: NewDotKernel[uint64](),
 	}
 }
 
-func (cc *CCounter) Context() *DotContext[string] {
+func (cc *CCounter) Context() *DotContext {
 	return cc.dotKernel.Context()
 }
 

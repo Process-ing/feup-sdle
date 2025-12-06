@@ -5,19 +5,19 @@ import (
 	"sdle-server/utils"
 )
 
-type DotContext[T comparable] struct {
-	compactContext map[T]int
-	dots           utils.Set[Dot[T]]
+type DotContext struct {
+	compactContext map[string]int
+	dots           utils.Set[Dot]
 }
 
-func NewDotContext[T comparable]() *DotContext[T] {
-	return &DotContext[T]{
-		compactContext: make(map[T]int),
-		dots:           utils.NewSet[Dot[T]](),
+func NewDotContext() *DotContext {
+	return &DotContext{
+		compactContext: make(map[string]int),
+		dots:           utils.NewSet[Dot](),
 	}
 }
 
-func (dc *DotContext[T]) Knows(dot Dot[T]) bool {
+func (dc *DotContext) Knows(dot Dot) bool {
 	if localSeq, ok := dc.compactContext[dot.id]; ok {
 		return dot.seq <= localSeq
 	}
@@ -25,7 +25,7 @@ func (dc *DotContext[T]) Knows(dot Dot[T]) bool {
 	return false
 }
 
-func (dc *DotContext[T]) MakeDot(replicaID T) Dot[T] {
+func (dc *DotContext) MakeDot(replicaID string) Dot {
 	if localSeq, ok := dc.compactContext[replicaID]; ok {
 		localSeq++
 		dc.compactContext[replicaID] = localSeq
@@ -36,18 +36,18 @@ func (dc *DotContext[T]) MakeDot(replicaID T) Dot[T] {
 	}
 }
 
-func (dc *DotContext[T]) InsertDot(dot Dot[T]) {
+func (dc *DotContext) InsertDot(dot Dot) {
 	dc.InsertDotCompact(dot, true)
 }
 
-func (dc *DotContext[T]) InsertDotCompact(dot Dot[T], compact bool) {
+func (dc *DotContext) InsertDotCompact(dot Dot, compact bool) {
 	dc.dots.Add(dot)
 	if compact {
 		dc.Compact()
 	}
 }
 
-func (dc *DotContext[T]) Compact() {
+func (dc *DotContext) Compact() {
 	dotAdded := true
 	for dotAdded {
 		dotAdded = false
@@ -74,7 +74,7 @@ func (dc *DotContext[T]) Compact() {
 	}
 }
 
-func (dc *DotContext[T]) Join(other *DotContext[T]) {
+func (dc *DotContext) Join(other *DotContext) {
 	if dc == other {
 		return
 	}
@@ -94,8 +94,8 @@ func (dc *DotContext[T]) Join(other *DotContext[T]) {
 	dc.Compact()
 }
 
-func (dc *DotContext[T]) Clone() *DotContext[T] {
-	clone := NewDotContext[T]()
+func (dc *DotContext) Clone() *DotContext {
+	clone := NewDotContext()
 
 	for replicaID, seq := range dc.compactContext {
 		clone.compactContext[replicaID] = seq
@@ -108,6 +108,6 @@ func (dc *DotContext[T]) Clone() *DotContext[T] {
 	return clone
 }
 
-func (dc *DotContext[T]) String() string {
+func (dc *DotContext) String() string {
 	return fmt.Sprintf("DotContext{compactContext: %v, dots: %v}", dc.compactContext, dc.dots)
 }

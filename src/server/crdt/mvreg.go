@@ -4,13 +4,13 @@ import "fmt"
 
 type MVReg[T comparable] struct {
 	id        string
-	dotKernel *DotKernel[string, T]
+	dotKernel *DotKernel[T]
 }
 
 func NewMVReg[T comparable](id string) *MVReg[T] {
 	return &MVReg[T] {
 		id: id,
-		dotKernel: NewDotKernel[string, T](),
+		dotKernel: NewDotKernel[T](),
 	}
 }
 

@@ -4,14 +4,14 @@ import "fmt"
 
 type ORMap[K comparable, V DotContextCRDT[V]] struct {
     id         string
-    dotContext *DotContext[string]
+    dotContext *DotContext
     valueMap   map[K]V // Store pointers to V
 }
 
 func NewORMap[K comparable, V DotContextCRDT[V]](id string) *ORMap[K, V] {
     return &ORMap[K, V]{
         id:         id,
-        dotContext: NewDotContext[string](),
+        dotContext: NewDotContext(),
         valueMap:   make(map[K]V),
     }
 }

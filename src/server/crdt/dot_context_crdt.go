@@ -1,7 +1,7 @@
 package crdt
 
 type DotContextCRDT[T any] interface {
-	Context() *DotContext[string]
+	Context() *DotContext
 
 	// Create a new empty instance of the same type
 	// Necessary for the join operation of ORMap
