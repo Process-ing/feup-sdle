@@ -35,9 +35,9 @@ func (set *AWORset[E, V]) Contains(value V) bool {
 func (set *AWORset[E, V]) Add(value V) AWORset[E, V] {
 	delta := NewAWORset[E, V](set.id)
 
-	delta.dotKernel = set.dotKernel.RemoveValue(value)  // Remove existing value to avoid duplicates
+	delta.dotKernel = set.dotKernel.RemoveValue(value) // Remove existing value to avoid duplicates
 	dkAdd := set.dotKernel.Add(set.id, value)
-	delta.dotKernel.Merge(&dkAdd)
+	delta.dotKernel.Join(&dkAdd)
 
 	return delta
 }
@@ -55,7 +55,7 @@ func (set *AWORset[E, V]) Reset() AWORset[E, V] {
 }
 
 func (set *AWORset[E, V]) Merge(other *AWORset[E, V]) {
-	set.dotKernel.Merge(&other.dotKernel)
+	set.dotKernel.Join(&other.dotKernel)
 }
 
 func (set *AWORset[E, V]) String() string {

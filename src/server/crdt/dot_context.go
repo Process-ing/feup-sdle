@@ -7,11 +7,11 @@ import (
 
 type DotContext[T comparable] struct {
 	compactContext map[T]int
-	dots utils.Set[Dot[T]]
+	dots           utils.Set[Dot[T]]
 }
 
 func NewDotContext[T comparable]() *DotContext[T] {
-	return &DotContext[T] {
+	return &DotContext[T]{
 		compactContext: make(map[T]int),
 		dots:           utils.NewSet[Dot[T]](),
 	}
@@ -53,18 +53,18 @@ func (dc *DotContext[T]) Compact() {
 		dotAdded = false
 
 		for dot := range dc.dots {
-			if localSeq, ok := dc.compactContext[dot.replicaID]; ok {  // Has entry in compact context
-				if dot.seq == localSeq + 1 {  // Dot is sequentially after, can compact
+			if localSeq, ok := dc.compactContext[dot.replicaID]; ok { // Has entry in compact context
+				if dot.seq == localSeq+1 { // Dot is sequentially after, can compact
 					dc.compactContext[dot.replicaID] = dot.seq
 					dc.dots.Remove(dot)
 					dotAdded = true
 
-				} else if dot.seq <= localSeq {  // Dot is already included, ignore
+				} else if dot.seq <= localSeq { // Dot is already included, ignore
 					dc.dots.Remove(dot)
 				}
 
-			} else {  // No entry in compact context exists
-				if dot.seq == 1 {  // Can compact
+			} else { // No entry in compact context exists
+				if dot.seq == 1 { // Can compact
 					delete(dc.compactContext, dot.replicaID)
 					dc.dots.Remove(dot)
 					dotAdded = true
@@ -74,7 +74,7 @@ func (dc *DotContext[T]) Compact() {
 	}
 }
 
-func (dc *DotContext[T]) Merge(other *DotContext[T]) {
+func (dc *DotContext[T]) Join(other *DotContext[T]) {
 	if dc == other {
 		return
 	}
@@ -97,4 +97,3 @@ func (dc *DotContext[T]) Merge(other *DotContext[T]) {
 func (dc *DotContext[T]) String() string {
 	return fmt.Sprintf("DotContext{compactContext: %v, dots: %v}", dc.compactContext, dc.dots)
 }
-

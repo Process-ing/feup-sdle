@@ -46,7 +46,7 @@ func (dk *DotKernel[E, V]) RemoveValue(value V) DotKernel[E, V] {
 	delta := NewDotKernel[E, V]()
 
 	for dot, dotValue := range dk.dotValues {
-		if dotValue == value {  // Remove value
+		if dotValue == value { // Remove value
 			delete(dk.dotValues, dot)
 			delta.dotContext.InsertDot(dot)
 		}
@@ -68,25 +68,23 @@ func (dk *DotKernel[E, V]) Reset() DotKernel[E, V] {
 }
 
 // Merges the kernel with another, preferring the values of other on conflicts
-func (dk *DotKernel[E, V]) Merge(other *DotKernel[E, V]) {
+func (dk *DotKernel[E, V]) Join(other *DotKernel[E, V]) {
 	for dot := range dk.dotValues {
-		if other.dotContext.In(dot) {  // If in context, remove
+		if other.dotContext.In(dot) { // If in context, remove
 			delete(dk.dotValues, dot)
 		}
 		// Values that are mot known by other are kept
 	}
 
 	for dot, value := range other.dotValues {
-		if !dk.dotContext.In(dot) {  // Values not known by dk are added
+		if !dk.dotContext.In(dot) { // Values not known by dk are added
 			dk.dotValues[dot] = value
 		}
 	}
 
-	dk.dotContext.Merge(other.dotContext)
+	dk.dotContext.Join(other.dotContext)
 }
 
 func (dk *DotKernel[E, V]) String() string {
 	return fmt.Sprintf("DotKernel{dotValues: %v, dotContext: %v}", dk.dotValues, dk.dotContext)
 }
-
-

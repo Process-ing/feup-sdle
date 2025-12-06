@@ -6,8 +6,8 @@ type GCounter struct {
 }
 
 func NewGCounter(id string) GCounter {
-	return GCounter {
-		m: make(map[string]uint64),
+	return GCounter{
+		m:  make(map[string]uint64),
 		id: id,
 	}
 }
@@ -29,7 +29,7 @@ func (gc *GCounter) Inc(diff uint64) GCounter {
 	return delta
 }
 
-func (gc *GCounter) Merge(other *GCounter) {
+func (gc *GCounter) Join(other *GCounter) {
 	for otherId, otherVal := range other.m {
 		gc.m[otherId] = max(gc.m[otherId], otherVal)
 	}
