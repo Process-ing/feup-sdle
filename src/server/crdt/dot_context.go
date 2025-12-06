@@ -17,7 +17,7 @@ func NewDotContext[T comparable]() *DotContext[T] {
 	}
 }
 
-func (dc *DotContext[T]) In(dot Dot[T]) bool {
+func (dc *DotContext[T]) Knows(dot Dot[T]) bool {
 	if localSeq, ok := dc.compactContext[dot.replicaID]; ok {
 		return dot.seq <= localSeq
 	}
