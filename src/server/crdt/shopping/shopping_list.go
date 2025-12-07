@@ -148,7 +148,7 @@ func ShoppingListFromProto(protoList *g01.ShoppingList) *ShoppingList {
 		itemMap[id] = ShoppingItemFromProto(protoItem, protoList.GetReplicaId(), id, ctx)
 	}
 
-	items := crdt.NewORMapFrom[string, *ShoppingItem](protoList.GetReplicaId(), ctx, itemMap)
+	items := crdt.NewORMapFrom(protoList.GetReplicaId(), ctx, itemMap)
 
 	return &ShoppingList{
 		replicaID:  protoList.GetReplicaId(),

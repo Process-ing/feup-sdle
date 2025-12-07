@@ -133,7 +133,7 @@ func (dk *Int64DotKernel) ToProto() *g01.DotKernel {
 	}
 }
 
-func DotKernelFromProto(protoDotKernel *g01.DotKernel) *Int64DotKernel {
+func DotKernelFromProto(protoDotKernel *g01.DotKernel, ctx *DotContext) *Int64DotKernel {
 	if len(protoDotKernel.GetDotKeys()) != len(protoDotKernel.GetDotValues()) {
 		panic("DotKernelFromProto: mismatched lengths of dot keys and values")
 	}
@@ -146,7 +146,7 @@ func DotKernelFromProto(protoDotKernel *g01.DotKernel) *Int64DotKernel {
 		dk.dotValues[dot] = value
 	}
 
-	dk.dotContext = DotContextFromProto(protoDotKernel.GetDotContext())
+	dk.SetContext(ctx)
 
 	return (*Int64DotKernel)(dk)
 }

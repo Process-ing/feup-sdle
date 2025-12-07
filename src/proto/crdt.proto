@@ -15,7 +15,6 @@ message DotContext {
 message DotKernel {
     repeated Dot dot_keys = 1;
     repeated int64 dot_values = 2;
-    DotContext dot_context = 3;
 }
 
 message CCounter {

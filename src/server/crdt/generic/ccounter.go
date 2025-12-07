@@ -94,11 +94,10 @@ func (cc *CCounter) ToProto() *g01.CCounter {
 }
 
 func CCounterFromProto(protoCounter *g01.CCounter, id string, ctx *DotContext) *CCounter {
-	dotKernel := NewDotKernel[int64]()
-	dotKernel.SetContext(ctx)
+	dotKernel := DotKernelFromProto(protoCounter.GetDotKernel(), ctx)
 
 	return &CCounter{
 		id: id,
-		dotKernel: dotKernel,
+		dotKernel: (*DotKernel[int64])(dotKernel),
 	}
 }

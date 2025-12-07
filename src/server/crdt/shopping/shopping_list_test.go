@@ -402,3 +402,100 @@ func TestShoppingList_EmptyList(t *testing.T) {
         t.Errorf("Expected nil for non-existent item in empty list, got %v", item)
     }
 }
+
+func TestShoppingList_ToProtoAndFromProto_EmptyList(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_SingleItem(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+    list.PutItem("item1", "Milk", 5, 2)
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_MultipleItems(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+    list.PutItem("item1", "Milk", 5, 2)
+    list.PutItem("item2", "Bread", 3, 1)
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_EmptyItem(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+    list.PutItem("item1", "Milk", 0, 0) // Add an item with zero quantity and acquired
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_ConflictingUpdates(t *testing.T) {
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
+    list1.PutItem("item1", "Milk", 5, 2)
+
+    list2 := NewShoppingList("replica2", "list1", "Groceries")
+    list2.PutItem("item1", "Milk", 10, 4)
+
+    list1.Join(list2)
+
+    proto := list1.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list1, converted) {
+        t.Errorf("Expected converted list to be equal to the original after join,\n---\ngot %v\n---\nand %v\n---", list1, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_RemoveItem(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+    list.PutItem("item1", "Milk", 5, 2)
+    list.PutItem("item2", "Bread", 3, 1)
+
+    list.RemoveItem("item1")
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original after item removal,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
+
+func TestShoppingList_ToProtoAndFromProto_ComplexScenario(t *testing.T) {
+    list := NewShoppingList("replica1", "list1", "Groceries")
+    list.PutItem("item1", "Milk", 5, 2)
+    list.PutItem("item2", "Bread", 3, 1)
+    list.PutItem("item3", "Eggs", 12, 6)
+
+    list.RemoveItem("item2")
+    list.PutItem("item4", "Butter", 2, 0)
+
+    proto := list.ToProto()
+    converted := ShoppingListFromProto(proto)
+
+    if !listsEqual(list, converted) {
+        t.Errorf("Expected converted list to be equal to the original after complex scenario,\n---\ngot %v\n---\nand %v\n---", list, converted)
+    }
+}
