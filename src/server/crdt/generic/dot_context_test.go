@@ -5,18 +5,6 @@ import (
 	"reflect"
 )
 
-// === Utility functions for tests ===
-
-func contextsEqual(ctx1, ctx2 *DotContext) bool {
-	if !reflect.DeepEqual(ctx1.compactContext, ctx2.compactContext) {
-		return false
-	}
-	if !reflect.DeepEqual(ctx1.dots, ctx2.dots) {
-		return false
-	}
-	return true
-}
-
 // === Tests ===
 
 func TestDotContext_NewDotContext(t *testing.T) {
@@ -49,10 +37,12 @@ func TestDotContext_MakeDot(t *testing.T) {
     }
 }
 
-func TestDotContext_Compact(t *testing.T) {
+func TestDotContext_CompactCase1(t *testing.T) {
     ctx := NewDotContext()
-    ctx.InsertDot(NewDot("node1", 1))
-    ctx.InsertDot(NewDot("node1", 2))
+    ctx.InsertDotCompact(NewDot("node1", 1), false)
+	ctx.Compact()  // Assume this works
+
+    ctx.InsertDotCompact(NewDot("node1", 2), false)
     ctx.Compact()
 
     if seq, ok := ctx.compactContext["node1"]; !ok || seq != 2 {
@@ -61,6 +51,105 @@ func TestDotContext_Compact(t *testing.T) {
     if ctx.dots.Size() != 0 {
         t.Errorf("Expected dots to be empty after compact, got %v", ctx.dots)
     }
+}
+
+func TestDotContext_CompactCase2(t *testing.T) {
+	ctx := NewDotContext()
+	ctx.InsertDotCompact(NewDot("node1", 1), false)
+	ctx.Compact()  // Assume this works
+
+	ctx.Compact()
+
+	if seq, ok := ctx.compactContext["node1"]; !ok || seq != 1 {
+		t.Errorf("Expected compactContext[node1] to be 1, got %d", seq)
+	}
+	if ctx.dots.Size() != 0 {
+		t.Errorf("Expected dots to be empty after compact, got %v", ctx.dots)
+	}
+}
+
+func TestDotContext_CompactCase3(t *testing.T) {
+	ctx := NewDotContext()
+	ctx.InsertDotCompact(NewDot("node1", 1), false)
+	ctx.Compact()
+
+	if seq, ok := ctx.compactContext["node1"]; !ok || seq != 1 {
+		t.Errorf("Expected compactContext[node1] to be 1, got %d", seq)
+	}
+	if seq, ok := ctx.compactContext["node2"]; ok {
+		t.Errorf("Did not expect compactContext to have entry for node2, got %d", seq)
+	}
+	if ctx.dots.Size() != 0 {
+		t.Errorf("Expected dots to be empty after compact, got %v", ctx.dots)
+	}
+
+	ctx.InsertDotCompact(NewDot("node2", 1), false)
+	ctx.Compact()
+
+	if seq, ok := ctx.compactContext["node1"]; !ok || seq != 1 {
+		t.Errorf("Expected compactContext[node1] to be 1, got %d", seq)
+	}
+	if seq, ok := ctx.compactContext["node2"]; !ok || seq != 1 {
+		t.Errorf("Expected compactContext[node2] to be 1, got %d", seq)
+	}
+	if ctx.dots.Size() != 0 {
+		t.Errorf("Expected dots to be empty after compact, got %v", ctx.dots)
+	}
+}
+
+func TestDotContext_CompactCase4(t *testing.T) {
+	ctx := NewDotContext()
+	ctx.InsertDotCompact(NewDot("node1", 2), false)
+	ctx.Compact()
+
+	if seq, ok := ctx.compactContext["node1"]; ok {
+		t.Errorf("Did not expect compactContext to have entry for node1, got %d", seq)
+	}
+	if ctx.dots.Size() != 1 {
+		t.Errorf("Expected dots to have size 1 after compact, got %v", ctx.dots)
+	}
+
+	ctx.InsertDotCompact(NewDot("node1", 1), false)
+	ctx.Compact()
+
+	if seq, ok := ctx.compactContext["node1"]; !ok || seq != 2 {
+		t.Errorf("Expected compactContext[node1] to be 2, got %d", seq)
+	}
+	if ctx.dots.Size() != 0 {
+		t.Errorf("Expected dots to be empty after compact, got %v", ctx.dots)
+	}
+}
+
+
+func TestDotContext_CompactComplex(t *testing.T) {
+	ctx := NewDotContext()
+	ctx.InsertDot(NewDot("node1", 1))
+	ctx.InsertDot(NewDot("node2", 1))
+	ctx.InsertDot(NewDot("node2", 3))
+	ctx.Compact()
+
+	if !ctx.Knows(NewDot("node1", 1)) {
+		t.Errorf("Expected ctx to know Dot(node1, 1)")
+	}
+	if !ctx.Knows(NewDot("node2", 1)) {
+		t.Errorf("Expected ctx to know Dot(node2, 1)")
+	}
+	if ctx.Knows(NewDot("node1", 2)) {
+		t.Errorf("Did not expect ctx to know Dot(node1, 2)")
+	}
+	if ctx.Knows(NewDot("node2", 3)) {
+		t.Errorf("Did not expect ctx to know Dot(node2, 3)")
+	}
+
+	ctx.InsertDot(NewDot("node2", 2))
+	ctx.Compact()
+
+	if !ctx.Knows(NewDot("node2", 2)) {
+		t.Errorf("Expected ctx to know Dot(node2, 2) after inserting it")
+	}
+	if !ctx.Knows(NewDot("node2", 3)) {
+		t.Errorf("Expected ctx to know Dot(node2, 3) after inserting Dot(node2,2) and compacting")
+	}
 }
 
 func TestDotContext_InsertDot(t *testing.T) {
@@ -111,11 +200,116 @@ func TestDotContext_Join(t *testing.T) {
 
 	// Test commutativity
 
+	if reflect.DeepEqual(ctx1, ctx2) {
+		t.Errorf("Expected ctx1 and ctx2 to be different before joining")
+	}
+
 	ctx2.Join(ctx1)
 
-	if !contextsEqual(ctx1, ctx2) {
+	if !reflect.DeepEqual(ctx1, ctx2) {
 		t.Errorf("Expected ctx1 and ctx2 to be equal after joining")
 	}
+}
+
+func TestDotContext_ConcurrentUpdates(t *testing.T) {
+    ctx1 := NewDotContext()
+    ctx2 := NewDotContext()
+
+    // Simulate concurrent updates
+    ctx1.InsertDot(NewDot("node1", 1))
+    ctx2.InsertDot(NewDot("node1", 2))
+    ctx2.InsertDot(NewDot("node2", 1))
+
+    ctx1.Join(ctx2)
+
+    if !ctx1.Knows(NewDot("node1", 2)) {
+        t.Errorf("Expected ctx1 to know Dot(node1, 2) after join")
+    }
+    if !ctx1.Knows(NewDot("node2", 1)) {
+        t.Errorf("Expected ctx1 to know Dot(node2, 1) after join")
+    }
+}
+
+func TestDotContext_OverlappingContexts(t *testing.T) {
+    ctx1 := NewDotContext()
+    ctx2 := NewDotContext()
+
+    ctx1.InsertDot(NewDot("node1", 1))
+    ctx1.InsertDot(NewDot("node1", 2))
+    ctx2.InsertDot(NewDot("node1", 2))
+    ctx2.InsertDot(NewDot("node1", 3))
+
+    ctx1.Join(ctx2)
+
+    if !ctx1.Knows(NewDot("node1", 3)) {
+        t.Errorf("Expected ctx1 to know Dot(node1, 3) after join")
+    }
+    if ctx1.dots.Size() != 0 {
+        t.Errorf("Expected ctx1.dots to be empty after compacting overlapping contexts, got %v", ctx1.dots)
+    }
+}
+
+func TestDotContext_EmptyJoin(t *testing.T) {
+    ctx1 := NewDotContext()
+    ctx2 := NewDotContext()
+
+    ctx1.InsertDot(NewDot("node1", 1))
+
+    ctx1.Join(ctx2)
+
+    if !ctx1.Knows(NewDot("node1", 1)) {
+        t.Errorf("Expected ctx1 to still know Dot(node1, 1) after joining with empty context")
+    }
+    if ctx1.dots.Size() != 0 {
+        t.Errorf("Expected ctx1.dots to be empty after compacting, got %v", ctx1.dots)
+    }
+}
+
+func TestDotContext_JoinWithGaps(t *testing.T) {
+    ctx1 := NewDotContext()
+    ctx2 := NewDotContext()
+
+    ctx1.InsertDot(NewDot("node1", 1))
+    ctx2.InsertDot(NewDot("node1", 3))
+
+    ctx1.Join(ctx2)
+
+    if !ctx1.Knows(NewDot("node1", 1)) {
+        t.Errorf("Expected ctx1 to know Dot(node1, 1)")
+    }
+    if ctx1.Knows(NewDot("node1", 2)) {
+        t.Errorf("Did not expect ctx1 to know Dot(node1, 2)")
+    }
+    if ctx1.Knows(NewDot("node1", 3)) {
+        t.Errorf("Did not expect ctx1 to know Dot(node1, 3)")
+    }
+
+	ctx2.InsertDot(NewDot("node1", 2))
+	ctx1.Join(ctx2)
+
+	if !ctx1.Knows(NewDot("node1", 2)) {
+		t.Errorf("Expected ctx1 to know Dot(node1, 2) after inserting it into ctx2 and joining again")
+	}
+	if !ctx1.Knows(NewDot("node1", 3)) {
+		t.Errorf("Expected ctx1 to know Dot(node1, 3) after inserting Dot(node1,2) into ctx2 and joining again")
+	}
+}
+
+func TestDotContext_JoinSelf(t *testing.T) {
+    ctx := NewDotContext()
+
+    ctx.InsertDot(NewDot("node1", 1))
+    ctx.Join(ctx)
+
+    if !ctx.Knows(NewDot("node1", 1)) {
+        t.Errorf("Expected ctx to know Dot(node1, 1) after joining with itself")
+    }
+	if ctx.Knows(NewDot("node1", 2)) {
+		t.Errorf("Did not expect ctx to know Dot(node1, 2) after joining with itself")
+	}
+    if ctx.dots.Size() != 0 {
+        t.Errorf("Expected ctx.dots to be empty after self-join, got %v", ctx.dots)
+    }
 }
 
 func TestDotContext_Clone(t *testing.T) {
@@ -151,13 +345,17 @@ func TestDotContext_Copy(t *testing.T) {
     }
 }
 
-func TestDotContext_String(t *testing.T) {
+func TestDotContext_CloneIndependence(t *testing.T) {
     ctx := NewDotContext()
     ctx.InsertDot(NewDot("node1", 1))
-    ctx.InsertDot(NewDot("node2", 2))
 
-    str := ctx.String()
-    if str == "" {
-        t.Errorf("Expected non-empty string representation, got empty string")
+    clone := ctx.Clone()
+    clone.InsertDot(NewDot("node1", 2))
+
+    if ctx.Knows(NewDot("node1", 2)) {
+        t.Errorf("Expected original ctx to not know Dot(node1, 2) after modifying clone")
+    }
+    if !clone.Knows(NewDot("node1", 2)) {
+        t.Errorf("Expected clone to know Dot(node1, 2)")
     }
 }

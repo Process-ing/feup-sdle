@@ -79,6 +79,7 @@ func (ctx *DotContext) Join(other *DotContext) {
 		return
 	}
 
+	// Create pointwise maximum of compact contexts
 	for id, otherSeq := range other.compactContext {
 		if localSeq, ok := ctx.compactContext[id]; ok {
 			ctx.compactContext[id] = max(localSeq, otherSeq)
