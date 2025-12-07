@@ -10,4 +10,4 @@ pbts -o "$ROOT_DIR/client/lib/proto/global.d.ts" "$ROOT_DIR/client/lib/proto/glo
 protoc --proto_path="$ROOT_DIR/proto" \
     --go_out="$ROOT_DIR/server/proto" \
     --go_opt=paths=source_relative \
-    "$ROOT_DIR/proto/shopping.proto" "$ROOT_DIR/proto/global.proto" "$ROOT_DIR/proto/node.proto"
+    "$ROOT_DIR/proto/shopping.proto" "$ROOT_DIR/proto/global.proto" "$ROOT_DIR/proto/node.proto" "$ROOT_DIR/proto/crdt.proto"
