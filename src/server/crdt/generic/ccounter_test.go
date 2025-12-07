@@ -19,7 +19,7 @@ func TestCCounter_NewCCounter(t *testing.T) {
 }
 
 func TestCCounter_Inc(t *testing.T) {
-    cc1 := NewCCounter("node1")
+    cc1 := NewCCounter("replica1")
 	cc2 := cc1.Clone()
 
     delta := cc1.Inc(5)
@@ -36,7 +36,7 @@ func TestCCounter_Inc(t *testing.T) {
 }
 
 func TestCCounter_IncMultiple(t *testing.T) {
-	cc1 := NewCCounter("node1")
+	cc1 := NewCCounter("replica1")
     cc2 := cc1.Clone()
 	delta1 := cc1.Inc(3)
 	delta2 := cc1.Inc(7)
@@ -53,7 +53,7 @@ func TestCCounter_IncMultiple(t *testing.T) {
 }
 
 func TestCCounter_Dec(t *testing.T) {
-    cc1 := NewCCounter("node1")
+    cc1 := NewCCounter("replica1")
 	cc2 := cc1.Clone()
 
     delta := cc1.Inc(-4)
@@ -69,7 +69,7 @@ func TestCCounter_Dec(t *testing.T) {
 }
 
 func TestCCounter_DecMultiple(t *testing.T) {
-	cc1 := NewCCounter("node1")
+	cc1 := NewCCounter("replica1")
 	cc2 := cc1.Clone()
 	delta1 := cc1.Inc(-2)
 	delta2 := cc1.Inc(-3)
@@ -86,7 +86,7 @@ func TestCCounter_DecMultiple(t *testing.T) {
 }
 
 func TestCCounter_IncDec(t *testing.T) {
-	cc1 := NewCCounter("node1")
+	cc1 := NewCCounter("replica1")
 	cc2 := cc1.Clone()
 	delta1 := cc1.Inc(10)
 	delta2 := cc1.Inc(-4)
@@ -103,7 +103,7 @@ func TestCCounter_IncDec(t *testing.T) {
 }
 
 func TestCCounter_IncDecToZero(t *testing.T) {
-	cc1 := NewCCounter("node1")
+	cc1 := NewCCounter("replica1")
 	cc2 := cc1.Clone()
 	delta1 := cc1.Inc(7)
 	delta2 := cc1.Inc(-7)
@@ -120,7 +120,7 @@ func TestCCounter_IncDecToZero(t *testing.T) {
 }
 
 func TestCCounter_IncComplex(t *testing.T) {
-    cc1 := NewCCounter("node1")
+    cc1 := NewCCounter("replica1")
     cc2 := cc1.Clone()
 
     // Set to a positive value
@@ -173,7 +173,7 @@ func TestCCounter_IncComplex(t *testing.T) {
 }
 
 func TestCCounter_Reset(t *testing.T) {
-    cc1 := NewCCounter("node1")
+    cc1 := NewCCounter("replica1")
     cc1.Inc(10)
 	cc2 := cc1.Clone()
 
@@ -190,7 +190,7 @@ func TestCCounter_Reset(t *testing.T) {
 }
 
 func TestCCounter_ResetAfterIncDec(t *testing.T) {
-	counter := NewCCounter("node1")
+	counter := NewCCounter("replica1")
 	counter.Inc(15)
 	counter.Inc(-5)
 	counter.Reset()
@@ -201,7 +201,7 @@ func TestCCounter_ResetAfterIncDec(t *testing.T) {
 }
 
 func TestCCounter_ResetEmpty(t *testing.T) {
-	counter := NewCCounter("node1")
+	counter := NewCCounter("replica1")
 	counter.Reset()
 
 	if counter.Read() != 0 {
@@ -210,10 +210,10 @@ func TestCCounter_ResetEmpty(t *testing.T) {
 }
 
 func TestCCounter_Join(t *testing.T) {
-    counter1 := NewCCounter("node1")
+    counter1 := NewCCounter("replica1")
     counter1.Inc(5)
 
-    counter2 := NewCCounter("node2")
+    counter2 := NewCCounter("replica2")
     counter2.Inc(10)
 
     counter1.Join(counter2)
@@ -227,10 +227,10 @@ func TestCCounter_Join(t *testing.T) {
 }
 
 func TestCCounter_JoinWithConflicts(t *testing.T) {
-    cc1 := NewCCounter("node1")
+    cc1 := NewCCounter("replica1")
     cc1.Inc(5)
 
-    cc2 := NewCCounter("node2")
+    cc2 := NewCCounter("replica2")
     cc2.Inc(10)
 
     cc1.Join(cc2)
@@ -244,8 +244,8 @@ func TestCCounter_JoinWithConflicts(t *testing.T) {
 }
 
 func TestCCounter_ConcurrentUpdates(t *testing.T) {
-    counter1 := NewCCounter("node1")
-    counter2 := NewCCounter("node2")
+    counter1 := NewCCounter("replica1")
+    counter2 := NewCCounter("replica2")
 
     delta1 := counter1.Inc(5)
     delta2 := counter2.Inc(10)
@@ -262,10 +262,10 @@ func TestCCounter_ConcurrentUpdates(t *testing.T) {
 }
 
 func TestCCounter_JoinWithEmptyCounter(t *testing.T) {
-    counter1 := NewCCounter("node1")
+    counter1 := NewCCounter("replica1")
     counter1.Inc(5)
 
-    counter2 := NewCCounter("node2")
+    counter2 := NewCCounter("replica2")
 
     counter1.Join(counter2)
 
