@@ -22,3 +22,7 @@ func (s Set[T]) Contains(item T) bool {
 	_, exists := s[item]
 	return exists
 }
+
+func (s Set[T]) Size() int {
+	return len(s)
+}

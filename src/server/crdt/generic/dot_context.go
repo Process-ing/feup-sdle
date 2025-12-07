@@ -65,7 +65,7 @@ func (ctx *DotContext) Compact() {
 
 			} else { // No entry in compact context exists
 				if dot.seq == 1 { // Can compact
-					delete(ctx.compactContext, dot.id)
+					ctx.compactContext[dot.id] = 1
 					ctx.dots.Remove(dot)
 					dotAdded = true
 				}
