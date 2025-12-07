@@ -87,6 +87,7 @@ message ResponseGossipJoin {
 }
 
 message ResponseGet {
+  bytes value = 1;
 }
 
 message ResponsePut {
@@ -96,5 +97,6 @@ message ResponseDelete {
 }
 
 message ResponseHas {
+  bool has_key = 1;
 }
 

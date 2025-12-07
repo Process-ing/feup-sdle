@@ -931,6 +931,7 @@ func (*ResponseGossipJoin) Descriptor() ([]byte, []int) {
 
 type ResponseGet struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Value         []byte                 `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -963,6 +964,13 @@ func (x *ResponseGet) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ResponseGet.ProtoReflect.Descriptor instead.
 func (*ResponseGet) Descriptor() ([]byte, []int) {
 	return file_node_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ResponseGet) GetValue() []byte {
+	if x != nil {
+		return x.Value
+	}
+	return nil
 }
 
 type ResponsePut struct {
@@ -1039,6 +1047,7 @@ func (*ResponseDelete) Descriptor() ([]byte, []int) {
 
 type ResponseHas struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	HasKey        bool                   `protobuf:"varint,1,opt,name=has_key,json=hasKey,proto3" json:"has_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1071,6 +1080,13 @@ func (x *ResponseHas) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ResponseHas.ProtoReflect.Descriptor instead.
 func (*ResponseHas) Descriptor() ([]byte, []int) {
 	return file_node_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ResponseHas) GetHasKey() bool {
+	if x != nil {
+		return x.HasKey
+	}
+	return false
 }
 
 var File_node_proto protoreflect.FileDescriptor
@@ -1135,11 +1151,13 @@ const file_node_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\x04R\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x16\n" +
 	"\x14ResponseGetHashSpace\"\x14\n" +
-	"\x12ResponseGossipJoin\"\r\n" +
-	"\vResponseGet\"\r\n" +
+	"\x12ResponseGossipJoin\"#\n" +
+	"\vResponseGet\x12\x14\n" +
+	"\x05value\x18\x01 \x01(\fR\x05value\"\r\n" +
 	"\vResponsePut\"\x10\n" +
-	"\x0eResponseDelete\"\r\n" +
-	"\vResponseHasB'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
+	"\x0eResponseDelete\"&\n" +
+	"\vResponseHas\x12\x17\n" +
+	"\ahas_key\x18\x01 \x01(\bR\x06hasKeyB'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
 
 var (
 	file_node_proto_rawDescOnce sync.Once

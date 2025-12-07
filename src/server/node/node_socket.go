@@ -142,6 +142,46 @@ func (n *Node) sendJoinGossip(peerAddr string, newNodeID string, tokens []uint64
 	return n.sendRequest(peerAddr, req, 0)
 }
 
+func (n *Node) sendGet(peerAddr string, key string) (*pb.Response, error) {
+	req := &pb.Request{
+		Origin: n.id,
+		RequestType: &pb.Request_Get{
+			Get: &pb.RequestGet{Key: key},
+		},
+	}
+	return n.sendRequest(peerAddr, req, 5*time.Second)
+}
+
+func (n *Node) sendPut(peerAddr string, key string, value []byte) (*pb.Response, error) {
+	req := &pb.Request{
+		Origin: n.id,
+		RequestType: &pb.Request_Put{
+			Put: &pb.RequestPut{Key: key, Value: value},
+		},
+	}
+	return n.sendRequest(peerAddr, req, 5*time.Second)
+}
+
+func (n *Node) sendDelete(peerAddr string, key string) (*pb.Response, error) {
+	req := &pb.Request{
+		Origin: n.id,
+		RequestType: &pb.Request_Delete{
+			Delete: &pb.RequestDelete{Key: key},
+		},
+	}
+	return n.sendRequest(peerAddr, req, 5*time.Second)
+}
+
+func (n *Node) sendHas(peerAddr string, key string) (*pb.Response, error) {
+	req := &pb.Request{
+		Origin: n.id,
+		RequestType: &pb.Request_Has{
+			Has: &pb.RequestHas{Key: key},
+		},
+	}
+	return n.sendRequest(peerAddr, req, 5*time.Second)
+}
+
 func (n *Node) sendResponseOK(response *pb.Response) error {
 
 	response.Ok = true
