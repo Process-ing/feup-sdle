@@ -1,6 +1,9 @@
 package crdt
 
-import "sdle-server/crdt/generic"
+import (
+	"fmt"
+	"sdle-server/crdt/generic"
+)
 
 type ShoppingList struct {
 	crdtID     string
@@ -60,12 +63,11 @@ func (sl *ShoppingList) Items() []ShoppingItem {
 }
 
 func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, acquiredDiff int64) *ShoppingList {
-	delta := NewShoppingList(sl.crdtID, "", name)
+	delta := NewShoppingList(sl.crdtID, sl.listID, "")
 
 	itemsDelta := sl.items.Apply(itemID, func(item *ShoppingItem) *ShoppingItem {
-		if item.Name() == "" {
-			item.SetName(name)
-		}
+		item.SetName(name)
+		item.SetItemID(itemID)
 
 		itemDelta := item.IncQuantity(quantityDiff)
 		itemDelta.Join(item.IncAcquired(acquiredDiff))
@@ -73,7 +75,35 @@ func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, 
 		return itemDelta
 	})
 
+	delta.items = itemsDelta
 	delta.SetContext(itemsDelta.Context())
 
 	return delta
+}
+
+func (sl *ShoppingList) RemoveItem(itemID string) *ShoppingList {
+	delta := NewShoppingList(sl.crdtID, sl.listID, "")
+
+	itemsDelta := sl.items.Remove(itemID)
+	delta.items = itemsDelta
+	delta.SetContext(itemsDelta.Context())
+
+	return delta
+}
+
+func (sl *ShoppingList) Join(other *ShoppingList) {
+	sl.items.Join(other.items)
+	sl.dotContext.Join(other.dotContext)
+}
+
+func (sl *ShoppingList) Clone() *ShoppingList {
+	clone := NewShoppingList(sl.crdtID, sl.listID, sl.name)
+	clone.dotContext = sl.dotContext.Clone()
+	clone.items = sl.items.Clone()
+	return clone
+}
+
+func (sl *ShoppingList) String() string {
+	return fmt.Sprintf("ShoppingList{crdtID: %s, listID: %s, name: %s, dotContext: %v, items: %v}",
+		sl.crdtID, sl.listID, sl.name, sl.dotContext, sl.items)
 }

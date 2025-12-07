@@ -46,12 +46,16 @@ func (si *ShoppingItem) ItemID() string {
 	return si.itemID
 }
 
+func (si *ShoppingItem) SetItemID(itemID string) {
+	si.itemID = itemID
+}
+
 func (si *ShoppingItem) Quantity() uint64 {
 	return uint64(si.quantity.Read())
 }
 
 func (si *ShoppingItem) IncQuantity(amount int64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, "", "")
+	delta := NewShoppingItem(si.crdtID, si.itemID, "")
 
 	// Prevent negative quantity values
 	amount = max(-int64(si.quantity.Read()), amount)
@@ -68,7 +72,7 @@ func (si *ShoppingItem) Acquired() uint64 {
 }
 
 func (si *ShoppingItem) IncAcquired(amount int64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, "", "")
+	delta := NewShoppingItem(si.crdtID, si.itemID, "")
 	currQuantity := int64(si.quantity.Read())
 	currAcquired := int64(si.acquired.Read())
 
@@ -96,12 +100,11 @@ func (si *ShoppingItem) SetContext(ctx *crdt.DotContext) {
 }
 
 func (si *ShoppingItem) NewEmpty(id string) *ShoppingItem {
-	return NewShoppingItem(id, "", "")
+	return NewShoppingItem(id, si.itemID, "")
 }
 
 func (si *ShoppingItem) Reset() *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, "", "")
-
+	delta := NewShoppingItem(si.crdtID, si.itemID, "")
 	quantityDelta := si.quantity.Reset()
 	acquiredDelta := si.acquired.Reset()
 
@@ -129,6 +132,7 @@ func (si *ShoppingItem) Join(other *ShoppingItem) {
 
 func (si *ShoppingItem) Clone() *ShoppingItem {
 	clone := NewShoppingItem(si.crdtID, si.itemID, si.name)
+	
 	clone.dotContext = si.dotContext.Clone()
 	clone.quantity = si.quantity.Clone()
 	clone.acquired = si.acquired.Clone()
