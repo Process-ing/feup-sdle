@@ -67,7 +67,7 @@ func (n *Node) Delete(key string) error {
 	}
 
 	// Forward the request to the responsible node.
-	fmt.Printf("Forwarding PUT request for key '%s' to node %s.\n", key, responsibleNodeId)
+	fmt.Printf("Forwarding DELETE request for key '%s' to node %s.\n", key, responsibleNodeId)
 	responsibleNodeAddr := idToAddr(responsibleNodeId)
 	_, err := n.sendDelete(responsibleNodeAddr, key)
 	return err
@@ -83,12 +83,12 @@ func (n *Node) Has(key string) (bool, error) {
 
 	if responsibleNodeId == n.id {
 		// This node is responsible, check local store.
-		fmt.Printf("This node (%s) is responsible. Deleting from local store.\n", n.id)
+		fmt.Printf("This node (%s) is responsible. Checking local store.\n", n.id)
 		return n.store.Has([]byte(key))
 	}
 
 	// Forward the request to the responsible node.
-	fmt.Printf("Forwarding PUT request for key '%s' to node %s.\n", key, responsibleNodeId)
+	fmt.Printf("Forwarding HAS request for key '%s' to node %s.\n", key, responsibleNodeId)
 	responsibleNodeAddr := idToAddr(responsibleNodeId)
 	resp, err := n.sendHas(responsibleNodeAddr, key)
 	if err != nil {

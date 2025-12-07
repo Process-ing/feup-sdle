@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-
 func create_node(id string) *node.Node {
 	dataDir := "./data/" + id
 
@@ -65,7 +64,6 @@ func main() {
 	case err := <-errCh:
 		println("Error occurred:", err.Error())
 	}
-
 
 	// Gracefully close all nodes
 	for _, nd := range nodes {
