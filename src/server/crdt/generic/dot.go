@@ -4,10 +4,10 @@ import "fmt"
 
 type Dot struct {
 	id  string
-	seq int
+	seq uint32
 }
 
-func NewDot(id string, seq int) Dot {
+func NewDot(id string, seq uint32) Dot {
 	return Dot{id: id, seq: seq}
 }
 

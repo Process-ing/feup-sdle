@@ -39,10 +39,10 @@ func listsEqual(a, b *ShoppingList) bool {
 // === Shopping List Tests ===
 
 func TestShoppingList_NewShoppingList(t *testing.T) {
-    list := NewShoppingList("crdt1", "list1", "Groceries")
+    list := NewShoppingList("replica1", "list1", "Groceries")
 
-    if list.CRDTID() != "crdt1" {
-        t.Errorf("Expected CRDTID to be 'crdt1', got %s", list.CRDTID())
+    if list.ReplicaID() != "replica1" {
+        t.Errorf("Expected ReplicaID to be 'replica1', got %s", list.ReplicaID())
     }
     if list.Name() != "Groceries" {
         t.Errorf("Expected Name to be 'Groceries', got %s", list.Name())
@@ -56,7 +56,7 @@ func TestShoppingList_NewShoppingList(t *testing.T) {
 }
 
 func TestShoppingList_PutItem(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list2 := list1.Clone()
 
     delta := list1.PutItem("item1", "Milk", 5, 2)
@@ -84,7 +84,7 @@ func TestShoppingList_PutItem(t *testing.T) {
 }
 
 func TestShoppingList_RemoveItem(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list1.PutItem("item1", "Milk", 5, 2)
     list2 := list1.Clone()
 
@@ -105,10 +105,10 @@ func TestShoppingList_RemoveItem(t *testing.T) {
 }
 
 func TestShoppingList_Join(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list1.PutItem("item1", "Milk", 5, 2)
 
-    list2 := NewShoppingList("crdt2", "list2", "Groceries")
+    list2 := NewShoppingList("replica2", "list2", "Groceries")
     list2.PutItem("item2", "Bread", 3, 1)
 
     list1.Join(list2)
@@ -147,7 +147,7 @@ func TestShoppingList_Join(t *testing.T) {
 }
 
 func TestShoppingList_SetContext(t *testing.T) {
-    list := NewShoppingList("crdt1", "list1", "Groceries")
+    list := NewShoppingList("replica1", "list1", "Groceries")
     newContext := crdt.NewDotContext()
 
     list.SetContext(newContext)
@@ -158,8 +158,8 @@ func TestShoppingList_SetContext(t *testing.T) {
 }
 
 func TestShoppingList_ConcurrentUpdates(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
-    list2 := NewShoppingList("crdt2", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
+    list2 := NewShoppingList("replica2", "list1", "Groceries")
 
     delta1 := list1.PutItem("item1", "Milk", 5, 2)
     delta2 := list2.PutItem("item2", "Bread", 3, 1)
@@ -182,10 +182,10 @@ func TestShoppingList_ConcurrentUpdates(t *testing.T) {
 
 
 func TestShoppingList_JoinWithConflictingUpdates(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list1.PutItem("item1", "Milk", 5, 2)
 
-    list2 := NewShoppingList("crdt2", "list1", "Groceries")
+    list2 := NewShoppingList("replica2", "list1", "Groceries")
     list2.PutItem("item1", "Milk", 10, 4)
 
     list1.Join(list2)
@@ -204,10 +204,10 @@ func TestShoppingList_JoinWithConflictingUpdates(t *testing.T) {
 }
 
 func TestShoppingList_JoinWithEmptyList(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list1.PutItem("item1", "Milk", 5, 2)
 
-    list2 := NewShoppingList("crdt2", "list2", "Groceries")
+    list2 := NewShoppingList("replica2", "list2", "Groceries")
 
     list1.Join(list2)
 
@@ -221,10 +221,10 @@ func TestShoppingList_JoinWithEmptyList(t *testing.T) {
 }
 
 func TestShoppingList_JoinWithMultipleUpdates(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list1.PutItem("item1", "Milk", 5, 2)
 
-    list2 := NewShoppingList("crdt2", "list2", "Groceries")
+    list2 := NewShoppingList("replica2", "list2", "Groceries")
     list2.PutItem("item1", "Milk", 10, 4)
     list2.PutItem("item2", "Bread", 3, 1)
 
@@ -247,7 +247,7 @@ func TestShoppingList_JoinWithMultipleUpdates(t *testing.T) {
 }
 
 func TestShoppingList_Clone(t *testing.T) {
-    list := NewShoppingList("crdt1", "list1", "Groceries")
+    list := NewShoppingList("replica1", "list1", "Groceries")
     list.PutItem("item1", "Milk", 5, 2)
 
     clone := list.Clone()
@@ -258,7 +258,7 @@ func TestShoppingList_Clone(t *testing.T) {
 }
 
 func TestShoppingList_CloneIndependence(t *testing.T) {
-	list1 := NewShoppingList("crdt1", "list1", "Groceries")
+	list1 := NewShoppingList("replica1", "list1", "Groceries")
 	list1.PutItem("item1", "Milk", 5, 2)
 	list2 := list1.Clone()
 
@@ -270,7 +270,7 @@ func TestShoppingList_CloneIndependence(t *testing.T) {
 }
 
 func TestShoppingList_GetItem(t *testing.T) {
-    list := NewShoppingList("crdt1", "list1", "Groceries")
+    list := NewShoppingList("replica1", "list1", "Groceries")
     list.PutItem("item1", "Milk", 5, 2)
 
     item := list.GetItem("item1")
@@ -294,7 +294,7 @@ func TestShoppingList_GetItem(t *testing.T) {
 }
 
 func TestShoppingList_RemoveNonExistentItem(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
     list2 := list1.Clone()
 
     delta := list1.RemoveItem("item1")
@@ -310,7 +310,7 @@ func TestShoppingList_RemoveNonExistentItem(t *testing.T) {
 }
 
 func TestShoppingList_PutItemWithNegativeValues(t *testing.T) {
-    list1 := NewShoppingList("crdt1", "list1", "Groceries")
+    list1 := NewShoppingList("replica1", "list1", "Groceries")
 	list2 := list1.Clone()
 
     delta := list1.PutItem("item1", "Milk", -5, -2)
@@ -327,7 +327,7 @@ func TestShoppingList_PutItemWithNegativeValues(t *testing.T) {
 }
 
 func TestShoppingList_RemoveItemWithOtherItems(t *testing.T) {
-	list1 := NewShoppingList("crdt1", "list1", "Groceries")
+	list1 := NewShoppingList("replica1", "list1", "Groceries")
 	list1.PutItem("item1", "Milk", 5, 2)
 	list1.PutItem("item2", "Bread", 3, 1)
 	list2 := list1.Clone()
@@ -349,7 +349,7 @@ func TestShoppingList_RemoveItemWithOtherItems(t *testing.T) {
 }
 
 func TestShoppingList_RemoveAfterPutItem(t *testing.T) {
-	list1 := NewShoppingList("crdt1", "list1", "Groceries")
+	list1 := NewShoppingList("replica1", "list1", "Groceries")
 	list2 := list1.Clone()
 
 	delta1 := list1.PutItem("item1", "Milk", 5, 2)
@@ -367,7 +367,7 @@ func TestShoppingList_RemoveAfterPutItem(t *testing.T) {
 }
 
 func TestShoppingList_PutItemMultipleTimes(t *testing.T) {
-	list1 := NewShoppingList("crdt1", "list1", "Groceries")
+	list1 := NewShoppingList("replica1", "list1", "Groceries")
 	list1.PutItem("item1", "Milk", 5, 2)
 	list2 := list1.Clone()
 
@@ -391,7 +391,7 @@ func TestShoppingList_PutItemMultipleTimes(t *testing.T) {
 }
 
 func TestShoppingList_EmptyList(t *testing.T) {
-    list := NewShoppingList("crdt1", "list1", "Groceries")
+    list := NewShoppingList("replica1", "list1", "Groceries")
 
     if len(list.Items()) != 0 {
         t.Errorf("Expected empty list to have no items, got %d", len(list.Items()))

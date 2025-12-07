@@ -6,13 +6,13 @@ import (
 )
 
 type DotContext struct {
-	compactContext map[string]int
+	compactContext map[string]uint32
 	dots           utils.Set[Dot]
 }
 
 func NewDotContext() *DotContext {
 	return &DotContext{
-		compactContext: make(map[string]int),
+		compactContext: make(map[string]uint32),
 		dots:           utils.NewSet[Dot](),
 	}
 }
@@ -110,7 +110,7 @@ func (ctx *DotContext) Clone() *DotContext {
 }
 
 func (ctx *DotContext) Copy(other *DotContext) {
-	ctx.compactContext = make(map[string]int)
+	ctx.compactContext = make(map[string]uint32)
 	for id, seq := range other.compactContext {
 		ctx.compactContext[id] = seq
 	}

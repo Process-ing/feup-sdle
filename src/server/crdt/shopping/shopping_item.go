@@ -1,9 +1,9 @@
 package crdt
 
-import "sdle-server/crdt/generic"
+import crdt "sdle-server/crdt/generic"
 
 type ShoppingItem struct {
-	crdtID     string
+	replicaID  string
 	dotContext *crdt.DotContext
 	itemID     string
 	name       string
@@ -11,27 +11,27 @@ type ShoppingItem struct {
 	acquired   *crdt.CCounter
 }
 
-func NewShoppingItem(crdtID string, itemID string, name string) *ShoppingItem {
+func NewShoppingItem(replicaID string, itemID string, name string) *ShoppingItem {
 	dotContext := crdt.NewDotContext()
 
-	quantity := crdt.NewCCounter(crdtID)
+	quantity := crdt.NewCCounter(replicaID)
 	quantity.SetContext(dotContext)
 
-	acquired := crdt.NewCCounter(crdtID)
+	acquired := crdt.NewCCounter(replicaID)
 	acquired.SetContext(dotContext)
 
 	return &ShoppingItem{
-		crdtID: crdtID,
+		replicaID:  replicaID,
 		dotContext: dotContext,
-		itemID: itemID,
-		name: name,
-		quantity: quantity,
-		acquired: acquired,
+		itemID:     itemID,
+		name:       name,
+		quantity:   quantity,
+		acquired:   acquired,
 	}
 }
 
-func (si *ShoppingItem) CRDTID() string {
-	return si.crdtID
+func (si *ShoppingItem) ReplicaID() string {
+	return si.replicaID
 }
 
 func (si *ShoppingItem) Name() string {
@@ -55,7 +55,7 @@ func (si *ShoppingItem) Quantity() uint64 {
 }
 
 func (si *ShoppingItem) IncQuantity(amount int64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, si.itemID, si.name)
+	delta := NewShoppingItem(si.replicaID, si.itemID, si.name)
 
 	// Prevent negative quantity values
 	amount = max(-int64(si.quantity.Read()), amount)
@@ -72,7 +72,7 @@ func (si *ShoppingItem) Acquired() uint64 {
 }
 
 func (si *ShoppingItem) IncAcquired(amount int64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, si.itemID, si.name)
+	delta := NewShoppingItem(si.replicaID, si.itemID, si.name)
 	currQuantity := int64(si.quantity.Read())
 	currAcquired := int64(si.acquired.Read())
 
@@ -104,7 +104,7 @@ func (si *ShoppingItem) NewEmpty(id string) *ShoppingItem {
 }
 
 func (si *ShoppingItem) Reset() *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, si.itemID, si.name)
+	delta := NewShoppingItem(si.replicaID, si.itemID, si.name)
 	quantityDelta := si.quantity.Reset()
 	acquiredDelta := si.acquired.Reset()
 
@@ -140,7 +140,7 @@ func (si *ShoppingItem) Join(other *ShoppingItem) {
 }
 
 func (si *ShoppingItem) Clone() *ShoppingItem {
-	clone := NewShoppingItem(si.crdtID, si.itemID, si.name)
+	clone := NewShoppingItem(si.replicaID, si.itemID, si.name)
 
 	clone.dotContext = si.dotContext.Clone()
 	clone.quantity = si.quantity.Clone()
@@ -154,7 +154,7 @@ func (si *ShoppingItem) Clone() *ShoppingItem {
 
 func (si ShoppingItem) String() string {
 	return "ShoppingItem{" +
-		"crdtID: " + si.crdtID +
+		"replicaID: " + si.replicaID +
 		", itemID: " + si.itemID +
 		", name: " + si.name +
 		", quantity: " + si.quantity.String() +

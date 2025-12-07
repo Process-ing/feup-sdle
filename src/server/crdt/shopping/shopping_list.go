@@ -6,21 +6,21 @@ import (
 )
 
 type ShoppingList struct {
-	crdtID     string
+	replicaID  string
 	listID     string
 	name       string
 	dotContext *crdt.DotContext
 	items      *crdt.ORMap[string, *ShoppingItem]
 }
 
-func NewShoppingList(crdtID string, listID string, name string) *ShoppingList {
+func NewShoppingList(replicaID string, listID string, name string) *ShoppingList {
 	dotContext := crdt.NewDotContext()
 
-	items := crdt.NewORMap[string, *ShoppingItem](crdtID)
+	items := crdt.NewORMap[string, *ShoppingItem](replicaID)
 	items.SetContext(dotContext)
 
 	return &ShoppingList{
-		crdtID:     crdtID,
+		replicaID:  replicaID,
 		listID:     listID,
 		name:       name,
 		dotContext: dotContext,
@@ -28,8 +28,8 @@ func NewShoppingList(crdtID string, listID string, name string) *ShoppingList {
 	}
 }
 
-func (sl *ShoppingList) CRDTID() string {
-	return sl.crdtID
+func (sl *ShoppingList) ReplicaID() string {
+	return sl.replicaID
 }
 
 func (sl *ShoppingList) Name() string {
@@ -71,7 +71,7 @@ func (sl *ShoppingList) GetItem(itemID string) *ShoppingItem {
 }
 
 func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, acquiredDiff int64) *ShoppingList {
-	delta := NewShoppingList(sl.crdtID, sl.listID, "")
+	delta := NewShoppingList(sl.replicaID, sl.listID, "")
 
 	itemsDelta := sl.items.Apply(itemID, func(item *ShoppingItem) *ShoppingItem {
 		item.SetItemID(itemID)
@@ -90,7 +90,7 @@ func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, 
 }
 
 func (sl *ShoppingList) RemoveItem(itemID string) *ShoppingList {
-	delta := NewShoppingList(sl.crdtID, sl.listID, "")
+	delta := NewShoppingList(sl.replicaID, sl.listID, "")
 
 	itemsDelta := sl.items.Remove(itemID)
 	delta.items = itemsDelta
@@ -105,13 +105,13 @@ func (sl *ShoppingList) Join(other *ShoppingList) {
 }
 
 func (sl *ShoppingList) Clone() *ShoppingList {
-	clone := NewShoppingList(sl.crdtID, sl.listID, sl.name)
+	clone := NewShoppingList(sl.replicaID, sl.listID, sl.name)
 	clone.dotContext = sl.dotContext.Clone()
 	clone.items = sl.items.Clone()
 	return clone
 }
 
 func (sl *ShoppingList) String() string {
-	return fmt.Sprintf("ShoppingList{crdtID: %s, listID: %s, name: %s, dotContext: %v, items: %v}",
-		sl.crdtID, sl.listID, sl.name, sl.dotContext, sl.items)
+	return fmt.Sprintf("ShoppingList{replicaID: %s, listID: %s, name: %s, dotContext: %v, items: %v}",
+		sl.replicaID, sl.listID, sl.name, sl.dotContext, sl.items)
 }
