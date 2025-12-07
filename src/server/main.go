@@ -21,17 +21,6 @@ func create_node(id string) *node.Node {
 }
 
 func main() {
-	// wsHandler := websocket.NewWebSocketHandler()
-	//
-	// // Register handlers
-	// http.Handle("/ws", wsHandler)
-	//
-	// log.Println("Starting server on :8080")
-	// err := http.ListenAndServe(":8080", nil)
-	// if err != nil {
-	// 	log.Fatal("Failed to start server on port 8080: ", err)
-	// }
-
 	nodes := []*node.Node{
 		create_node("localhost:5000"),
 		create_node("localhost:5001"),
@@ -39,22 +28,15 @@ func main() {
 		create_node("localhost:5003"),
 	}
 
-	errCh := make(chan error, 2)
+	errCh := make(chan error, len(nodes)*2)
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	// Start nodes concurrently so Start() doesn't block the rest of main
-	for i, nd := range nodes {
-		go func(i int, n *node.Node) {
-			if err := n.StartReceiving(); err != nil {
-				errCh <- err
-			}
-		}(i, nd)
-
+	// Start nodes
+	for _, nd := range nodes {
+		nd.Start(errCh)
 		time.Sleep(300 * time.Millisecond)
-
 		nd.JoinToRing(nodes[0].GetAddress())
-
 	}
 
 	// Wait for shutdown signal
@@ -67,7 +49,7 @@ func main() {
 
 	// Gracefully close all nodes
 	for _, nd := range nodes {
-		if err := nd.StopReceiving(); err != nil {
+		if err := nd.Stop(); err != nil {
 			println("Error closing node:", err.Error())
 		}
 	}

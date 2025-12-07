@@ -10,53 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func (n *Node) StartReceiving() error {
-	n.log("Socket started at " + n.addr)
 
-	for {
-		msgBytes, err := n.repSock.RecvBytes(0)
-
-		if err != nil {
-			return err
-		}
-
-		var req pb.Request
-		if err := proto.Unmarshal(msgBytes, &req); err != nil {
-			_ = n.sendResponseError("failed to unmarshal request: " + err.Error())
-			continue
-		}
-
-		switch req.GetRequestType().(type) {
-
-		case *pb.Request_Ping:
-			n.handlePing(&req)
-
-		case *pb.Request_FetchRing:
-			n.handleFetchRing(&req)
-
-		case *pb.Request_GetHashSpace:
-			n.handleGetHashSpace(&req)
-
-		case *pb.Request_GossipJoin:
-			n.handleGossipJoin(&req)
-
-		case *pb.Request_Get:
-			n.handleGet(&req)
-
-		case *pb.Request_Put:
-			n.handlePut(&req)
-
-		case *pb.Request_Delete:
-			n.handleDelete(&req)
-
-		case *pb.Request_Has:
-			n.handleHas(&req)
-
-		default:
-			_ = n.sendResponseError("unknown request type")
-		}
-	}
-}
 
 func (n *Node) sendRequest(peerAddr string, request proto.Message, timeout time.Duration) (*pb.Response, error) {
 	// println("Node " + n.id + " sending request to " + peerAddr)
@@ -198,16 +152,4 @@ func (n *Node) sendResponseError(errStr string) error {
 	return err
 }
 
-func (n *Node) StopReceiving() error {
-	var firstErr error
-	if n.repSock != nil {
-		if err := n.repSock.Close(); err != nil {
-			firstErr = err
-		}
-	}
 
-	if err := n.store.Close(); err != nil && firstErr == nil {
-		firstErr = err
-	}
-	return firstErr
-}
