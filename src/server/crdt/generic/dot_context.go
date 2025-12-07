@@ -22,7 +22,7 @@ func (ctx *DotContext) Knows(dot Dot) bool {
 		return dot.seq <= localSeq
 	}
 
-	return false
+	return ctx.dots.Contains(dot)
 }
 
 func (ctx *DotContext) MakeDot(id string) Dot {

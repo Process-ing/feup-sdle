@@ -78,17 +78,17 @@ func (dk *DotKernel[V]) Reset() *DotKernel[V] {
 
 // Merges the kernel with another, preferring the values of other on conflicts
 func (dk *DotKernel[V]) Join(other *DotKernel[V]) {
-	for dot, value := range other.dotValues {
-		// Values not known by dk are added
-		if !dk.dotContext.Knows(dot) {
-			dk.dotValues[dot] = value
-		}
-	}
-
 	for dot := range dk.dotValues {
 		// If dot is not present in other and is known by other, it means it was removed
 		if _, ok := other.dotValues[dot]; !ok && other.dotContext.Knows(dot) {
 			delete(dk.dotValues, dot)
+		}
+	}
+
+	for dot, value := range other.dotValues {
+		// If dot is not present locally, add it
+		if _, ok := dk.dotValues[dot]; !ok {
+			dk.dotValues[dot] = value
 		}
 	}
 

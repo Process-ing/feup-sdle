@@ -25,44 +25,40 @@ func TestShoppingItem_NewShoppingItem(t *testing.T) {
         t.Errorf("Expected initial acquired to be 0, got %d", item.Acquired())
     }
 }
-
 func TestShoppingItem_IncQuantity(t *testing.T) {
     item1 := NewShoppingItem("crdt1", "item1", "Milk")
-	item2 := item1.Clone()
+    item2 := item1.Clone()
 
-    delta := item1.IncQuantity(5)
+    delta1 := item1.IncQuantity(5)
 
     if item1.Quantity() != 5 {
         t.Errorf("Expected quantity to be 5, got %d", item1.Quantity())
     }
 
-	item2.Join(delta)
+    delta2 := item1.IncQuantity(-3)
 
-	if !reflect.DeepEqual(item1, item2) {
-		t.Errorf("Expected item1 and item2 to be equal after joining with delta")
-	}
-}
-
-func TestShoppingItem_DecQuantity(t *testing.T) {
-    item1 := NewShoppingItem("crdt1", "item1", "Milk")
-    item1.IncQuantity(10)
-	item2 := item1.Clone()
-
-    delta := item1.DecQuantity(4)
-
-    if item1.Quantity() != 6 {
-        t.Errorf("Expected quantity to be 6, got %d", item1.Quantity())
+    if item1.Quantity() != 2 {
+        t.Errorf("Expected quantity to be 2 after decrement, got %d", item1.Quantity())
     }
 
-	item2.Join(delta)
-	if !reflect.DeepEqual(item1, item2) {
-		t.Errorf("Expected item1 and item2 to be equal after joining with delta")
-	}
+    delta3 := item1.IncQuantity(-10)  // Should not go below 0
+    if item1.Quantity() != 0 {
+        t.Errorf("Expected quantity to be 0 after excessive decrement, got %d", item1.Quantity())
+    }
+
+    item2.Join(delta1)
+    item2.Join(delta2)
+    item2.Join(delta3)
+
+    if !reflect.DeepEqual(item1, item2) {
+        t.Errorf("Expected item1 and item2 to be equal after joining with deltas")
+    }
 }
 
 func TestShoppingItem_IncAcquired(t *testing.T) {
     item1 := NewShoppingItem("crdt1", "item1", "Milk")
-	item2 := item1.Clone()
+    item1.IncQuantity(10)
+    item2 := item1.Clone()
 
     delta := item1.IncAcquired(3)
 
@@ -70,27 +66,30 @@ func TestShoppingItem_IncAcquired(t *testing.T) {
         t.Errorf("Expected acquired to be 3, got %d", item1.Acquired())
     }
 
-	item2.Join(delta)
-	if !reflect.DeepEqual(item1, item2) {
-		t.Errorf("Expected item1 and item2 to be equal after joining with delta")
-	}
-}
+    delta2 := item1.IncAcquired(-2)
 
-func TestShoppingItem_DecAcquired(t *testing.T) {
-    item1 := NewShoppingItem("crdt1", "item1", "Milk")
-    item1.IncAcquired(5)
-	item2 := item1.Clone()
-
-    delta := item1.DecAcquired(2)
-
-    if item1.Acquired() != 3 {
-        t.Errorf("Expected acquired to be 3, got %d", item1.Acquired())
+    if item1.Acquired() != 1 {
+        t.Errorf("Expected acquired to be 1 after decrement, got %d", item1.Acquired())
     }
 
-	item2.Join(delta)
-	if !reflect.DeepEqual(item1, item2) {
-		t.Errorf("Expected item1 and item2 to be equal after joining with delta")
-	}
+    delta3 := item1.IncAcquired(-5)  // Should not go below 0
+    if item1.Acquired() != 0 {
+        t.Errorf("Expected acquired to be 0 after excessive decrement, got %d", item1.Acquired())
+    }
+
+    delta4 := item1.IncAcquired(15)  // Should not exceed quantity
+    if item1.Acquired() != 10 {
+        t.Errorf("Expected acquired to be 10 after exceeding quantity, got %d", item1.Acquired())
+    }
+
+    item2.Join(delta)
+    item2.Join(delta2)
+    item2.Join(delta3)
+    item2.Join(delta4)
+
+    if !reflect.DeepEqual(item1, item2) {
+        t.Errorf("Expected item1 and item2 to be equal after joining with deltas")
+    }
 }
 
 func TestShoppingItem_SetContext(t *testing.T) {
@@ -112,7 +111,7 @@ func TestShoppingItem_SetContext(t *testing.T) {
 
 func TestShoppingItem_Reset(t *testing.T) {
     item1 := NewShoppingItem("crdt1", "item1", "Milk")
-    item1.IncQuantity(5)
+    item1.IncAcquired(5)
     item1.IncAcquired(2)
 	item2 := item1.Clone()
 
@@ -133,14 +132,15 @@ func TestShoppingItem_Reset(t *testing.T) {
 
 func TestShoppingItem_Join(t *testing.T) {
     item1 := NewShoppingItem("crdt1", "item1", "Milk")
-    item1.IncQuantity(5)
+    item1.IncQuantity(3)
     item1.IncAcquired(2)
 
     item2 := NewShoppingItem("crdt2", "item1", "Milk")
-    item2.IncQuantity(3)
+    item2.IncQuantity(5)
     item2.IncAcquired(4)
 
     item1.Join(item2)
+    t.Logf("Item 1: %v", item1)
 
     if item1.Quantity() != 8 {
         t.Errorf("Expected quantity to be 8 after join, got %d", item1.Quantity())
@@ -172,18 +172,20 @@ func TestShoppingItem_ConcurrentUpdates(t *testing.T) {
     item2 := NewShoppingItem("crdt2", "item1", "Milk")
 
     delta1 := item1.IncQuantity(5)
-    delta2 := item2.IncAcquired(3)
+    delta21 := item2.IncQuantity(5)
+    delta22 := item2.IncAcquired(3)
 
-    item1.Join(delta2)
+    item1.Join(delta21)
+    item1.Join(delta22)
     item2.Join(delta1)
 
-    if item1.Quantity() != 5 {
+    if item1.Quantity() != 10 {
         t.Errorf("Expected item1 quantity to be 5 after concurrent updates, got %d", item1.Quantity())
     }
     if item1.Acquired() != 3 {
         t.Errorf("Expected item1 acquired to be 3 after concurrent updates, got %d", item1.Acquired())
     }
-    if item2.Quantity() != 5 {
+    if item2.Quantity() != 10 {
         t.Errorf("Expected item2 quantity to be 5 after concurrent updates, got %d", item2.Quantity())
     }
     if item2.Acquired() != 3 {

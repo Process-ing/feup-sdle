@@ -38,16 +38,23 @@ func (si *ShoppingItem) Name() string {
 	return si.name
 }
 
+func (si *ShoppingItem) SetName(name string) {
+	si.name = name
+}
+
 func (si *ShoppingItem) ItemID() string {
 	return si.itemID
 }
 
-func (si *ShoppingItem) Quantity() int64 {
-	return si.quantity.Read()
+func (si *ShoppingItem) Quantity() uint64 {
+	return uint64(si.quantity.Read())
 }
 
-func (si *ShoppingItem) IncQuantity(amount uint64) *ShoppingItem {
+func (si *ShoppingItem) IncQuantity(amount int64) *ShoppingItem {
 	delta := NewShoppingItem(si.crdtID, "", "")
+
+	// Prevent negative quantity values
+	amount = max(-int64(si.quantity.Read()), amount)
 
 	quantityDelta := si.quantity.Inc(amount)
 	delta.quantity = quantityDelta
@@ -56,34 +63,22 @@ func (si *ShoppingItem) IncQuantity(amount uint64) *ShoppingItem {
 	return delta
 }
 
-func (si *ShoppingItem) DecQuantity(amount uint64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, "", "")
-
-	quantityDelta := si.quantity.Dec(amount)
-	delta.quantity = quantityDelta
-	delta.SetContext(quantityDelta.Context())
-
-	return delta
+func (si *ShoppingItem) Acquired() uint64 {
+	return uint64(si.acquired.Read())
 }
 
-func (si *ShoppingItem) Acquired() int64 {
-	return si.acquired.Read()
-}
-
-func (si *ShoppingItem) IncAcquired(amount uint64) *ShoppingItem {
+func (si *ShoppingItem) IncAcquired(amount int64) *ShoppingItem {
 	delta := NewShoppingItem(si.crdtID, "", "")
+	currQuantity := int64(si.quantity.Read())
+	currAcquired := int64(si.acquired.Read())
+
+	// Prevent negative acquired values
+	amount = max(-currAcquired, amount)
+
+	// Prevent acquired from exceeding quantity
+	amount = min(currQuantity - currAcquired, amount)
 
 	acquiredDelta := si.acquired.Inc(amount)
-	delta.acquired = acquiredDelta
-	delta.SetContext(acquiredDelta.Context())
-
-	return delta
-}
-
-func (si *ShoppingItem) DecAcquired(amount uint64) *ShoppingItem {
-	delta := NewShoppingItem(si.crdtID, "", "")
-
-	acquiredDelta := si.acquired.Dec(amount)
 	delta.acquired = acquiredDelta
 	delta.SetContext(acquiredDelta.Context())
 
@@ -114,6 +109,10 @@ func (si *ShoppingItem) Reset() *ShoppingItem {
 	delta.dotContext.Join(acquiredDelta.Context())
 
 	return delta
+}
+
+func (si *ShoppingItem) IsNull() bool {
+	return si.quantity.Read() == 0
 }
 
 func (si *ShoppingItem) Join(other *ShoppingItem) {

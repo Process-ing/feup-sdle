@@ -54,7 +54,7 @@ func (ormap *ORMap[K, V]) Apply(key K, fn func(V) V) *ORMap[K, V] {
 	value := ormap.Get(key)
 	valueDelta := fn(value)
 	delta.valueMap[key] = valueDelta
-	
+
 	delta.dotContext.Join(valueDelta.Context())
 
 	return delta

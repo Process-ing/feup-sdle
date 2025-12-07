@@ -4,14 +4,14 @@ import "fmt"
 
 type CCounter struct {
 	id 	      string
-	dotKernel *DotKernel[uint64]
+	dotKernel *DotKernel[int64]
 }
 // Implements DotContextCRDT[uint64]
 
 func NewCCounter(id string) *CCounter {
 	return &CCounter{
 		id: id,
-		dotKernel: NewDotKernel[uint64](),
+		dotKernel: NewDotKernel[int64](),
 	}
 }
 
@@ -33,7 +33,7 @@ func (cc *CCounter) Read() int64 {
 
 // Removes the old dot for this replica, if any, applies the difference to the
 // delta, and returns the old value (or zero if absent)
-func (cc *CCounter) removeOldDot(delta *CCounter) uint64 {
+func (cc *CCounter) removeOldDot(delta *CCounter) int64 {
 	for dot := range cc.dotKernel.dotValues {
 		if dot.id == cc.id {  // There should be only one dot
 			oldValue := cc.dotKernel.dotValues[dot]
@@ -45,23 +45,13 @@ func (cc *CCounter) removeOldDot(delta *CCounter) uint64 {
 	return 0
 }
 
-func (cc *CCounter) Inc(diff uint64) *CCounter {
+func (cc *CCounter) Inc(diff int64) *CCounter {
 	delta := NewCCounter(cc.id)
 
-	oldValue := cc.removeOldDot(delta)
-	newValue := oldValue + diff
+	oldLocalValue := cc.removeOldDot(delta)
+	newLocalValue := oldLocalValue + diff
 
-	delta.dotKernel.Join(cc.dotKernel.Add(cc.id, newValue))
-	return delta
-}
-
-func (cc *CCounter) Dec(diff uint64) *CCounter {
-	delta := NewCCounter(cc.id)
-
-	oldValue := cc.removeOldDot(delta)
-	newValue := oldValue - diff
-
-	delta.dotKernel.Join(cc.dotKernel.Add(cc.id, newValue))
+	delta.dotKernel.Join(cc.dotKernel.Add(cc.id, newLocalValue))
 	return delta
 }
 
