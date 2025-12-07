@@ -1,3 +1,5 @@
+// UNUSED IMPLEMENTATION: USE WITH CAUTION
+
 package crdt
 
 import "fmt"
