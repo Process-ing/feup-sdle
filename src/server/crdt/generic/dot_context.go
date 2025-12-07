@@ -49,16 +49,16 @@ func (ctx *DotContext) InsertDotCompact(dot Dot, compact bool) {
 }
 
 func (ctx *DotContext) Compact() {
-	dotAdded := true
-	for dotAdded {
-		dotAdded = false
+	changed := true
+	for changed {
+		changed = false
 
 		for dot := range ctx.dots {
 			if localSeq, ok := ctx.versionVector[dot.id]; ok { // Has entry in compact context
 				if dot.seq == localSeq+1 { // Dot is sequentially after, can compact
 					ctx.versionVector[dot.id] = dot.seq
 					ctx.dots.Remove(dot)
-					dotAdded = true
+					changed = true
 
 				} else if dot.seq <= localSeq { // Dot is already included, ignore
 					ctx.dots.Remove(dot)
@@ -68,7 +68,7 @@ func (ctx *DotContext) Compact() {
 				if dot.seq == 1 { // Can compact
 					ctx.versionVector[dot.id] = 1
 					ctx.dots.Remove(dot)
-					dotAdded = true
+					changed = true
 				}
 			}
 		}
@@ -76,6 +76,7 @@ func (ctx *DotContext) Compact() {
 }
 
 func (ctx *DotContext) Join(other *DotContext) {
+	// Optimization for complex CRDTs, which frequently join a context with itself
 	if ctx == other {
 		return
 	}
@@ -111,6 +112,11 @@ func (ctx *DotContext) Clone() *DotContext {
 }
 
 func (ctx *DotContext) Copy(other *DotContext) {
+	// Avoid self-copy
+	if ctx == other {
+		return
+	}
+
 	ctx.versionVector = make(map[string]uint32)
 	for id, seq := range other.versionVector {
 		ctx.versionVector[id] = seq

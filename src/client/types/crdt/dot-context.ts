@@ -1,0 +1,92 @@
+import Dot from "./dot";
+
+export default class DotContext {
+    private versionVector: Map<string, number>;
+    private dots: Set<Dot>;
+
+    constructor() {
+        this.versionVector = new Map<string, number>();
+        this.dots = new Set<Dot>();
+    }
+
+    public knows(dot: Dot): boolean {
+        const localSeq = this.versionVector.get(dot.id) || 0;
+        return dot.seq <= localSeq || this.dots.has(dot);
+    }
+
+    public makeDot(id: string): Dot {
+        const localSeq = this.versionVector.get(id) || 0;
+        const newSeq = localSeq + 1;
+
+        this.versionVector.set(id, newSeq);
+        return new Dot(id, newSeq);
+    }
+
+    public insertDot(dot: Dot, compact: boolean = true): void {
+        this.dots.add(dot);
+        if (compact) {
+            this.compact();
+        }
+    }
+
+    public compact(): void {
+        let changed = true;
+
+        while (changed) {
+            changed = false;
+
+            this.dots.forEach((dot) => {
+                const localSeq = this.versionVector.get(dot.id) || 0;
+
+                if (dot.seq === localSeq + 1) {  // Sequential order, can be merged into version vector
+                    this.versionVector.set(dot.id, dot.seq);
+                    this.dots.delete(dot);
+                    changed = true;
+
+                } else if (dot.seq <= localSeq) {  // Already known, can be removed
+                    this.dots.delete(dot);
+                    changed = true;
+                }
+            });
+        }
+    }
+
+    public join(other: DotContext): void {
+        // Optimization for complex CRDTs, which frequently join a context with itself
+        if (this === other) {
+            return;
+        }
+
+        // Pointwise maximum of version vectors
+        other.versionVector.forEach((otherSeq, id) => {
+            const localSeq = this.versionVector.get(id) || 0;
+            this.versionVector.set(id, Math.max(localSeq, otherSeq));
+        })
+
+        this.dots = this.dots.union(other.dots);
+        this.compact();
+    }
+
+    public clone(): DotContext {
+        const newCtx = new DotContext();
+
+        this.versionVector.forEach((seq, id) => {
+            newCtx.versionVector.set(id, seq);
+        });
+
+        this.dots.forEach((dot) => {
+            newCtx.dots.add(dot);
+        });
+
+        return newCtx;
+    }
+
+    public copy(other: DotContext): void {
+        if (this === other) {
+            return;
+        }
+
+        this.versionVector = new Map<string, number>(other.versionVector);
+        this.dots = new Set<Dot>(other.dots);
+    }
+}
