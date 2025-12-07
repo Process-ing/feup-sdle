@@ -62,12 +62,20 @@ func (sl *ShoppingList) Items() []ShoppingItem {
 	return result
 }
 
+func (sl *ShoppingList) GetItem(itemID string) *ShoppingItem {
+	item := sl.items.Get(itemID)
+	if item.IsNull() {
+		return nil
+	}
+	return item.Clone()
+}
+
 func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, acquiredDiff int64) *ShoppingList {
 	delta := NewShoppingList(sl.crdtID, sl.listID, "")
 
 	itemsDelta := sl.items.Apply(itemID, func(item *ShoppingItem) *ShoppingItem {
-		item.SetName(name)
 		item.SetItemID(itemID)
+		item.SetName(name)
 
 		itemDelta := item.IncQuantity(quantityDiff)
 		itemDelta.Join(item.IncAcquired(acquiredDiff))
