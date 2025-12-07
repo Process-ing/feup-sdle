@@ -217,16 +217,21 @@ func TestDotContext_ConcurrentUpdates(t *testing.T) {
 
     // Simulate concurrent updates
     ctx1.InsertDot(NewDot("node1", 1))
+	ctx1.InsertDot(NewDot("node2", 1))
+	ctx1.InsertDot(NewDot("node2", 2))
+	ctx2.InsertDot(NewDot("node1", 1))
     ctx2.InsertDot(NewDot("node1", 2))
     ctx2.InsertDot(NewDot("node2", 1))
+
+	// ctx1 knows (1, 1) and (2, 2), ctx2 knows (1, 2) and (2, 1)
 
     ctx1.Join(ctx2)
 
     if !ctx1.Knows(NewDot("node1", 2)) {
         t.Errorf("Expected ctx1 to know Dot(node1, 2) after join")
     }
-    if !ctx1.Knows(NewDot("node2", 1)) {
-        t.Errorf("Expected ctx1 to know Dot(node2, 1) after join")
+    if !ctx1.Knows(NewDot("node2", 2)) {
+        t.Errorf("Expected ctx1 to know Dot(node2, 2) after join")
     }
 }
 
@@ -295,7 +300,7 @@ func TestDotContext_JoinWithGaps(t *testing.T) {
 	}
 }
 
-func TestDotContext_JoinSelf(t *testing.T) {
+func TestDotContext_JoinIdempotence(t *testing.T) {
     ctx := NewDotContext()
 
     ctx.InsertDot(NewDot("node1", 1))
@@ -310,6 +315,38 @@ func TestDotContext_JoinSelf(t *testing.T) {
     if ctx.dots.Size() != 0 {
         t.Errorf("Expected ctx.dots to be empty after self-join, got %v", ctx.dots)
     }
+}
+
+func TestDotContext_JoinCommutativity(t *testing.T) {
+	ctx1 := NewDotContext()
+	ctx2 := NewDotContext()
+
+	ctx1.InsertDot(NewDot("node1", 1))
+	ctx2.InsertDot(NewDot("node1", 2))
+
+	ctx1Copy := ctx1.Clone()
+	ctx2Copy := ctx2.Clone()
+
+	ctx1.Join(ctx2)
+	ctx2Copy.Join(ctx1Copy)
+
+	if !reflect.DeepEqual(ctx1, ctx2Copy) {
+		t.Errorf("Expected ctx1 and ctx2Copy to be equal after joining in different orders")
+	}
+}
+
+func TestDotContext_JoinIndependence(t *testing.T) {
+	ctx1 := NewDotContext()
+	ctx2 := NewDotContext()
+
+	ctx1.InsertDot(NewDot("node1", 1))
+	ctx2.InsertDot(NewDot("node2", 1))
+
+	ctx1.Join(ctx2)
+
+	if ctx2.Knows(NewDot("node1", 1)) {
+		t.Errorf("Did not expect ctx2 to know Dot(node1, 1) after joining ctx1 into ctx2")
+	}
 }
 
 func TestDotContext_Clone(t *testing.T) {
