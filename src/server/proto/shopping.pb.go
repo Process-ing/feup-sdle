@@ -81,63 +81,20 @@ func (x *ShoppingItem) GetAcquired() *CCounter {
 	return nil
 }
 
-type ShoppingItemsORMap struct {
-	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Items         map[string]*ShoppingItem `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ShoppingItemsORMap) Reset() {
-	*x = ShoppingItemsORMap{}
-	mi := &file_shopping_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ShoppingItemsORMap) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ShoppingItemsORMap) ProtoMessage() {}
-
-func (x *ShoppingItemsORMap) ProtoReflect() protoreflect.Message {
-	mi := &file_shopping_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ShoppingItemsORMap.ProtoReflect.Descriptor instead.
-func (*ShoppingItemsORMap) Descriptor() ([]byte, []int) {
-	return file_shopping_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ShoppingItemsORMap) GetItems() map[string]*ShoppingItem {
-	if x != nil {
-		return x.Items
-	}
-	return nil
-}
-
 type ShoppingList struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ReplicaId     string                 `protobuf:"bytes,1,opt,name=replica_id,json=replicaId,proto3" json:"replica_id,omitempty"`
-	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	ItemsOrmap    *ShoppingItemsORMap    `protobuf:"bytes,4,opt,name=items_ormap,json=itemsOrmap,proto3" json:"items_ormap,omitempty"`
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	ReplicaId     string                   `protobuf:"bytes,1,opt,name=replica_id,json=replicaId,proto3" json:"replica_id,omitempty"`
+	Id            string                   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Items         map[string]*ShoppingItem `protobuf:"bytes,4,rep,name=items,proto3" json:"items,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	DotContext    *DotContext              `protobuf:"bytes,5,opt,name=dot_context,json=dotContext,proto3" json:"dot_context,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ShoppingList) Reset() {
 	*x = ShoppingList{}
-	mi := &file_shopping_proto_msgTypes[2]
+	mi := &file_shopping_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -149,7 +106,7 @@ func (x *ShoppingList) String() string {
 func (*ShoppingList) ProtoMessage() {}
 
 func (x *ShoppingList) ProtoReflect() protoreflect.Message {
-	mi := &file_shopping_proto_msgTypes[2]
+	mi := &file_shopping_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -162,7 +119,7 @@ func (x *ShoppingList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShoppingList.ProtoReflect.Descriptor instead.
 func (*ShoppingList) Descriptor() ([]byte, []int) {
-	return file_shopping_proto_rawDescGZIP(), []int{2}
+	return file_shopping_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ShoppingList) GetReplicaId() string {
@@ -186,9 +143,16 @@ func (x *ShoppingList) GetName() string {
 	return ""
 }
 
-func (x *ShoppingList) GetItemsOrmap() *ShoppingItemsORMap {
+func (x *ShoppingList) GetItems() map[string]*ShoppingItem {
 	if x != nil {
-		return x.ItemsOrmap
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ShoppingList) GetDotContext() *DotContext {
+	if x != nil {
+		return x.DotContext
 	}
 	return nil
 }
@@ -202,20 +166,19 @@ const file_shopping_proto_rawDesc = "" +
 	"\fShoppingItem\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\bquantity\x18\x02 \x01(\v2\t.CCounterR\bquantity\x12%\n" +
-	"\bacquired\x18\x03 \x01(\v2\t.CCounterR\bacquired\"\x93\x01\n" +
-	"\x12ShoppingItemsORMap\x124\n" +
-	"\x05items\x18\x01 \x03(\v2\x1e.ShoppingItemsORMap.ItemsEntryR\x05items\x1aG\n" +
-	"\n" +
-	"ItemsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12#\n" +
-	"\x05value\x18\x02 \x01(\v2\r.ShoppingItemR\x05value:\x028\x01\"\x87\x01\n" +
+	"\bacquired\x18\x03 \x01(\v2\t.CCounterR\bacquired\"\xf8\x01\n" +
 	"\fShoppingList\x12\x1d\n" +
 	"\n" +
 	"replica_id\x18\x01 \x01(\tR\treplicaId\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x124\n" +
-	"\vitems_ormap\x18\x04 \x01(\v2\x13.ShoppingItemsORMapR\n" +
-	"itemsOrmapB'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
+	"\x04name\x18\x03 \x01(\tR\x04name\x12.\n" +
+	"\x05items\x18\x04 \x03(\v2\x18.ShoppingList.ItemsEntryR\x05items\x12,\n" +
+	"\vdot_context\x18\x05 \x01(\v2\v.DotContextR\n" +
+	"dotContext\x1aG\n" +
+	"\n" +
+	"ItemsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12#\n" +
+	"\x05value\x18\x02 \x01(\v2\r.ShoppingItemR\x05value:\x028\x01B'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
 
 var (
 	file_shopping_proto_rawDescOnce sync.Once
@@ -229,20 +192,20 @@ func file_shopping_proto_rawDescGZIP() []byte {
 	return file_shopping_proto_rawDescData
 }
 
-var file_shopping_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_shopping_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_shopping_proto_goTypes = []any{
-	(*ShoppingItem)(nil),       // 0: ShoppingItem
-	(*ShoppingItemsORMap)(nil), // 1: ShoppingItemsORMap
-	(*ShoppingList)(nil),       // 2: ShoppingList
-	nil,                        // 3: ShoppingItemsORMap.ItemsEntry
-	(*CCounter)(nil),           // 4: CCounter
+	(*ShoppingItem)(nil), // 0: ShoppingItem
+	(*ShoppingList)(nil), // 1: ShoppingList
+	nil,                  // 2: ShoppingList.ItemsEntry
+	(*CCounter)(nil),     // 3: CCounter
+	(*DotContext)(nil),   // 4: DotContext
 }
 var file_shopping_proto_depIdxs = []int32{
-	4, // 0: ShoppingItem.quantity:type_name -> CCounter
-	4, // 1: ShoppingItem.acquired:type_name -> CCounter
-	3, // 2: ShoppingItemsORMap.items:type_name -> ShoppingItemsORMap.ItemsEntry
-	1, // 3: ShoppingList.items_ormap:type_name -> ShoppingItemsORMap
-	0, // 4: ShoppingItemsORMap.ItemsEntry.value:type_name -> ShoppingItem
+	3, // 0: ShoppingItem.quantity:type_name -> CCounter
+	3, // 1: ShoppingItem.acquired:type_name -> CCounter
+	2, // 2: ShoppingList.items:type_name -> ShoppingList.ItemsEntry
+	4, // 3: ShoppingList.dot_context:type_name -> DotContext
+	0, // 4: ShoppingList.ItemsEntry.value:type_name -> ShoppingItem
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
@@ -262,7 +225,7 @@ func file_shopping_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shopping_proto_rawDesc), len(file_shopping_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

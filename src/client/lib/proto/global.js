@@ -498,253 +498,6 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
     return ShoppingItem;
 })();
 
-export const ShoppingItemsORMap = $root.ShoppingItemsORMap = (() => {
-
-    /**
-     * Properties of a ShoppingItemsORMap.
-     * @exports IShoppingItemsORMap
-     * @interface IShoppingItemsORMap
-     * @property {Object.<string,IShoppingItem>|null} [items] ShoppingItemsORMap items
-     */
-
-    /**
-     * Constructs a new ShoppingItemsORMap.
-     * @exports ShoppingItemsORMap
-     * @classdesc Represents a ShoppingItemsORMap.
-     * @implements IShoppingItemsORMap
-     * @constructor
-     * @param {IShoppingItemsORMap=} [properties] Properties to set
-     */
-    function ShoppingItemsORMap(properties) {
-        this.items = {};
-        if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                if (properties[keys[i]] != null)
-                    this[keys[i]] = properties[keys[i]];
-    }
-
-    /**
-     * ShoppingItemsORMap items.
-     * @member {Object.<string,IShoppingItem>} items
-     * @memberof ShoppingItemsORMap
-     * @instance
-     */
-    ShoppingItemsORMap.prototype.items = $util.emptyObject;
-
-    /**
-     * Creates a new ShoppingItemsORMap instance using the specified properties.
-     * @function create
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {IShoppingItemsORMap=} [properties] Properties to set
-     * @returns {ShoppingItemsORMap} ShoppingItemsORMap instance
-     */
-    ShoppingItemsORMap.create = function create(properties) {
-        return new ShoppingItemsORMap(properties);
-    };
-
-    /**
-     * Encodes the specified ShoppingItemsORMap message. Does not implicitly {@link ShoppingItemsORMap.verify|verify} messages.
-     * @function encode
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {IShoppingItemsORMap} message ShoppingItemsORMap message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    ShoppingItemsORMap.encode = function encode(message, writer) {
-        if (!writer)
-            writer = $Writer.create();
-        if (message.items != null && Object.hasOwnProperty.call(message, "items"))
-            for (let keys = Object.keys(message.items), i = 0; i < keys.length; ++i) {
-                writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
-                $root.ShoppingItem.encode(message.items[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
-            }
-        return writer;
-    };
-
-    /**
-     * Encodes the specified ShoppingItemsORMap message, length delimited. Does not implicitly {@link ShoppingItemsORMap.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {IShoppingItemsORMap} message ShoppingItemsORMap message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    ShoppingItemsORMap.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
-    };
-
-    /**
-     * Decodes a ShoppingItemsORMap message from the specified reader or buffer.
-     * @function decode
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @param {number} [length] Message length if known beforehand
-     * @returns {ShoppingItemsORMap} ShoppingItemsORMap
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    ShoppingItemsORMap.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader))
-            reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingItemsORMap(), key, value;
-        while (reader.pos < end) {
-            let tag = reader.uint32();
-            if (tag === error)
-                break;
-            switch (tag >>> 3) {
-            case 1: {
-                    if (message.items === $util.emptyObject)
-                        message.items = {};
-                    let end2 = reader.uint32() + reader.pos;
-                    key = "";
-                    value = null;
-                    while (reader.pos < end2) {
-                        let tag2 = reader.uint32();
-                        switch (tag2 >>> 3) {
-                        case 1:
-                            key = reader.string();
-                            break;
-                        case 2:
-                            value = $root.ShoppingItem.decode(reader, reader.uint32());
-                            break;
-                        default:
-                            reader.skipType(tag2 & 7);
-                            break;
-                        }
-                    }
-                    message.items[key] = value;
-                    break;
-                }
-            default:
-                reader.skipType(tag & 7);
-                break;
-            }
-        }
-        return message;
-    };
-
-    /**
-     * Decodes a ShoppingItemsORMap message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {ShoppingItemsORMap} ShoppingItemsORMap
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    ShoppingItemsORMap.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a ShoppingItemsORMap message.
-     * @function verify
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    ShoppingItemsORMap.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.items != null && message.hasOwnProperty("items")) {
-            if (!$util.isObject(message.items))
-                return "items: object expected";
-            let key = Object.keys(message.items);
-            for (let i = 0; i < key.length; ++i) {
-                let error = $root.ShoppingItem.verify(message.items[key[i]]);
-                if (error)
-                    return "items." + error;
-            }
-        }
-        return null;
-    };
-
-    /**
-     * Creates a ShoppingItemsORMap message from a plain object. Also converts values to their respective internal types.
-     * @function fromObject
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {Object.<string,*>} object Plain object
-     * @returns {ShoppingItemsORMap} ShoppingItemsORMap
-     */
-    ShoppingItemsORMap.fromObject = function fromObject(object) {
-        if (object instanceof $root.ShoppingItemsORMap)
-            return object;
-        let message = new $root.ShoppingItemsORMap();
-        if (object.items) {
-            if (typeof object.items !== "object")
-                throw TypeError(".ShoppingItemsORMap.items: object expected");
-            message.items = {};
-            for (let keys = Object.keys(object.items), i = 0; i < keys.length; ++i) {
-                if (typeof object.items[keys[i]] !== "object")
-                    throw TypeError(".ShoppingItemsORMap.items: object expected");
-                message.items[keys[i]] = $root.ShoppingItem.fromObject(object.items[keys[i]]);
-            }
-        }
-        return message;
-    };
-
-    /**
-     * Creates a plain object from a ShoppingItemsORMap message. Also converts values to other types if specified.
-     * @function toObject
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {ShoppingItemsORMap} message ShoppingItemsORMap
-     * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * @returns {Object.<string,*>} Plain object
-     */
-    ShoppingItemsORMap.toObject = function toObject(message, options) {
-        if (!options)
-            options = {};
-        let object = {};
-        if (options.objects || options.defaults)
-            object.items = {};
-        let keys2;
-        if (message.items && (keys2 = Object.keys(message.items)).length) {
-            object.items = {};
-            for (let j = 0; j < keys2.length; ++j)
-                object.items[keys2[j]] = $root.ShoppingItem.toObject(message.items[keys2[j]], options);
-        }
-        return object;
-    };
-
-    /**
-     * Converts this ShoppingItemsORMap to JSON.
-     * @function toJSON
-     * @memberof ShoppingItemsORMap
-     * @instance
-     * @returns {Object.<string,*>} JSON object
-     */
-    ShoppingItemsORMap.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-    };
-
-    /**
-     * Gets the default type url for ShoppingItemsORMap
-     * @function getTypeUrl
-     * @memberof ShoppingItemsORMap
-     * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
-     */
-    ShoppingItemsORMap.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-        if (typeUrlPrefix === undefined) {
-            typeUrlPrefix = "type.googleapis.com";
-        }
-        return typeUrlPrefix + "/ShoppingItemsORMap";
-    };
-
-    return ShoppingItemsORMap;
-})();
-
 export const ShoppingList = $root.ShoppingList = (() => {
 
     /**
@@ -754,7 +507,8 @@ export const ShoppingList = $root.ShoppingList = (() => {
      * @property {string|null} [replicaId] ShoppingList replicaId
      * @property {string|null} [id] ShoppingList id
      * @property {string|null} [name] ShoppingList name
-     * @property {IShoppingItemsORMap|null} [itemsOrmap] ShoppingList itemsOrmap
+     * @property {Object.<string,IShoppingItem>|null} [items] ShoppingList items
+     * @property {IDotContext|null} [dotContext] ShoppingList dotContext
      */
 
     /**
@@ -766,6 +520,7 @@ export const ShoppingList = $root.ShoppingList = (() => {
      * @param {IShoppingList=} [properties] Properties to set
      */
     function ShoppingList(properties) {
+        this.items = {};
         if (properties)
             for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
@@ -797,12 +552,20 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.prototype.name = "";
 
     /**
-     * ShoppingList itemsOrmap.
-     * @member {IShoppingItemsORMap|null|undefined} itemsOrmap
+     * ShoppingList items.
+     * @member {Object.<string,IShoppingItem>} items
      * @memberof ShoppingList
      * @instance
      */
-    ShoppingList.prototype.itemsOrmap = null;
+    ShoppingList.prototype.items = $util.emptyObject;
+
+    /**
+     * ShoppingList dotContext.
+     * @member {IDotContext|null|undefined} dotContext
+     * @memberof ShoppingList
+     * @instance
+     */
+    ShoppingList.prototype.dotContext = null;
 
     /**
      * Creates a new ShoppingList instance using the specified properties.
@@ -834,8 +597,13 @@ export const ShoppingList = $root.ShoppingList = (() => {
             writer.uint32(/* id 2, wireType 2 =*/18).string(message.id);
         if (message.name != null && Object.hasOwnProperty.call(message, "name"))
             writer.uint32(/* id 3, wireType 2 =*/26).string(message.name);
-        if (message.itemsOrmap != null && Object.hasOwnProperty.call(message, "itemsOrmap"))
-            $root.ShoppingItemsORMap.encode(message.itemsOrmap, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+        if (message.items != null && Object.hasOwnProperty.call(message, "items"))
+            for (let keys = Object.keys(message.items), i = 0; i < keys.length; ++i) {
+                writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
+                $root.ShoppingItem.encode(message.items[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+            }
+        if (message.dotContext != null && Object.hasOwnProperty.call(message, "dotContext"))
+            $root.DotContext.encode(message.dotContext, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
         return writer;
     };
 
@@ -866,7 +634,7 @@ export const ShoppingList = $root.ShoppingList = (() => {
     ShoppingList.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList();
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ShoppingList(), key, value;
         while (reader.pos < end) {
             let tag = reader.uint32();
             if (tag === error)
@@ -885,7 +653,30 @@ export const ShoppingList = $root.ShoppingList = (() => {
                     break;
                 }
             case 4: {
-                    message.itemsOrmap = $root.ShoppingItemsORMap.decode(reader, reader.uint32());
+                    if (message.items === $util.emptyObject)
+                        message.items = {};
+                    let end2 = reader.uint32() + reader.pos;
+                    key = "";
+                    value = null;
+                    while (reader.pos < end2) {
+                        let tag2 = reader.uint32();
+                        switch (tag2 >>> 3) {
+                        case 1:
+                            key = reader.string();
+                            break;
+                        case 2:
+                            value = $root.ShoppingItem.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag2 & 7);
+                            break;
+                        }
+                    }
+                    message.items[key] = value;
+                    break;
+                }
+            case 5: {
+                    message.dotContext = $root.DotContext.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -932,10 +723,20 @@ export const ShoppingList = $root.ShoppingList = (() => {
         if (message.name != null && message.hasOwnProperty("name"))
             if (!$util.isString(message.name))
                 return "name: string expected";
-        if (message.itemsOrmap != null && message.hasOwnProperty("itemsOrmap")) {
-            let error = $root.ShoppingItemsORMap.verify(message.itemsOrmap);
+        if (message.items != null && message.hasOwnProperty("items")) {
+            if (!$util.isObject(message.items))
+                return "items: object expected";
+            let key = Object.keys(message.items);
+            for (let i = 0; i < key.length; ++i) {
+                let error = $root.ShoppingItem.verify(message.items[key[i]]);
+                if (error)
+                    return "items." + error;
+            }
+        }
+        if (message.dotContext != null && message.hasOwnProperty("dotContext")) {
+            let error = $root.DotContext.verify(message.dotContext);
             if (error)
-                return "itemsOrmap." + error;
+                return "dotContext." + error;
         }
         return null;
     };
@@ -958,10 +759,20 @@ export const ShoppingList = $root.ShoppingList = (() => {
             message.id = String(object.id);
         if (object.name != null)
             message.name = String(object.name);
-        if (object.itemsOrmap != null) {
-            if (typeof object.itemsOrmap !== "object")
-                throw TypeError(".ShoppingList.itemsOrmap: object expected");
-            message.itemsOrmap = $root.ShoppingItemsORMap.fromObject(object.itemsOrmap);
+        if (object.items) {
+            if (typeof object.items !== "object")
+                throw TypeError(".ShoppingList.items: object expected");
+            message.items = {};
+            for (let keys = Object.keys(object.items), i = 0; i < keys.length; ++i) {
+                if (typeof object.items[keys[i]] !== "object")
+                    throw TypeError(".ShoppingList.items: object expected");
+                message.items[keys[i]] = $root.ShoppingItem.fromObject(object.items[keys[i]]);
+            }
+        }
+        if (object.dotContext != null) {
+            if (typeof object.dotContext !== "object")
+                throw TypeError(".ShoppingList.dotContext: object expected");
+            message.dotContext = $root.DotContext.fromObject(object.dotContext);
         }
         return message;
     };
@@ -979,11 +790,13 @@ export const ShoppingList = $root.ShoppingList = (() => {
         if (!options)
             options = {};
         let object = {};
+        if (options.objects || options.defaults)
+            object.items = {};
         if (options.defaults) {
             object.replicaId = "";
             object.id = "";
             object.name = "";
-            object.itemsOrmap = null;
+            object.dotContext = null;
         }
         if (message.replicaId != null && message.hasOwnProperty("replicaId"))
             object.replicaId = message.replicaId;
@@ -991,8 +804,14 @@ export const ShoppingList = $root.ShoppingList = (() => {
             object.id = message.id;
         if (message.name != null && message.hasOwnProperty("name"))
             object.name = message.name;
-        if (message.itemsOrmap != null && message.hasOwnProperty("itemsOrmap"))
-            object.itemsOrmap = $root.ShoppingItemsORMap.toObject(message.itemsOrmap, options);
+        let keys2;
+        if (message.items && (keys2 = Object.keys(message.items)).length) {
+            object.items = {};
+            for (let j = 0; j < keys2.length; ++j)
+                object.items[keys2[j]] = $root.ShoppingItem.toObject(message.items[keys2[j]], options);
+        }
+        if (message.dotContext != null && message.hasOwnProperty("dotContext"))
+            object.dotContext = $root.DotContext.toObject(message.dotContext, options);
         return object;
     };
 
@@ -1546,7 +1365,8 @@ export const DotKernel = $root.DotKernel = (() => {
      * @exports IDotKernel
      * @interface IDotKernel
      * @property {Array.<IDot>|null} [dotKeys] DotKernel dotKeys
-     * @property {Array.<string>|null} [dotValues] DotKernel dotValues
+     * @property {Array.<number|Long>|null} [dotValues] DotKernel dotValues
+     * @property {IDotContext|null} [dotContext] DotKernel dotContext
      */
 
     /**
@@ -1576,11 +1396,19 @@ export const DotKernel = $root.DotKernel = (() => {
 
     /**
      * DotKernel dotValues.
-     * @member {Array.<string>} dotValues
+     * @member {Array.<number|Long>} dotValues
      * @memberof DotKernel
      * @instance
      */
     DotKernel.prototype.dotValues = $util.emptyArray;
+
+    /**
+     * DotKernel dotContext.
+     * @member {IDotContext|null|undefined} dotContext
+     * @memberof DotKernel
+     * @instance
+     */
+    DotKernel.prototype.dotContext = null;
 
     /**
      * Creates a new DotKernel instance using the specified properties.
@@ -1609,9 +1437,14 @@ export const DotKernel = $root.DotKernel = (() => {
         if (message.dotKeys != null && message.dotKeys.length)
             for (let i = 0; i < message.dotKeys.length; ++i)
                 $root.Dot.encode(message.dotKeys[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-        if (message.dotValues != null && message.dotValues.length)
+        if (message.dotValues != null && message.dotValues.length) {
+            writer.uint32(/* id 2, wireType 2 =*/18).fork();
             for (let i = 0; i < message.dotValues.length; ++i)
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.dotValues[i]);
+                writer.int64(message.dotValues[i]);
+            writer.ldelim();
+        }
+        if (message.dotContext != null && Object.hasOwnProperty.call(message, "dotContext"))
+            $root.DotContext.encode(message.dotContext, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
         return writer;
     };
 
@@ -1657,7 +1490,16 @@ export const DotKernel = $root.DotKernel = (() => {
             case 2: {
                     if (!(message.dotValues && message.dotValues.length))
                         message.dotValues = [];
-                    message.dotValues.push(reader.string());
+                    if ((tag & 7) === 2) {
+                        let end2 = reader.uint32() + reader.pos;
+                        while (reader.pos < end2)
+                            message.dotValues.push(reader.int64());
+                    } else
+                        message.dotValues.push(reader.int64());
+                    break;
+                }
+            case 3: {
+                    message.dotContext = $root.DotContext.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -1708,8 +1550,13 @@ export const DotKernel = $root.DotKernel = (() => {
             if (!Array.isArray(message.dotValues))
                 return "dotValues: array expected";
             for (let i = 0; i < message.dotValues.length; ++i)
-                if (!$util.isString(message.dotValues[i]))
-                    return "dotValues: string[] expected";
+                if (!$util.isInteger(message.dotValues[i]) && !(message.dotValues[i] && $util.isInteger(message.dotValues[i].low) && $util.isInteger(message.dotValues[i].high)))
+                    return "dotValues: integer|Long[] expected";
+        }
+        if (message.dotContext != null && message.hasOwnProperty("dotContext")) {
+            let error = $root.DotContext.verify(message.dotContext);
+            if (error)
+                return "dotContext." + error;
         }
         return null;
     };
@@ -1741,7 +1588,19 @@ export const DotKernel = $root.DotKernel = (() => {
                 throw TypeError(".DotKernel.dotValues: array expected");
             message.dotValues = [];
             for (let i = 0; i < object.dotValues.length; ++i)
-                message.dotValues[i] = String(object.dotValues[i]);
+                if ($util.Long)
+                    (message.dotValues[i] = $util.Long.fromValue(object.dotValues[i])).unsigned = false;
+                else if (typeof object.dotValues[i] === "string")
+                    message.dotValues[i] = parseInt(object.dotValues[i], 10);
+                else if (typeof object.dotValues[i] === "number")
+                    message.dotValues[i] = object.dotValues[i];
+                else if (typeof object.dotValues[i] === "object")
+                    message.dotValues[i] = new $util.LongBits(object.dotValues[i].low >>> 0, object.dotValues[i].high >>> 0).toNumber();
+        }
+        if (object.dotContext != null) {
+            if (typeof object.dotContext !== "object")
+                throw TypeError(".DotKernel.dotContext: object expected");
+            message.dotContext = $root.DotContext.fromObject(object.dotContext);
         }
         return message;
     };
@@ -1763,6 +1622,8 @@ export const DotKernel = $root.DotKernel = (() => {
             object.dotKeys = [];
             object.dotValues = [];
         }
+        if (options.defaults)
+            object.dotContext = null;
         if (message.dotKeys && message.dotKeys.length) {
             object.dotKeys = [];
             for (let j = 0; j < message.dotKeys.length; ++j)
@@ -1771,8 +1632,13 @@ export const DotKernel = $root.DotKernel = (() => {
         if (message.dotValues && message.dotValues.length) {
             object.dotValues = [];
             for (let j = 0; j < message.dotValues.length; ++j)
-                object.dotValues[j] = message.dotValues[j];
+                if (typeof message.dotValues[j] === "number")
+                    object.dotValues[j] = options.longs === String ? String(message.dotValues[j]) : message.dotValues[j];
+                else
+                    object.dotValues[j] = options.longs === String ? $util.Long.prototype.toString.call(message.dotValues[j]) : options.longs === Number ? new $util.LongBits(message.dotValues[j].low >>> 0, message.dotValues[j].high >>> 0).toNumber() : message.dotValues[j];
         }
+        if (message.dotContext != null && message.hasOwnProperty("dotContext"))
+            object.dotContext = $root.DotContext.toObject(message.dotContext, options);
         return object;
     };
 

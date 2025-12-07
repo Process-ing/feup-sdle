@@ -3,6 +3,7 @@ package crdt
 import (
 	"fmt"
 	"sdle-server/crdt/generic"
+	g01 "sdle-server/proto"
 )
 
 type ShoppingList struct {
@@ -28,8 +29,14 @@ func NewShoppingList(replicaID string, listID string, name string) *ShoppingList
 	}
 }
 
+
+
 func (sl *ShoppingList) ReplicaID() string {
 	return sl.replicaID
+}
+
+func (sl *ShoppingList) ListID() string {
+	return sl.listID
 }
 
 func (sl *ShoppingList) Name() string {
@@ -114,4 +121,40 @@ func (sl *ShoppingList) Clone() *ShoppingList {
 func (sl *ShoppingList) String() string {
 	return fmt.Sprintf("ShoppingList{replicaID: %s, listID: %s, name: %s, dotContext: %v, items: %v}",
 		sl.replicaID, sl.listID, sl.name, sl.dotContext, sl.items)
+}
+
+func (sl *ShoppingList) ToProto() *g01.ShoppingList {
+	protoItems := make(map[string]*g01.ShoppingItem)
+	ids := sl.items.Keys()
+
+	for _, id := range ids {
+		protoItems[id] = sl.items.Get(id).ToProto()
+	}
+
+	return &g01.ShoppingList{
+		ReplicaId: sl.replicaID,
+		Id:        sl.listID,
+		Name:      sl.name,
+		Items:     protoItems,
+		DotContext: sl.dotContext.ToProto(),
+	}
+}
+
+func ShoppingListFromProto(protoList *g01.ShoppingList) *ShoppingList {
+	ctx := crdt.DotContextFromProto(protoList.GetDotContext())
+
+	itemMap := make(map[string]*ShoppingItem)
+	for id, protoItem := range protoList.GetItems() {
+		itemMap[id] = ShoppingItemFromProto(protoItem, protoList.GetReplicaId(), id, ctx)
+	}
+
+	items := crdt.NewORMapFrom[string, *ShoppingItem](protoList.GetReplicaId(), ctx, itemMap)
+
+	return &ShoppingList{
+		replicaID:  protoList.GetReplicaId(),
+		listID:     protoList.GetId(),
+		name:       protoList.GetName(),
+		dotContext: ctx,
+		items:      items,
+	}
 }

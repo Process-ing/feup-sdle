@@ -1,6 +1,9 @@
 package crdt
 
-import "fmt"
+import (
+	"fmt"
+	g01 "sdle-server/proto"
+)
 
 type CCounter struct {
 	id 	      string
@@ -82,4 +85,20 @@ func (cc *CCounter) Clone() *CCounter {
 	clone := NewCCounter(cc.id)
 	clone.dotKernel = cc.dotKernel.Clone()
 	return clone
+}
+
+func (cc *CCounter) ToProto() *g01.CCounter {
+	return &g01.CCounter{
+		DotKernel: (*Int64DotKernel)(cc.dotKernel).ToProto(),
+	}
+}
+
+func CCounterFromProto(protoCounter *g01.CCounter, id string, ctx *DotContext) *CCounter {
+	dotKernel := NewDotKernel[int64]()
+	dotKernel.SetContext(ctx)
+
+	return &CCounter{
+		id: id,
+		dotKernel: dotKernel,
+	}
 }

@@ -1,6 +1,9 @@
 package crdt
 
-import crdt "sdle-server/crdt/generic"
+import (
+	crdt "sdle-server/crdt/generic"
+	g01 "sdle-server/proto"
+)
 
 type ShoppingItem struct {
 	replicaID  string
@@ -160,4 +163,26 @@ func (si ShoppingItem) String() string {
 		", quantity: " + si.quantity.String() +
 		", acquired: " + si.acquired.String() +
 	"}"
+}
+
+func (si *ShoppingItem) ToProto() *g01.ShoppingItem {
+	return &g01.ShoppingItem{
+		Name:     si.name,
+		Quantity: si.quantity.ToProto(),
+		Acquired: si.acquired.ToProto(),
+	}
+}
+
+func ShoppingItemFromProto(protoItem *g01.ShoppingItem, replicaID string, itemID string, ctx *crdt.DotContext) *ShoppingItem {
+	quantity := crdt.CCounterFromProto(protoItem.GetQuantity(), replicaID, ctx)
+	acquired := crdt.CCounterFromProto(protoItem.GetAcquired(), replicaID, ctx)
+
+	return &ShoppingItem{
+		replicaID:  replicaID,
+		dotContext: ctx,
+		itemID:     itemID,
+		name:       protoItem.GetName(),
+		quantity:   quantity,
+		acquired:   acquired,
+	}
 }

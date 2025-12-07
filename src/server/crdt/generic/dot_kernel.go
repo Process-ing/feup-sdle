@@ -1,6 +1,9 @@
 package crdt
 
-import "fmt"
+import (
+	"fmt"
+	g01 "sdle-server/proto"
+)
 
 type DotKernel[V comparable] struct {
 	dotValues  map[Dot]V
@@ -108,4 +111,42 @@ func (dk *DotKernel[V]) Clone() *DotKernel[V] {
 
 func (dk *DotKernel[V]) String() string {
 	return fmt.Sprintf("DotKernel{dotValues: %v, dotContext: %v}", dk.dotValues, dk.dotContext)
+}
+
+// Necessary type alias to allow int64 as type parameter
+type Int64DotKernel DotKernel[int64]
+
+func (dk *Int64DotKernel) ToProto() *g01.DotKernel {
+	protoDotKeys := make([]*g01.Dot, 0)
+	protoDotValues := make([]int64, 0)
+
+	for dot, value := range dk.dotValues {
+		protoDot := dot.ToProto()
+		protoDotKeys = append(protoDotKeys, protoDot)
+		protoDotValues = append(protoDotValues, value)
+	}
+
+	return &g01.DotKernel{
+		DotKeys:    protoDotKeys,
+		DotValues:  protoDotValues,
+		DotContext: dk.dotContext.ToProto(),
+	}
+}
+
+func DotKernelFromProto(protoDotKernel *g01.DotKernel) *Int64DotKernel {
+	if len(protoDotKernel.GetDotKeys()) != len(protoDotKernel.GetDotValues()) {
+		panic("DotKernelFromProto: mismatched lengths of dot keys and values")
+	}
+
+	dk := NewDotKernel[int64]()
+
+	for i, protoDot := range protoDotKernel.GetDotKeys() {
+		dot := DotFromProto(protoDot)
+		value := protoDotKernel.GetDotValues()[i]
+		dk.dotValues[dot] = value
+	}
+
+	dk.dotContext = DotContextFromProto(protoDotKernel.GetDotContext())
+
+	return (*Int64DotKernel)(dk)
 }

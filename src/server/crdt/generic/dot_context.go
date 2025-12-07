@@ -2,23 +2,24 @@ package crdt
 
 import (
 	"fmt"
+	g01 "sdle-server/proto"
 	"sdle-server/utils"
 )
 
 type DotContext struct {
-	compactContext map[string]uint32
-	dots           utils.Set[Dot]
+	versionVector map[string]uint32
+	dots          utils.Set[Dot]
 }
 
 func NewDotContext() *DotContext {
 	return &DotContext{
-		compactContext: make(map[string]uint32),
-		dots:           utils.NewSet[Dot](),
+		versionVector: make(map[string]uint32),
+		dots:          utils.NewSet[Dot](),
 	}
 }
 
 func (ctx *DotContext) Knows(dot Dot) bool {
-	if localSeq, ok := ctx.compactContext[dot.id]; ok {
+	if localSeq, ok := ctx.versionVector[dot.id]; ok {
 		return dot.seq <= localSeq
 	}
 
@@ -26,12 +27,12 @@ func (ctx *DotContext) Knows(dot Dot) bool {
 }
 
 func (ctx *DotContext) MakeDot(id string) Dot {
-	if localSeq, ok := ctx.compactContext[id]; ok {
+	if localSeq, ok := ctx.versionVector[id]; ok {
 		localSeq++
-		ctx.compactContext[id] = localSeq
+		ctx.versionVector[id] = localSeq
 		return NewDot(id, localSeq)
 	} else {
-		ctx.compactContext[id] = 1
+		ctx.versionVector[id] = 1
 		return NewDot(id, 1)
 	}
 }
@@ -53,9 +54,9 @@ func (ctx *DotContext) Compact() {
 		dotAdded = false
 
 		for dot := range ctx.dots {
-			if localSeq, ok := ctx.compactContext[dot.id]; ok { // Has entry in compact context
-				if dot.seq == localSeq + 1 { // Dot is sequentially after, can compact
-					ctx.compactContext[dot.id] = dot.seq
+			if localSeq, ok := ctx.versionVector[dot.id]; ok { // Has entry in compact context
+				if dot.seq == localSeq+1 { // Dot is sequentially after, can compact
+					ctx.versionVector[dot.id] = dot.seq
 					ctx.dots.Remove(dot)
 					dotAdded = true
 
@@ -65,7 +66,7 @@ func (ctx *DotContext) Compact() {
 
 			} else { // No entry in compact context exists
 				if dot.seq == 1 { // Can compact
-					ctx.compactContext[dot.id] = 1
+					ctx.versionVector[dot.id] = 1
 					ctx.dots.Remove(dot)
 					dotAdded = true
 				}
@@ -80,11 +81,11 @@ func (ctx *DotContext) Join(other *DotContext) {
 	}
 
 	// Create pointwise maximum of compact contexts
-	for id, otherSeq := range other.compactContext {
-		if localSeq, ok := ctx.compactContext[id]; ok {
-			ctx.compactContext[id] = max(localSeq, otherSeq)
+	for id, otherSeq := range other.versionVector {
+		if localSeq, ok := ctx.versionVector[id]; ok {
+			ctx.versionVector[id] = max(localSeq, otherSeq)
 		} else {
-			ctx.compactContext[id] = otherSeq
+			ctx.versionVector[id] = otherSeq
 		}
 	}
 
@@ -98,8 +99,8 @@ func (ctx *DotContext) Join(other *DotContext) {
 func (ctx *DotContext) Clone() *DotContext {
 	clone := NewDotContext()
 
-	for id, seq := range ctx.compactContext {
-		clone.compactContext[id] = seq
+	for id, seq := range ctx.versionVector {
+		clone.versionVector[id] = seq
 	}
 
 	for dot := range ctx.dots {
@@ -110,9 +111,9 @@ func (ctx *DotContext) Clone() *DotContext {
 }
 
 func (ctx *DotContext) Copy(other *DotContext) {
-	ctx.compactContext = make(map[string]uint32)
-	for id, seq := range other.compactContext {
-		ctx.compactContext[id] = seq
+	ctx.versionVector = make(map[string]uint32)
+	for id, seq := range other.versionVector {
+		ctx.versionVector[id] = seq
 	}
 
 	ctx.dots = utils.NewSet[Dot]()
@@ -122,5 +123,32 @@ func (ctx *DotContext) Copy(other *DotContext) {
 }
 
 func (ctx *DotContext) String() string {
-	return fmt.Sprintf("DotContext{compactContext: %v, dots: %v}", ctx.compactContext, ctx.dots)
+	return fmt.Sprintf("DotContext{compactContext: %v, dots: %v}", ctx.versionVector, ctx.dots)
+}
+
+func (ctx *DotContext) ToProto() *g01.DotContext {
+	protoDots := []*g01.Dot{}
+	for dot := range ctx.dots {
+		protoDots = append(protoDots, dot.ToProto())
+	}
+
+	return &g01.DotContext{
+		VersionVector: ctx.versionVector,
+		Dots:          protoDots,
+	}
+}
+
+func DotContextFromProto(protoCtx *g01.DotContext) *DotContext {
+	ctx := NewDotContext()
+
+	for id, seq := range protoCtx.GetVersionVector() {
+		ctx.versionVector[id] = seq
+	}
+
+	for _, protoDot := range protoCtx.GetDots() {
+		dot := DotFromProto(protoDot)
+		ctx.dots.Add(dot)
+	}
+
+	return ctx
 }

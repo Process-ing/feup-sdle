@@ -16,6 +16,14 @@ func NewORMap[K comparable, V DotContextCRDT[V]](id string) *ORMap[K, V] {
     }
 }
 
+func NewORMapFrom[K comparable, V DotContextCRDT[V]](id string, ctx *DotContext, valueMap map[K]V) *ORMap[K, V] {
+	return &ORMap[K, V]{
+		id:         id,
+		dotContext: ctx,
+		valueMap:   valueMap,
+	}
+}
+
 func (ormap *ORMap[K, V]) Context() *DotContext {
 	return ormap.dotContext
 }

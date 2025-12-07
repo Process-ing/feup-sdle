@@ -10,13 +10,10 @@ message ShoppingItem {
     CCounter acquired = 3;
 }
 
-message ShoppingItemsORMap {
-    map<string, ShoppingItem> items = 1;
-}
-
 message ShoppingList {
     string replica_id = 1;
     string id = 2;
     string name = 3;
-    ShoppingItemsORMap items_ormap = 4;
+    map<string, ShoppingItem> items = 4;
+    DotContext dot_context = 5;
 }

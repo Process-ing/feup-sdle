@@ -128,7 +128,8 @@ func (x *DotContext) GetDots() []*Dot {
 type DotKernel struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DotKeys       []*Dot                 `protobuf:"bytes,1,rep,name=dot_keys,json=dotKeys,proto3" json:"dot_keys,omitempty"`
-	DotValues     []string               `protobuf:"bytes,2,rep,name=dot_values,json=dotValues,proto3" json:"dot_values,omitempty"`
+	DotValues     []int64                `protobuf:"varint,2,rep,packed,name=dot_values,json=dotValues,proto3" json:"dot_values,omitempty"`
+	DotContext    *DotContext            `protobuf:"bytes,3,opt,name=dot_context,json=dotContext,proto3" json:"dot_context,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -170,9 +171,16 @@ func (x *DotKernel) GetDotKeys() []*Dot {
 	return nil
 }
 
-func (x *DotKernel) GetDotValues() []string {
+func (x *DotKernel) GetDotValues() []int64 {
 	if x != nil {
 		return x.DotValues
+	}
+	return nil
+}
+
+func (x *DotKernel) GetDotContext() *DotContext {
+	if x != nil {
+		return x.DotContext
 	}
 	return nil
 }
@@ -236,11 +244,13 @@ const file_crdt_proto_rawDesc = "" +
 	"\x04dots\x18\x02 \x03(\v2\x04.DotR\x04dots\x1a@\n" +
 	"\x12VersionVectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\rR\x05value:\x028\x01\"K\n" +
+	"\x05value\x18\x02 \x01(\rR\x05value:\x028\x01\"y\n" +
 	"\tDotKernel\x12\x1f\n" +
 	"\bdot_keys\x18\x01 \x03(\v2\x04.DotR\adotKeys\x12\x1d\n" +
 	"\n" +
-	"dot_values\x18\x02 \x03(\tR\tdotValues\"5\n" +
+	"dot_values\x18\x02 \x03(\x03R\tdotValues\x12,\n" +
+	"\vdot_context\x18\x03 \x01(\v2\v.DotContextR\n" +
+	"dotContext\"5\n" +
 	"\bCCounter\x12)\n" +
 	"\n" +
 	"dot_kernel\x18\x01 \x01(\v2\n" +
@@ -270,12 +280,13 @@ var file_crdt_proto_depIdxs = []int32{
 	4, // 0: DotContext.version_vector:type_name -> DotContext.VersionVectorEntry
 	0, // 1: DotContext.dots:type_name -> Dot
 	0, // 2: DotKernel.dot_keys:type_name -> Dot
-	2, // 3: CCounter.dot_kernel:type_name -> DotKernel
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	1, // 3: DotKernel.dot_context:type_name -> DotContext
+	2, // 4: CCounter.dot_kernel:type_name -> DotKernel
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_crdt_proto_init() }

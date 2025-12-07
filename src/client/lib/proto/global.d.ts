@@ -209,103 +209,6 @@ export class ShoppingItem implements IShoppingItem {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a ShoppingItemsORMap. */
-export interface IShoppingItemsORMap {
-
-    /** ShoppingItemsORMap items */
-    items?: ({ [k: string]: IShoppingItem }|null);
-}
-
-/** Represents a ShoppingItemsORMap. */
-export class ShoppingItemsORMap implements IShoppingItemsORMap {
-
-    /**
-     * Constructs a new ShoppingItemsORMap.
-     * @param [properties] Properties to set
-     */
-    constructor(properties?: IShoppingItemsORMap);
-
-    /** ShoppingItemsORMap items. */
-    public items: { [k: string]: IShoppingItem };
-
-    /**
-     * Creates a new ShoppingItemsORMap instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns ShoppingItemsORMap instance
-     */
-    public static create(properties?: IShoppingItemsORMap): ShoppingItemsORMap;
-
-    /**
-     * Encodes the specified ShoppingItemsORMap message. Does not implicitly {@link ShoppingItemsORMap.verify|verify} messages.
-     * @param message ShoppingItemsORMap message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    public static encode(message: IShoppingItemsORMap, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
-     * Encodes the specified ShoppingItemsORMap message, length delimited. Does not implicitly {@link ShoppingItemsORMap.verify|verify} messages.
-     * @param message ShoppingItemsORMap message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    public static encodeDelimited(message: IShoppingItemsORMap, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
-     * Decodes a ShoppingItemsORMap message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns ShoppingItemsORMap
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ShoppingItemsORMap;
-
-    /**
-     * Decodes a ShoppingItemsORMap message from the specified reader or buffer, length delimited.
-     * @param reader Reader or buffer to decode from
-     * @returns ShoppingItemsORMap
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ShoppingItemsORMap;
-
-    /**
-     * Verifies a ShoppingItemsORMap message.
-     * @param message Plain object to verify
-     * @returns `null` if valid, otherwise the reason why it is not
-     */
-    public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a ShoppingItemsORMap message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns ShoppingItemsORMap
-     */
-    public static fromObject(object: { [k: string]: any }): ShoppingItemsORMap;
-
-    /**
-     * Creates a plain object from a ShoppingItemsORMap message. Also converts values to other types if specified.
-     * @param message ShoppingItemsORMap
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: ShoppingItemsORMap, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this ShoppingItemsORMap to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
-
-    /**
-     * Gets the default type url for ShoppingItemsORMap
-     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns The default type url
-     */
-    public static getTypeUrl(typeUrlPrefix?: string): string;
-}
-
 /** Properties of a ShoppingList. */
 export interface IShoppingList {
 
@@ -318,8 +221,11 @@ export interface IShoppingList {
     /** ShoppingList name */
     name?: (string|null);
 
-    /** ShoppingList itemsOrmap */
-    itemsOrmap?: (IShoppingItemsORMap|null);
+    /** ShoppingList items */
+    items?: ({ [k: string]: IShoppingItem }|null);
+
+    /** ShoppingList dotContext */
+    dotContext?: (IDotContext|null);
 }
 
 /** Represents a ShoppingList. */
@@ -340,8 +246,11 @@ export class ShoppingList implements IShoppingList {
     /** ShoppingList name. */
     public name: string;
 
-    /** ShoppingList itemsOrmap. */
-    public itemsOrmap?: (IShoppingItemsORMap|null);
+    /** ShoppingList items. */
+    public items: { [k: string]: IShoppingItem };
+
+    /** ShoppingList dotContext. */
+    public dotContext?: (IDotContext|null);
 
     /**
      * Creates a new ShoppingList instance using the specified properties.
@@ -634,7 +543,10 @@ export interface IDotKernel {
     dotKeys?: (IDot[]|null);
 
     /** DotKernel dotValues */
-    dotValues?: (string[]|null);
+    dotValues?: ((number|Long)[]|null);
+
+    /** DotKernel dotContext */
+    dotContext?: (IDotContext|null);
 }
 
 /** Represents a DotKernel. */
@@ -650,7 +562,10 @@ export class DotKernel implements IDotKernel {
     public dotKeys: IDot[];
 
     /** DotKernel dotValues. */
-    public dotValues: string[];
+    public dotValues: (number|Long)[];
+
+    /** DotKernel dotContext. */
+    public dotContext?: (IDotContext|null);
 
     /**
      * Creates a new DotKernel instance using the specified properties.
