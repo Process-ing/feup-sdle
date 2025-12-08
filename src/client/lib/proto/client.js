@@ -476,6 +476,235 @@ export const ClientRequest = $root.ClientRequest = (() => {
     return ClientRequest;
 })();
 
+export const ServerResponse = $root.ServerResponse = (() => {
+
+    /**
+     * Properties of a ServerResponse.
+     * @exports IServerResponse
+     * @interface IServerResponse
+     * @property {IShoppingList|null} [shoppingList] ServerResponse shoppingList
+     */
+
+    /**
+     * Constructs a new ServerResponse.
+     * @exports ServerResponse
+     * @classdesc Represents a ServerResponse.
+     * @implements IServerResponse
+     * @constructor
+     * @param {IServerResponse=} [properties] Properties to set
+     */
+    function ServerResponse(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * ServerResponse shoppingList.
+     * @member {IShoppingList|null|undefined} shoppingList
+     * @memberof ServerResponse
+     * @instance
+     */
+    ServerResponse.prototype.shoppingList = null;
+
+    // OneOf field names bound to virtual getters and setters
+    let $oneOfFields;
+
+    /**
+     * ServerResponse responseType.
+     * @member {"shoppingList"|undefined} responseType
+     * @memberof ServerResponse
+     * @instance
+     */
+    Object.defineProperty(ServerResponse.prototype, "responseType", {
+        get: $util.oneOfGetter($oneOfFields = ["shoppingList"]),
+        set: $util.oneOfSetter($oneOfFields)
+    });
+
+    /**
+     * Creates a new ServerResponse instance using the specified properties.
+     * @function create
+     * @memberof ServerResponse
+     * @static
+     * @param {IServerResponse=} [properties] Properties to set
+     * @returns {ServerResponse} ServerResponse instance
+     */
+    ServerResponse.create = function create(properties) {
+        return new ServerResponse(properties);
+    };
+
+    /**
+     * Encodes the specified ServerResponse message. Does not implicitly {@link ServerResponse.verify|verify} messages.
+     * @function encode
+     * @memberof ServerResponse
+     * @static
+     * @param {IServerResponse} message ServerResponse message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ServerResponse.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.shoppingList != null && Object.hasOwnProperty.call(message, "shoppingList"))
+            $root.ShoppingList.encode(message.shoppingList, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified ServerResponse message, length delimited. Does not implicitly {@link ServerResponse.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof ServerResponse
+     * @static
+     * @param {IServerResponse} message ServerResponse message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ServerResponse.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a ServerResponse message from the specified reader or buffer.
+     * @function decode
+     * @memberof ServerResponse
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ServerResponse} ServerResponse
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ServerResponse.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ServerResponse();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            case 1: {
+                    message.shoppingList = $root.ShoppingList.decode(reader, reader.uint32());
+                    break;
+                }
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a ServerResponse message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof ServerResponse
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {ServerResponse} ServerResponse
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ServerResponse.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a ServerResponse message.
+     * @function verify
+     * @memberof ServerResponse
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    ServerResponse.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        let properties = {};
+        if (message.shoppingList != null && message.hasOwnProperty("shoppingList")) {
+            properties.responseType = 1;
+            {
+                let error = $root.ShoppingList.verify(message.shoppingList);
+                if (error)
+                    return "shoppingList." + error;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Creates a ServerResponse message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof ServerResponse
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {ServerResponse} ServerResponse
+     */
+    ServerResponse.fromObject = function fromObject(object) {
+        if (object instanceof $root.ServerResponse)
+            return object;
+        let message = new $root.ServerResponse();
+        if (object.shoppingList != null) {
+            if (typeof object.shoppingList !== "object")
+                throw TypeError(".ServerResponse.shoppingList: object expected");
+            message.shoppingList = $root.ShoppingList.fromObject(object.shoppingList);
+        }
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a ServerResponse message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof ServerResponse
+     * @static
+     * @param {ServerResponse} message ServerResponse
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    ServerResponse.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        let object = {};
+        if (message.shoppingList != null && message.hasOwnProperty("shoppingList")) {
+            object.shoppingList = $root.ShoppingList.toObject(message.shoppingList, options);
+            if (options.oneofs)
+                object.responseType = "shoppingList";
+        }
+        return object;
+    };
+
+    /**
+     * Converts this ServerResponse to JSON.
+     * @function toJSON
+     * @memberof ServerResponse
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    ServerResponse.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for ServerResponse
+     * @function getTypeUrl
+     * @memberof ServerResponse
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    ServerResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/ServerResponse";
+    };
+
+    return ServerResponse;
+})();
+
 export const ShoppingItem = $root.ShoppingItem = (() => {
 
     /**

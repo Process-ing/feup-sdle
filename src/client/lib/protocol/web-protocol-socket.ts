@@ -1,4 +1,5 @@
-import { Entity } from "../proto/global";
+import { ShoppingList } from "@/types";
+import { ClientRequest, ServerResponse, ShoppingList as ShoppingListProto } from "../proto/client";
 import ProtocolEntity from "./protocol-entity";
 import ProtocolSocket from "./protocol-socket";
 
@@ -18,7 +19,13 @@ class WebProtocolSocket implements ProtocolSocket {
     }
 
     private onMessage(event: MessageEvent): void {
-        console.log("Message received from server:", event.data);
+        const response = ServerResponse.decode(new Uint8Array(event.data));
+
+        switch (response.responseType) {
+            case "shoppingList":
+                const shoppingList = ShoppingList.fromProto(response.shoppingList as ShoppingListProto)
+                console.log("Received shopping list via WebSocket:", shoppingList);
+        }
     }
 
     private onError(event: Event): void {
@@ -30,8 +37,10 @@ class WebProtocolSocket implements ProtocolSocket {
     }
 
     send(entity: ProtocolEntity): void {
-        const buffer = Entity.encode(entity.toClientRequest()).finish();
+        const buffer = ClientRequest.encode(entity.toClientRequest()).finish();
+
         console.log("Sending entity via WebSocket:", buffer);
+
         this.socket.send(buffer);
     }
 }

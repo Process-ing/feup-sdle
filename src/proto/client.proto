@@ -14,3 +14,9 @@ message ClientRequest {
         GetShoppingListRequest get_shopping_list = 2;
     }
 }
+
+message ServerResponse {
+    oneof response_type {
+        ShoppingList shopping_list = 1;
+    }
+}

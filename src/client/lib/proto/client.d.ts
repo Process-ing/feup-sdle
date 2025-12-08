@@ -203,6 +203,106 @@ export class ClientRequest implements IClientRequest {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
+/** Properties of a ServerResponse. */
+export interface IServerResponse {
+
+    /** ServerResponse shoppingList */
+    shoppingList?: (IShoppingList|null);
+}
+
+/** Represents a ServerResponse. */
+export class ServerResponse implements IServerResponse {
+
+    /**
+     * Constructs a new ServerResponse.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IServerResponse);
+
+    /** ServerResponse shoppingList. */
+    public shoppingList?: (IShoppingList|null);
+
+    /** ServerResponse responseType. */
+    public responseType?: "shoppingList";
+
+    /**
+     * Creates a new ServerResponse instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ServerResponse instance
+     */
+    public static create(properties?: IServerResponse): ServerResponse;
+
+    /**
+     * Encodes the specified ServerResponse message. Does not implicitly {@link ServerResponse.verify|verify} messages.
+     * @param message ServerResponse message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IServerResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ServerResponse message, length delimited. Does not implicitly {@link ServerResponse.verify|verify} messages.
+     * @param message ServerResponse message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IServerResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ServerResponse message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ServerResponse
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ServerResponse;
+
+    /**
+     * Decodes a ServerResponse message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ServerResponse
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ServerResponse;
+
+    /**
+     * Verifies a ServerResponse message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ServerResponse message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ServerResponse
+     */
+    public static fromObject(object: { [k: string]: any }): ServerResponse;
+
+    /**
+     * Creates a plain object from a ServerResponse message. Also converts values to other types if specified.
+     * @param message ServerResponse
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ServerResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ServerResponse to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ServerResponse
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
 /** Properties of a ShoppingItem. */
 export interface IShoppingItem {
 
