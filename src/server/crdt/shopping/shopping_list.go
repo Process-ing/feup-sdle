@@ -10,8 +10,8 @@ type ShoppingList struct {
 	replicaID  string
 	listID     string
 	name       string
-	dotContext *crdt.DotContext
 	items      *crdt.ORMap[string, *ShoppingItem]
+	dotContext *crdt.DotContext
 }
 
 func NewShoppingList(replicaID string, listID string, name string) *ShoppingList {
@@ -25,8 +25,8 @@ func NewShoppingList(replicaID string, listID string, name string) *ShoppingList
 		replicaID:  replicaID,
 		listID:     listID,
 		name:       name,
-		dotContext: dotContext,
 		items:      items,
+		dotContext: dotContext,
 	}
 }
 
@@ -79,7 +79,7 @@ func (sl *ShoppingList) GetItem(itemID string) *ShoppingItem {
 }
 
 func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, acquiredDiff int64) *ShoppingList {
-	delta := NewShoppingList(sl.replicaID, sl.listID, "")
+	delta := NewShoppingList(sl.replicaID, sl.listID, sl.name)
 
 	itemsDelta := sl.items.Apply(itemID, func(item *ShoppingItem) *ShoppingItem {
 		item.SetItemID(itemID)
@@ -98,7 +98,7 @@ func (sl *ShoppingList) PutItem(itemID string, name string, quantityDiff int64, 
 }
 
 func (sl *ShoppingList) RemoveItem(itemID string) *ShoppingList {
-	delta := NewShoppingList(sl.replicaID, sl.listID, "")
+	delta := NewShoppingList(sl.replicaID, sl.listID, sl.name)
 
 	itemsDelta := sl.items.Remove(itemID)
 	delta.items = itemsDelta

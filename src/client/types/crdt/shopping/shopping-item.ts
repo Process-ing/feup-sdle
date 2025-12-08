@@ -29,8 +29,16 @@ export default class ShoppingItem {
         return this.itemId;
     }
 
+    public setItemId(itemId: string): void {
+        this.itemId = itemId;
+    }
+
     public getName(): string {
         return this.name;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
     }
 
     public getContext(): DotContext {
