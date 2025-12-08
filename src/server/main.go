@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
+	"sdle-server/communication/websocket"
 	"sdle-server/node"
 	"syscall"
 	"time"
@@ -22,20 +25,24 @@ func create_node(id string) *node.Node {
 	return node
 }
 
+func startWebSocketServer() {
+	wsHandler := websocket.NewWebSocketHandler()
+
+	// Register handlers
+	http.Handle("/ws", wsHandler)
+
+	log.Println("Starting server on :8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal("Failed to start server on port 8080: ", err)
+	}
+}
+
 func main() {
-	// wsHandler := websocket.NewWebSocketHandler()
-	//
-	// // Register handlers
-	// http.Handle("/ws", wsHandler)
-	//
-	// log.Println("Starting server on :8080")
-	// err := http.ListenAndServe(":8080", nil)
-	// if err != nil {
-	// 	log.Fatal("Failed to start server on port 8080: ", err)
-	// }
+	go startWebSocketServer()
 
+	// Server nodes list
 	nodes := []*node.Node{}
-
 	for i := 5000; i < 5020; i++ {
 		node_id := fmt.Sprintf("localhost:%d", i)
 		node := create_node(node_id)
@@ -46,7 +53,7 @@ func main() {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	// Start nodes concurrently so Start() doesn't block the rest of main
+	// Starting nodes concurrently
 	for i, nd := range nodes {
 		go func(i int, n *node.Node) {
 			if err := n.StartReceiving(); err != nil {
@@ -56,10 +63,8 @@ func main() {
 
 		time.Sleep(300 * time.Millisecond)
 
-		randomIds := rand.Intn(i+1) - 1
-		if randomIds < 0 {
-			randomIds = 0
-		}
+		// Join a random existing node to form the ring
+		randomIds := max(rand.Intn(i+1)-1, 0)
 
 		nd.JoinToRing(nodes[randomIds].GetAddress())
 	}
