@@ -285,7 +285,7 @@ func (n *Node) HandleShoppingList(delta *crdt.ShoppingList) error {
 	newListProto := oldList.ToProto()
 	newListData, err := proto.Marshal(newListProto)
 
-	if err == nil {
+	if err != nil {
 		return err
 	}
 
