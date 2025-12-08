@@ -47,15 +47,6 @@ func New(id string, baseDir string) (*Node, error) {
 	wsPort := port + 3000 // 5000 -> 8000, etc
 	wsAddr := net.JoinHostPort(host, strconv.Itoa(wsPort))
 
-	wsHandler := websocket.NewWebSocketHandler()
-	mux := http.NewServeMux()
-	mux.Handle("/ws", wsHandler)
-
-	httpServer := &http.Server{
-		Addr:    wsAddr,
-		Handler: mux,
-	}
-
 	ringView := ringview.New()
 
 	dir := filepath.Join(baseDir, id)
@@ -76,17 +67,26 @@ func New(id string, baseDir string) (*Node, error) {
 		return nil, err
 	}
 
-	return &Node{
-			id:         id,
-			addr:       addr,
-			wsAddr:     wsAddr,
-			ringView:   ringView,
-			store:      *store,
-			repSock:    rep,
-			httpServer: httpServer,
-			stopCh:     make(chan struct{}),
-		},
-		nil
+	n := &Node{
+		id:       id,
+		addr:     addr,
+		wsAddr:   wsAddr,
+		ringView: ringView,
+		store:    *store,
+		repSock:  rep,
+		stopCh:   make(chan struct{}),
+	}
+
+	wsHandler := websocket.NewWebSocketHandler(n)
+	mux := http.NewServeMux()
+	mux.Handle("/ws", wsHandler)
+
+	n.httpServer = &http.Server{
+		Addr:    wsAddr,
+		Handler: mux,
+	}
+
+	return n, nil
 }
 
 func (n *Node) Start(errCh chan<- error) {
@@ -263,4 +263,19 @@ func (n *Node) startReceiving(errCh chan<- error) {
 
 func (n *Node) GetRingView() *ringview.RingView {
 	return n.ringView
+}
+
+func (n *Node) HandleShoppingList(list *pb.ShoppingList) error {
+	n.log(fmt.Sprintf("received shopping list %s", list.Id))
+	// TODO: implement the logic to store and process the shopping list
+	return nil
+}
+
+func (n *Node) GetShoppingList(id string) (*pb.ShoppingList, error) {
+	n.log(fmt.Sprintf("get shopping list %s", id))
+	// TODO: implement the logic to retrieve the shopping list
+	return &pb.ShoppingList{
+		Id:   id,
+		Name: "Dummy Shopping List",
+	}, nil
 }
