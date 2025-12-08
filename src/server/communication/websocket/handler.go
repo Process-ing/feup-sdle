@@ -3,6 +3,7 @@ package websocket
 import (
 	"log"
 	"net/http"
+	crdt "sdle-server/crdt/shopping"
 	pb "sdle-server/proto"
 
 	"github.com/gorilla/websocket"
@@ -59,28 +60,34 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		switch req.GetRequestType().(type) {
-		case *pb.ClientRequest_ShoppingList:
-			if err := h.node.HandleShoppingList(req.GetShoppingList()); err != nil {
-				log.Println("Error handling shopping list:", err)
-			}
-		case *pb.ClientRequest_GetShoppingList_:
-			list, err := h.node.GetShoppingList(req.GetGetShoppingList_().GetId())
-			if err != nil {
-				log.Println("Error getting shopping list:", err)
-				continue
-			}
-			// Send the shopping list back to the client
-			respBytes, err := proto.Marshal(list)
-			if err != nil {
-				log.Println("Failed to marshal shopping list:", err)
-				continue
-			}
-			if err := conn.WriteMessage(websocket.BinaryMessage, respBytes); err != nil {
-				log.Println("Error writing message:", err)
-				break
-			}
-		default:
-			log.Println("Unknown request type")
+			case *pb.ClientRequest_ShoppingList:
+				list := crdt.ShoppingListFromProto(req.GetShoppingList())
+
+				if err := h.node.HandleShoppingList(list); err != nil {
+					log.Println("Error handling shopping list:", err)
+				}
+
+			case *pb.ClientRequest_GetShoppingList_:
+				list, err := h.node.GetShoppingList(req.GetGetShoppingList_().GetId())
+				if err != nil {
+					log.Println("Error getting shopping list:", err)
+					continue
+				}
+
+				// Send the shopping list back to the client
+				respBytes, err := proto.Marshal(list)
+				if err != nil {
+					log.Println("Failed to marshal shopping list:", err)
+					continue
+				}
+
+				if err := conn.WriteMessage(websocket.BinaryMessage, respBytes); err != nil {
+					log.Println("Error writing message:", err)
+					break
+				}
+
+			default:
+				log.Println("Unknown request type")
 		}
 	}
 }

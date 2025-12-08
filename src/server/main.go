@@ -11,7 +11,7 @@ import (
 func create_node(id string) *node.Node {
 	dataDir := "./data/" + id
 
-	node, err := node.New(id, dataDir)
+	node, err := node.NewNode(id, dataDir)
 
 	if err != nil {
 		panic(err)

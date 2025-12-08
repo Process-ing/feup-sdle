@@ -18,7 +18,7 @@ func create_node(t *testing.T, id string) *Node {
 		os.RemoveAll(dataDir)
 	})
 
-	node, err := New(id, dataDir)
+	node, err := NewNode(id, dataDir)
 	if err != nil {
 		t.Fatalf("Failed to create node %s: %v", id, err)
 	}
