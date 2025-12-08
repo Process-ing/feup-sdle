@@ -37,10 +37,11 @@ export function ShoppingListDetail({
 	const socket = useProtocolSocket();
 
 	const refreshList = useCallback(async () => {
-		const list = await db.getList(listId);
+		const dbList = await db.getList(listId);
 
-		if (list) {
-			setList(list);
+		if (dbList) {
+			setList(dbList);
+			setNotFound(false);
 		} else {
 			setNotFound(true);
 		}
@@ -53,13 +54,17 @@ export function ShoppingListDetail({
 
 	useEffect(() => {
 		if (socket instanceof WebProtocolSocket) {
-			socket.setOnShoppingListCallback((receivedList: ShoppingList) => {
-				if (receivedList.getListId() === listId) {
-					console.log("Updating shopping list detail with received data");
-					setList(receivedList);
-					setNotFound(false);
-					setLoading(false);
+			socket.setOnShoppingListCallback(async (receivedList: ShoppingList) => {
+				if (receivedList.getListId() !== listId) return;
+
+				let oldList = await db.getList(listId);
+				if (!oldList) {  // Create an empty list for merging
+					oldList = new ShoppingList(await db.getClientId(), listId, receivedList.getName());
 				}
+				oldList.join(receivedList);
+
+				await db.updateList(oldList);
+				await refreshList();
 			});
 
 			socket.send(new GetShoppingListRequest(listId));
