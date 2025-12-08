@@ -11,13 +11,15 @@ export const WebProtocolSocketProvider = ({ children }: { children: React.ReactN
   const [socket, setSocket] = useState<ProtocolSocket>(new NullProtocolSocket());
 
   useEffect(() => {
+    if (socket instanceof WebProtocolSocket) return;
+
     const websocketUrl = "ws://localhost:8000/ws";
     const websocket = new WebSocket(websocketUrl);
 
     const protocolSocket = new WebProtocolSocket(websocket);
 
     setSocket(protocolSocket);
-  }, []);
+  }, [socket]);
 
   return (
     <ProtocolSocketContext.Provider value={socket}>

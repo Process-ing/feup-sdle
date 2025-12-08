@@ -6,6 +6,7 @@ import ProtocolSocket from "./protocol-socket";
 class WebProtocolSocket implements ProtocolSocket {
     private socket: WebSocket;
     private isOpen: Promise<void>;
+    private onShoppingList: (list: ShoppingList) => void = () => {};
 
     constructor(ws: WebSocket) {
         this.socket = ws;
@@ -27,13 +28,15 @@ class WebProtocolSocket implements ProtocolSocket {
         this.socket.onclose = this.onClose.bind(this);
     }
 
-    private onMessage(event: MessageEvent): void {
-        const response = ServerResponse.decode(new Uint8Array(event.data));
+    private async onMessage(event: MessageEvent): Promise<void> {
+        const buffer = await (event.data as Blob).arrayBuffer();
+        const response = ServerResponse.decode(new Uint8Array(buffer));
 
         switch (response.responseType) {
             case "shoppingList":
                 const shoppingList = ShoppingList.fromProto(response.shoppingList as ShoppingListProto)
-                console.log("Received shopping list via WebSocket:", shoppingList);
+                this.onShoppingList(shoppingList);
+                break;
         }
     }
 
@@ -55,6 +58,10 @@ class WebProtocolSocket implements ProtocolSocket {
         console.log("Sending entity via WebSocket:", buffer);
 
         this.socket.send(buffer);
+    }
+
+    setOnShoppingListCallback(callback: (list: ShoppingList) => void): void {
+        this.onShoppingList = callback;
     }
 }
 

@@ -80,8 +80,8 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						ShoppingList: list,
 					},
 				}
+				
 				respBytes, err := proto.Marshal(serverResp)
-
 				if err != nil {
 					log.Println("Failed to marshal shopping list:", err)
 					continue

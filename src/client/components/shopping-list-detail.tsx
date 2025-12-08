@@ -17,6 +17,8 @@ import { useProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
 import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
+import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
+import GetShoppingListRequest from "@/lib/protocol/get-shopping-list-request";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -48,6 +50,21 @@ export function ShoppingListDetail({
 	useEffect(() => {
 		refreshList();
 	}, [refreshList]);
+
+	useEffect(() => {
+		if (socket instanceof WebProtocolSocket) {
+			socket.setOnShoppingListCallback((receivedList: ShoppingList) => {
+				if (receivedList.getListId() === listId) {
+					console.log("Updating shopping list detail with received data");
+					setList(receivedList);
+					setNotFound(false);
+					setLoading(false);
+				}
+			});
+
+			socket.send(new GetShoppingListRequest(listId));
+		}
+	}, [listId, socket]);
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
