@@ -30,7 +30,7 @@ class WebProtocolSocket implements ProtocolSocket {
     }
 
     send(entity: ProtocolEntity): void {
-        const buffer = Entity.encode(entity.toProto()).finish();
+        const buffer = Entity.encode(entity.toClientRequest()).finish();
         console.log("Sending entity via WebSocket:", buffer);
         this.socket.send(buffer);
     }

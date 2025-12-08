@@ -3,8 +3,10 @@
 ROOT_DIR=$(dirname $(dirname $(realpath "$0")))
 
 # Generate JavaScript/TypeScript code from the proto files
-pbjs -t static-module -w es6 -o "$ROOT_DIR/client/lib/proto/global.js" "$ROOT_DIR/proto/global.proto" "$ROOT_DIR/proto/shopping.proto" "$ROOT_DIR/proto/crdt.proto" "$ROOT_DIR/proto/client.proto"
+pbjs -t static-module -w es6 -o "$ROOT_DIR/client/lib/proto/global.js" "$ROOT_DIR/proto/global.proto"
+pbjs -t static-module -w es6 -o "$ROOT_DIR/client/lib/proto/client.js" "$ROOT_DIR/proto/client.proto"
 pbts -o "$ROOT_DIR/client/lib/proto/global.d.ts" "$ROOT_DIR/client/lib/proto/global.js"
+pbts -o "$ROOT_DIR/client/lib/proto/client.d.ts" "$ROOT_DIR/client/lib/proto/client.js"
 
 # Generate Go code from the proto files
 protoc --proto_path="$ROOT_DIR/proto" \
