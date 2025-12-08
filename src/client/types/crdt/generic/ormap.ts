@@ -33,7 +33,9 @@ export default class ORMap<K, V extends ORMapValue<V>> {
         }
 
         value = this.newEmpty(this.replicaId);
+        value.setContext(this.dotContext);
         this.valueMap.set(key, value);
+
         return value;
     }
 

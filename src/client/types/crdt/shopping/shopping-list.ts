@@ -92,14 +92,17 @@ export default class ShoppingList {
     }
 
     public join(other: ShoppingList): void {
-        this.dotContext.join(other.getContext());
         this.items.join(other.items);
+        this.dotContext.join(other.getContext());
     }
 
     public clone(): ShoppingList {
         const clone = new ShoppingList(this.replicaId, this.listId, this.name);
-        clone.setContext(this.dotContext);
+        clone.dotContext = this.dotContext.clone();
+
         clone.items = this.items.clone();
+        clone.items.setContext(clone.dotContext);
+
         return clone;
     }
 

@@ -18,7 +18,7 @@ func NewShoppingList(replicaID string, listID string, name string) *ShoppingList
 	dotContext := crdt.NewDotContext()
 
 	createItem := func(id string) *ShoppingItem { return NewShoppingItem(id, "", "") }
-	items := crdt.NewORMap[string, *ShoppingItem](replicaID, createItem)
+	items := crdt.NewORMap[string](replicaID, createItem)
 	items.SetContext(dotContext)
 
 	return &ShoppingList{

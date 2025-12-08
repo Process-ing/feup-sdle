@@ -332,14 +332,14 @@ func TestShoppingList_RemoveItemWithOtherItems(t *testing.T) {
 	list1.PutItem("item2", "Bread", 3, 1)
 	list2 := list1.Clone()
 
-	delta := list1.RemoveItem("item1")
+	delta := list1.RemoveItem("item2")
 
 	items := list1.Items()
 	if len(items) != 1 {
 		t.Errorf("Expected 1 item in the list after removal, got %d", len(items))
 	}
-	if items[0].ItemID() != "item2" {
-		t.Errorf("Expected remaining item to be item2, got %v", items[0])
+	if items[0].ItemID() != "item1" {
+		t.Errorf("Expected remaining item to be item1, got %v", items[0])
 	}
 
 	list2.Join(delta)
