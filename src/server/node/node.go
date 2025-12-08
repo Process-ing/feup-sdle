@@ -170,10 +170,14 @@ func (n *Node) JoinToRing(targetAddr string) error {
 
 	}
 
-	gossipAddrs := n.ringView.GetGossipNeighborsNodes(n.GetID())
-	for _, nodeId := range gossipAddrs {
+	neighborsGossip := n.ringView.GetGossipNeighborsNodes(n.GetID())
+	n.log("Starting gossip to inform other nodes about my joining. Neighbors: " + fmt.Sprint(neighborsGossip))
+
+	for _, nodeId := range neighborsGossip {
 		nodeAddr := idToAddr(nodeId)
-		n.sendJoinGossip(nodeAddr, n.GetID(), tokens)
+		resp, err := n.sendJoinGossip(nodeAddr, n.GetID(), tokens)
+
+		n.log("Gossip Response: Ok=" + fmt.Sprint(resp.Ok) + ", Error='" + fmt.Sprint(err) + "'")
 	}
 
 	return nil
@@ -257,3 +261,10 @@ func (n *Node) startReceiving(errCh chan<- error) {
 	}
 }
 
+func (n *Node) GetRingView() *ringview.RingView {
+	return n.ringView
+}
+
+func (n *Node) log(msg string) {
+	fmt.Printf("[Node %s]: %s\n", n.id, msg)
+}

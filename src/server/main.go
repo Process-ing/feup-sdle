@@ -38,6 +38,7 @@ func main() {
 		time.Sleep(300 * time.Millisecond)
 		nd.JoinToRing(nodes[0].GetAddress())
 	}
+}
 
 	// Wait for shutdown signal
 	select {

@@ -10,8 +10,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-
-
 func (n *Node) sendRequest(peerAddr string, request proto.Message, timeout time.Duration) (*pb.Response, error) {
 	// println("Node " + n.id + " sending request to " + peerAddr)
 	reqSock, err := zmq4.NewSocket(zmq4.REQ)
@@ -57,7 +55,7 @@ func (n *Node) sendPing(peerAddr string) (*pb.Response, error) {
 			Ping: &pb.RequestPing{},
 		},
 	}
-	return n.sendRequest(peerAddr, pingReq, 0)
+	return n.sendRequest(peerAddr, pingReq, 5*time.Second)
 }
 
 func (n *Node) sendFetchRing(peerAddr string) (*pb.Response, error) {
@@ -67,7 +65,7 @@ func (n *Node) sendFetchRing(peerAddr string) (*pb.Response, error) {
 			FetchRing: &pb.RequestFetchRing{},
 		},
 	}
-	return n.sendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 5*time.Second)
 }
 
 func (n *Node) sendGetHashSpace(peerAddr string, startHashSpace int, endHashSpace int) (*pb.Response, error) {
@@ -80,7 +78,7 @@ func (n *Node) sendGetHashSpace(peerAddr string, startHashSpace int, endHashSpac
 			},
 		},
 	}
-	return n.sendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 5*time.Second)
 }
 
 func (n *Node) sendJoinGossip(peerAddr string, newNodeID string, tokens []uint64) (*pb.Response, error) {
@@ -93,7 +91,7 @@ func (n *Node) sendJoinGossip(peerAddr string, newNodeID string, tokens []uint64
 			},
 		},
 	}
-	return n.sendRequest(peerAddr, req, 0)
+	return n.sendRequest(peerAddr, req, 5*time.Second)
 }
 
 func (n *Node) sendGet(peerAddr string, key string) (*pb.Response, error) {
@@ -151,5 +149,3 @@ func (n *Node) sendResponseError(errStr string) error {
 	_, err := n.repSock.SendBytes(buffer, 0)
 	return err
 }
-
-
