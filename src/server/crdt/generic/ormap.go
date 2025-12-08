@@ -2,25 +2,28 @@ package crdt
 
 import "fmt"
 
-type ORMap[K comparable, V DotContextCRDT[V]] struct {
-    id         string
-    dotContext *DotContext
-    valueMap   map[K]V // Store pointers to V
+type ORMap[K comparable, V ORMapValue[V]] struct {
+	replicaId  string
+	dotContext *DotContext
+	valueMap   map[K]V
+	newEmpty   func(replicaId string) V
 }
 
-func NewORMap[K comparable, V DotContextCRDT[V]](id string) *ORMap[K, V] {
-    return &ORMap[K, V]{
-        id:         id,
-        dotContext: NewDotContext(),
-        valueMap:   make(map[K]V),
-    }
-}
-
-func NewORMapFrom[K comparable, V DotContextCRDT[V]](id string, ctx *DotContext, valueMap map[K]V) *ORMap[K, V] {
+func NewORMap[K comparable, V ORMapValue[V]](replicaId string, newEmpty func(replicaId string) V) *ORMap[K, V] {
 	return &ORMap[K, V]{
-		id:         id,
+		replicaId:  replicaId,
+		dotContext: NewDotContext(),
+		valueMap:   make(map[K]V),
+		newEmpty:   newEmpty,
+	}
+}
+
+func NewORMapFrom[K comparable, V ORMapValue[V]](replicaId string, newEmpty func(replicaId string) V, ctx *DotContext, valueMap map[K]V) *ORMap[K, V] {
+	return &ORMap[K, V]{
+		replicaId:  replicaId,
 		dotContext: ctx,
 		valueMap:   valueMap,
+		newEmpty:   newEmpty,
 	}
 }
 
@@ -37,11 +40,11 @@ func (ormap *ORMap[K, V]) SetContext(ctx *DotContext) {
 }
 
 func (ormap *ORMap[K, V]) Get(key K) V {
-    if value, exists := ormap.valueMap[key]; exists {
+	if value, exists := ormap.valueMap[key]; exists {
 		return value
 	}
 
-	value := (*new(V)).NewEmpty(ormap.id)
+	value := ormap.newEmpty(ormap.replicaId)
 	value.SetContext(ormap.dotContext)
 	ormap.valueMap[key] = value
 
@@ -59,32 +62,30 @@ func (ormap *ORMap[K, V]) Keys() []K {
 }
 
 func (ormap *ORMap[K, V]) Apply(key K, fn func(V) V) *ORMap[K, V] {
-	delta := NewORMap[K, V](ormap.id)
+	delta := NewORMap[K, V](ormap.replicaId, ormap.newEmpty)
 
 	value := ormap.Get(key)
 	valueDelta := fn(value)
 	delta.valueMap[key] = valueDelta
 
-	delta.dotContext.Join(valueDelta.Context())
+	delta.SetContext(valueDelta.Context())
 
 	return delta
 }
 
 func (ormap *ORMap[K, V]) Remove(key K) *ORMap[K, V] {
-    delta := NewORMap[K, V](ormap.id)
+	delta := NewORMap[K, V](ormap.replicaId, ormap.newEmpty)
 
-    if value, ok := ormap.valueMap[key]; ok {
-        valueDelta := value.Reset()
+	if value, ok := ormap.valueMap[key]; ok {
+		valueDelta := value.Reset()
 		delta.SetContext(valueDelta.Context())
+	}
 
-		delete(ormap.valueMap, key)
-    }
-
-    return delta
+	return delta
 }
 
 func (ormap *ORMap[K, V]) Reset() *ORMap[K, V] {
-	delta := NewORMap[K, V](ormap.id)
+	delta := NewORMap[K, V](ormap.replicaId, ormap.newEmpty)
 
 	for key, value := range ormap.valueMap {
 		valueDelta := value.Reset()
@@ -100,9 +101,10 @@ func (ormap *ORMap[K, V]) Join(other *ORMap[K, V]) {
 
 	for _, value := range ormap.valueMap {
 		// Must invalidate local entries known by the other context
-		emptyValue := value.NewEmpty(ormap.id)
+		emptyValue := ormap.newEmpty(ormap.replicaId)
 		emptyValue.SetContext(other.dotContext)
 		value.Join(emptyValue)
+		
 		ormap.dotContext.Copy(originalContext)
 	}
 
@@ -129,7 +131,7 @@ func (ormap *ORMap[K, V]) Join(other *ORMap[K, V]) {
 }
 
 func (ormap *ORMap[K, V]) Clone() *ORMap[K, V] {
-	clone := NewORMap[K, V](ormap.id)
+	clone := NewORMap[K, V](ormap.replicaId, ormap.newEmpty)
 	clone.dotContext = ormap.dotContext.Clone()
 
 	for key, value := range ormap.valueMap {
@@ -142,5 +144,5 @@ func (ormap *ORMap[K, V]) Clone() *ORMap[K, V] {
 }
 
 func (ormap *ORMap[K, V]) String() string {
-    return fmt.Sprintf("ORMap{id: %s, dotContext: %v, valueMap: %v}", ormap.id, ormap.dotContext, ormap.valueMap)
+	return fmt.Sprintf("ORMap{id: %s, dotContext: %v, valueMap: %v}", ormap.replicaId, ormap.dotContext, ormap.valueMap)
 }

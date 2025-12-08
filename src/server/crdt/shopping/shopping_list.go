@@ -17,7 +17,8 @@ type ShoppingList struct {
 func NewShoppingList(replicaID string, listID string, name string) *ShoppingList {
 	dotContext := crdt.NewDotContext()
 
-	items := crdt.NewORMap[string, *ShoppingItem](replicaID)
+	createItem := func(id string) *ShoppingItem { return NewShoppingItem(id, "", "") }
+	items := crdt.NewORMap[string, *ShoppingItem](replicaID, createItem)
 	items.SetContext(dotContext)
 
 	return &ShoppingList{
@@ -148,7 +149,8 @@ func ShoppingListFromProto(protoList *g01.ShoppingList) *ShoppingList {
 		itemMap[id] = ShoppingItemFromProto(protoItem, protoList.GetReplicaId(), id, ctx)
 	}
 
-	items := crdt.NewORMapFrom(protoList.GetReplicaId(), ctx, itemMap)
+	createItem := func(id string) *ShoppingItem { return NewShoppingItem(id, "", "") }
+	items := crdt.NewORMapFrom(protoList.GetReplicaId(), createItem, ctx, itemMap)
 
 	return &ShoppingList{
 		replicaID:  protoList.GetReplicaId(),

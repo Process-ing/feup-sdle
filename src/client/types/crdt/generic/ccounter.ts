@@ -2,8 +2,9 @@ import { isIterableEmpty } from "@/lib/utils";
 import Dot from "./dot";
 import DotContext from "./dot-context";
 import DotKernel from "./dot-kernel";
+import ORMapValue from "./ormap-value";
 
-export default class CCounter {
+export default class CCounter implements ORMapValue<CCounter> {
     private replicaId: string;
     private dotKernel: DotKernel<number>;
 
@@ -74,7 +75,7 @@ export default class CCounter {
         return clone;
     }
 
-    public static newEmpty(replicaId: string): CCounter {
-        return new CCounter(replicaId);
+    public newEmpty<V>(replicaId: string): V {
+        return new CCounter(replicaId) as V;
     }
 }

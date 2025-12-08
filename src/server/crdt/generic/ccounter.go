@@ -71,8 +71,8 @@ func (cc *CCounter) String() string {
 	return fmt.Sprintf("CCounter{id %s, dotKernel: %v}", cc.replicaID, cc.dotKernel)
 }
 
-func (cc *CCounter) NewEmpty(id string) *CCounter {
-	return NewCCounter(id)
+func (cc *CCounter) NewEmpty(replicaId string) *CCounter {
+	return NewCCounter(replicaId)
 }
 
 func (cc *CCounter) IsNull() bool {
