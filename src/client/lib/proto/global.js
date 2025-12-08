@@ -1366,7 +1366,6 @@ export const DotKernel = $root.DotKernel = (() => {
      * @interface IDotKernel
      * @property {Array.<IDot>|null} [dotKeys] DotKernel dotKeys
      * @property {Array.<number|Long>|null} [dotValues] DotKernel dotValues
-     * @property {IDotContext|null} [dotContext] DotKernel dotContext
      */
 
     /**
@@ -1403,14 +1402,6 @@ export const DotKernel = $root.DotKernel = (() => {
     DotKernel.prototype.dotValues = $util.emptyArray;
 
     /**
-     * DotKernel dotContext.
-     * @member {IDotContext|null|undefined} dotContext
-     * @memberof DotKernel
-     * @instance
-     */
-    DotKernel.prototype.dotContext = null;
-
-    /**
      * Creates a new DotKernel instance using the specified properties.
      * @function create
      * @memberof DotKernel
@@ -1443,8 +1434,6 @@ export const DotKernel = $root.DotKernel = (() => {
                 writer.int64(message.dotValues[i]);
             writer.ldelim();
         }
-        if (message.dotContext != null && Object.hasOwnProperty.call(message, "dotContext"))
-            $root.DotContext.encode(message.dotContext, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
         return writer;
     };
 
@@ -1498,10 +1487,6 @@ export const DotKernel = $root.DotKernel = (() => {
                         message.dotValues.push(reader.int64());
                     break;
                 }
-            case 3: {
-                    message.dotContext = $root.DotContext.decode(reader, reader.uint32());
-                    break;
-                }
             default:
                 reader.skipType(tag & 7);
                 break;
@@ -1553,11 +1538,6 @@ export const DotKernel = $root.DotKernel = (() => {
                 if (!$util.isInteger(message.dotValues[i]) && !(message.dotValues[i] && $util.isInteger(message.dotValues[i].low) && $util.isInteger(message.dotValues[i].high)))
                     return "dotValues: integer|Long[] expected";
         }
-        if (message.dotContext != null && message.hasOwnProperty("dotContext")) {
-            let error = $root.DotContext.verify(message.dotContext);
-            if (error)
-                return "dotContext." + error;
-        }
         return null;
     };
 
@@ -1597,11 +1577,6 @@ export const DotKernel = $root.DotKernel = (() => {
                 else if (typeof object.dotValues[i] === "object")
                     message.dotValues[i] = new $util.LongBits(object.dotValues[i].low >>> 0, object.dotValues[i].high >>> 0).toNumber();
         }
-        if (object.dotContext != null) {
-            if (typeof object.dotContext !== "object")
-                throw TypeError(".DotKernel.dotContext: object expected");
-            message.dotContext = $root.DotContext.fromObject(object.dotContext);
-        }
         return message;
     };
 
@@ -1622,8 +1597,6 @@ export const DotKernel = $root.DotKernel = (() => {
             object.dotKeys = [];
             object.dotValues = [];
         }
-        if (options.defaults)
-            object.dotContext = null;
         if (message.dotKeys && message.dotKeys.length) {
             object.dotKeys = [];
             for (let j = 0; j < message.dotKeys.length; ++j)
@@ -1637,8 +1610,6 @@ export const DotKernel = $root.DotKernel = (() => {
                 else
                     object.dotValues[j] = options.longs === String ? $util.Long.prototype.toString.call(message.dotValues[j]) : options.longs === Number ? new $util.LongBits(message.dotValues[j].low >>> 0, message.dotValues[j].high >>> 0).toNumber() : message.dotValues[j];
         }
-        if (message.dotContext != null && message.hasOwnProperty("dotContext"))
-            object.dotContext = $root.DotContext.toObject(message.dotContext, options);
         return object;
     };
 

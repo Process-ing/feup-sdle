@@ -1,6 +1,11 @@
 import DotContext from "../generic/dot-context";
 import ORMap from "../generic/ormap";
 import ShoppingItem from "./shopping-item";
+import {
+    ShoppingList as ShoppingListProto,
+    ShoppingItem as ShoppingItemProto,
+    DotContext as DotContextProto,
+} from "@/lib/proto/global";
 
 export default class ShoppingList {
     private replicaId: string;
@@ -96,5 +101,46 @@ export default class ShoppingList {
         clone.setContext(this.dotContext);
         clone.items = this.items.clone();
         return clone;
+    }
+
+    public toProto(): ShoppingListProto {
+        const itemProtos: { [key: string]: ShoppingItemProto } = {};
+
+        for (const itemId of this.items.keys()) {
+            const item = this.items.get(itemId);
+            itemProtos[itemId] = item.toProto();
+        }
+
+        return ShoppingListProto.create({
+            replicaId: this.replicaId,
+            id: this.listId,
+            name: this.name,
+            items: itemProtos,
+            dotContext: this.dotContext.toProto(),
+        });
+    }
+
+    public static fromProto(proto: ShoppingListProto): ShoppingList {
+        const ctx = DotContext.fromProto(proto.dotContext as DotContextProto);
+
+        const itemMap = new Map<string, ShoppingItem>();
+        for (const itemId in proto.items) {
+            const itemProto = proto.items[itemId] as ShoppingItemProto;
+            const item = ShoppingItem.fromProto(itemProto, proto.replicaId, itemId, ctx);
+            itemMap.set(itemId, item);
+        }
+
+        const items = new ORMap<string, ShoppingItem>(
+            proto.replicaId,
+            (replicaId: string) => new ShoppingItem(replicaId, "", ""),
+            ctx,
+            itemMap
+        );
+
+        const shoppingList = new ShoppingList(proto.replicaId, proto.id, proto.name);
+        shoppingList.setContext(ctx);
+        shoppingList.items = items;
+
+        return shoppingList;
     }
 }

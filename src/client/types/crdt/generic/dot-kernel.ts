@@ -1,5 +1,6 @@
 import Dot from "./dot";
 import DotContext from "./dot-context";
+import { DotKernel as DotKernelProto, Dot as DotProto } from "@/lib/proto/global";
 
 export default class DotKernel<T> {
     private dotValues: Map<string, T>;  // Objects do not work as Map keys, so we use their string representation
@@ -105,5 +106,51 @@ export default class DotKernel<T> {
         clone.dotValues = new Map<string, T>(this.dotValues);
 
         return clone;
+    }
+
+    private isNumberDotKernel(): boolean {
+        for (const [, value] of this.dotValues) {
+            return typeof value === "number";
+        }
+        return true;
+    }
+
+    public toProto(): DotKernelProto {
+        if (!this.isNumberDotKernel()) {
+            throw new Error("DotKernel.toProto: only DotKernels with number values can be serialized");
+        }
+
+        const protoDotKeys: DotProto[] = [];
+        const protoDotValues: number[] = [];
+
+        this.dotValues.forEach((value, dotKey) => {
+            const protoDot = Dot.fromKey(dotKey).toProto();
+            protoDotKeys.push(protoDot);
+            protoDotValues.push(value as number);
+        });
+
+        return DotKernelProto.create({
+            dotKeys: protoDotKeys,
+            dotValues: protoDotValues,
+        });
+    }
+
+    public static fromProto(proto: DotKernelProto, ctx: DotContext): DotKernel<number> {
+        if (proto.dotKeys.length !== proto.dotValues.length) {
+            throw new Error("DotKernel.fromProto: mismatched dot keys and values lengths");
+        }
+
+        const dotKernel = new DotKernel<number>();
+
+        for (let i = 0; i < proto.dotKeys.length; i++) {
+            const dot = Dot.fromProto(proto.dotKeys[i] as DotProto);
+            const value = proto.dotValues[i];
+
+            dotKernel.dotValues.set(dot.toKey(), value as number);
+        }
+
+        dotKernel.setContext(ctx);
+
+        return dotKernel;
     }
 }

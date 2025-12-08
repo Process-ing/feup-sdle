@@ -1,4 +1,5 @@
 import Dot from "./dot";
+import { DotContext as DotContextProto, Dot as DotProto } from "@/lib/proto/global";
 
 export default class DotContext {
     private versionVector: Map<string, number>;
@@ -89,5 +90,36 @@ export default class DotContext {
 
         this.versionVector = new Map<string, number>(other.versionVector);
         this.dots = new Set<string>(other.dots);
+    }
+
+    public toProto(): DotContextProto {
+        const protoDots = Array.from(this.dots).map(dotKey => {
+            return Dot.fromKey(dotKey).toProto();
+        });
+
+        const protoVersionVector: { [key: string]: number } = {};
+        this.versionVector.forEach((seq, id) => {
+            protoVersionVector[id] = seq;
+        });
+
+        return DotContextProto.create({
+            versionVector: protoVersionVector,
+            dots: protoDots,
+        });
+    }
+
+    public static fromProto(proto: DotContextProto): DotContext {
+        const context = new DotContext();
+
+        for (const id in proto.versionVector) {
+            context.versionVector.set(id, proto.versionVector[id]);
+        }
+
+        for (const dotProto of proto.dots) {
+            const dot = Dot.fromProto(dotProto as DotProto);
+            context.dots.add(dot.toKey());
+        }
+
+        return context;
     }
 }

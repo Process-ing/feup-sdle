@@ -129,7 +129,6 @@ func (dk *Int64DotKernel) ToProto() *g01.DotKernel {
 	return &g01.DotKernel{
 		DotKeys:    protoDotKeys,
 		DotValues:  protoDotValues,
-		DotContext: dk.dotContext.ToProto(),
 	}
 }
 

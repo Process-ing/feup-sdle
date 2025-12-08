@@ -544,9 +544,6 @@ export interface IDotKernel {
 
     /** DotKernel dotValues */
     dotValues?: ((number|Long)[]|null);
-
-    /** DotKernel dotContext */
-    dotContext?: (IDotContext|null);
 }
 
 /** Represents a DotKernel. */
@@ -563,9 +560,6 @@ export class DotKernel implements IDotKernel {
 
     /** DotKernel dotValues. */
     public dotValues: (number|Long)[];
-
-    /** DotKernel dotContext. */
-    public dotContext?: (IDotContext|null);
 
     /**
      * Creates a new DotKernel instance using the specified properties.

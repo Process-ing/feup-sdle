@@ -91,11 +91,11 @@ func (cc *CCounter) ToProto() *g01.CCounter {
 	}
 }
 
-func CCounterFromProto(protoCounter *g01.CCounter, id string, ctx *DotContext) *CCounter {
+func CCounterFromProto(protoCounter *g01.CCounter, replicaId string, ctx *DotContext) *CCounter {
 	dotKernel := DotKernelFromProto(protoCounter.GetDotKernel(), ctx)
 
 	return &CCounter{
-		replicaID: id,
+		replicaID: replicaId,
 		dotKernel: (*DotKernel[int64])(dotKernel),
 	}
 }

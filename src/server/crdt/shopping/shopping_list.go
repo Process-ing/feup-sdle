@@ -133,10 +133,10 @@ func (sl *ShoppingList) ToProto() *g01.ShoppingList {
 	}
 
 	return &g01.ShoppingList{
-		ReplicaId: sl.replicaID,
-		Id:        sl.listID,
-		Name:      sl.name,
-		Items:     protoItems,
+		ReplicaId:  sl.replicaID,
+		Id:         sl.listID,
+		Name:       sl.name,
+		Items:      protoItems,
 		DotContext: sl.dotContext.ToProto(),
 	}
 }

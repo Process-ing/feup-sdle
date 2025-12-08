@@ -1,5 +1,6 @@
 import CCounter from "../generic/ccounter";
 import DotContext from "../generic/dot-context";
+import { ShoppingItem as ShoppingItemProto, CCounter as CCounterProto } from "@/lib/proto/global";
 
 export default class ShoppingItem {
     private replicaId: string;
@@ -142,5 +143,23 @@ export default class ShoppingItem {
         clone.acquired.setContext(clone.dotContext);
 
         return clone;
+    }
+
+    public toProto(): ShoppingItemProto {
+        return ShoppingItemProto.create({
+            name: this.name,
+            quantity: this.quantity.toProto(),
+            acquired: this.acquired.toProto(),
+        });
+    }
+
+    public static fromProto(proto: ShoppingItemProto, replicaId: string, itemId: string, ctx: DotContext): ShoppingItem {
+        const item = new ShoppingItem(replicaId, itemId, proto.name);
+
+        item.setContext(ctx);
+        item.quantity = CCounter.fromProto(proto.quantity as CCounterProto, replicaId, ctx);
+        item.acquired = CCounter.fromProto(proto.acquired as CCounterProto, replicaId, ctx);
+
+        return item;
     }
 }
