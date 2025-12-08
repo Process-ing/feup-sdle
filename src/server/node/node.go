@@ -264,7 +264,3 @@ func (n *Node) startReceiving(errCh chan<- error) {
 func (n *Node) GetRingView() *ringview.RingView {
 	return n.ringView
 }
-
-func (n *Node) log(msg string) {
-	fmt.Printf("[Node %s]: %s\n", n.id, msg)
-}
