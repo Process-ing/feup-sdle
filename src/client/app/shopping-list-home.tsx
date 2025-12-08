@@ -93,18 +93,18 @@ export function ShoppingListHome({ onSelect }: ShoppingListHomeProps) {
 								{lists.map((list) => (
 									<button
 										type="button"
-										key={list.id}
+										key={list.getListId()}
 										onClick={() => onSelect(list)}
 										className="w-full text-left p-4 rounded-lg border border-border hover:bg-accent transition-colors"
 									>
 										<div className="flex items-center justify-between">
 											<div>
 												<h3 className="font-semibold text-foreground">
-													{list.name}
+													{list.getName()}
 												</h3>
 												<p className="text-sm text-muted-foreground">
-													{list.items.length}{" "}
-													{list.items.length === 1 ? "item" : "items"}
+													{list.getItems().length}{" "}
+													{list.getItems().length === 1 ? "item" : "items"}
 												</p>
 											</div>
 											<ShoppingCart className="w-5 h-5 text-muted-foreground" />

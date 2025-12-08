@@ -1,6 +1,7 @@
 'use client';
 
 import NullProtocolSocket from "@/lib/protocol/null-protocol-socket";
+import ProtocolSocket from "@/lib/protocol/protocol-socket";
 import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ export const WebProtocolSocketProvider = ({ children }: { children: React.ReactN
   const [socket, setSocket] = useState<ProtocolSocket>(new NullProtocolSocket());
 
   useEffect(() => {
-    const websocketUrl = "ws://localhost:8080/ws";
+    const websocketUrl = "ws://localhost:8000/ws";
     const websocket = new WebSocket(websocketUrl);
 
     const protocolSocket = new WebProtocolSocket(websocket);

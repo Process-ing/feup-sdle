@@ -1,3 +1,4 @@
+import { ClientRequest, IClientRequest } from "@/lib/proto/client";
 import DotContext from "../generic/dot-context";
 import ORMap from "../generic/ormap";
 import ShoppingItem from "./shopping-item";
@@ -6,8 +7,9 @@ import {
     ShoppingItem as ShoppingItemProto,
     DotContext as DotContextProto,
 } from "@/lib/proto/global";
+import ProtocolEntity from "@/lib/protocol/protocol-entity";
 
-export default class ShoppingList {
+export default class ShoppingList implements ProtocolEntity {
     private replicaId: string;
     private listId: string;
     private name: string;
@@ -62,15 +64,16 @@ export default class ShoppingList {
         return item.clone();
     }
 
-    public putItem(itemId: string, name: string, quantity: number, acquired: number): ShoppingList {
+    public putItem(itemId: string, quantityDiff: number, acquiredDiff: number, name?: string): ShoppingList {
         const delta = new ShoppingList(this.replicaId, this.listId, this.name);
 
         const itemsDelta = this.items.apply(itemId, (item: ShoppingItem) => {
             item.setItemId(itemId);
-            item.setName(name);
+            if (name !== undefined)
+                item.setName(name);
 
-            const itemDelta = item.incQuantity(quantity);
-            itemDelta.join(item.incAcquired(acquired));
+            const itemDelta = item.incQuantity(quantityDiff);
+            itemDelta.join(item.incAcquired(acquiredDiff));
 
             return itemDelta;
         });
@@ -145,5 +148,11 @@ export default class ShoppingList {
         shoppingList.items = items;
 
         return shoppingList;
+    }
+
+    public toClientRequest(): IClientRequest {
+        return ClientRequest.create({
+            shoppingList: this.toProto(),
+        });
     }
 }

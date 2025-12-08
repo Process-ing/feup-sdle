@@ -47,7 +47,7 @@ describe('ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
         const list2 = list1.clone();
 
-        const delta = list1.putItem('item1', 'Milk', 5, 2);
+        const delta = list1.putItem('item1', 5, 2, 'Milk');
 
         const items = list1.getItems();
         expect(items.length).toBe(1);
@@ -62,7 +62,7 @@ describe('ShoppingList', () => {
 
     it('should remove an item from the ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
         const list2 = list1.clone();
 
         const delta = list1.removeItem('item1');
@@ -76,10 +76,10 @@ describe('ShoppingList', () => {
 
     it('should join two ShoppingLists', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
 
         const list2 = new ShoppingList('replica2', 'list2', 'Groceries');
-        list2.putItem('item2', 'Bread', 3, 1);
+        list2.putItem('item2', 3, 1, 'Bread');
 
         list1.join(list2);
 
@@ -109,8 +109,8 @@ describe('ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
         const list2 = new ShoppingList('replica2', 'list1', 'Groceries');
 
-        const delta1 = list1.putItem('item1', 'Milk', 5, 2);
-        const delta2 = list2.putItem('item2', 'Bread', 3, 1);
+        const delta1 = list1.putItem('item1', 5, 2, 'Milk');
+        const delta2 = list2.putItem('item2', 3, 1, 'Bread');
 
         list1.join(delta2);
         list2.join(delta1);
@@ -123,10 +123,10 @@ describe('ShoppingList', () => {
 
     it('should handle conflicting updates', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
 
         const list2 = new ShoppingList('replica2', 'list1', 'Groceries');
-        list2.putItem('item1', 'Milk', 10, 4);
+        list2.putItem('item1', 10, 4, 'Milk');
 
         list1.join(list2);
 
@@ -138,13 +138,13 @@ describe('ShoppingList', () => {
 
     it('should clone a ShoppingList', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
+        list.putItem('item1', 5, 2, 'Milk');
 
         const clone = list.clone();
 
         expect(listsEqual(list, clone)).toBe(true);
 
-        list.putItem('item2', 'Bread', 3, 1);
+        list.putItem('item2', 3, 1, 'Bread');
         expect(clone.getItems().length).toBe(1);
     });
 
@@ -159,8 +159,8 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a ShoppingList with items', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
-        list.putItem('item2', 'Bread', 3, 1);
+        list.putItem('item1', 5, 2, 'Milk');
+        list.putItem('item2', 3, 1, 'Bread');
 
         const proto = list.toProto();
         const converted = ShoppingList.fromProto(proto);
@@ -170,7 +170,7 @@ describe('ShoppingList', () => {
 
     it('should join with an empty ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
 
         const list2 = new ShoppingList('replica2', 'list2', 'Groceries');
 
@@ -183,11 +183,11 @@ describe('ShoppingList', () => {
 
     it('should join with multiple updates', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
 
         const list2 = new ShoppingList('replica2', 'list2', 'Groceries');
-        list2.putItem('item1', 'Milk', 10, 4);
-        list2.putItem('item2', 'Bread', 3, 1);
+        list2.putItem('item1', 10, 4, 'Milk');
+        list2.putItem('item2', 3, 1, 'Bread');
 
         list1.join(list2);
 
@@ -205,17 +205,17 @@ describe('ShoppingList', () => {
 
     it('should maintain clone independence', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
         const list2 = list1.clone();
 
-        list1.putItem('item2', 'Bread', 3, 1);
+        list1.putItem('item2', 3, 1, 'Bread');
 
         expect(list2.getItems().length).toBe(1);
     });
 
     it('should get an item from the ShoppingList', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
+        list.putItem('item1', 5, 2, 'Milk');
 
         const item = list.getItem('item1');
         expect(item).not.toBeUndefined();
@@ -244,7 +244,7 @@ describe('ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
         const list2 = list1.clone();
 
-        const delta = list1.putItem('item1', 'Milk', -5, -2);
+        const delta = list1.putItem('item1', -5, -2, 'Milk');
 
         expect(list1.getItems().length).toBe(0);
 
@@ -254,8 +254,8 @@ describe('ShoppingList', () => {
 
     it('should remove an item while keeping other items intact', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
-        list1.putItem('item2', 'Bread', 3, 1);
+        list1.putItem('item1', 5, 2, 'Milk');
+        list1.putItem('item2', 3, 1, 'Bread');
         const list2 = list1.clone();
 
         const delta = list1.removeItem('item2');
@@ -273,7 +273,7 @@ describe('ShoppingList', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
         const list2 = list1.clone();
 
-        const delta1 = list1.putItem('item1', 'Milk', 5, 2);
+        const delta1 = list1.putItem('item1', 5, 2, 'Milk');
         const delta2 = list1.removeItem('item1');
 
         expect(list1.getItems().length).toBe(0);
@@ -286,10 +286,10 @@ describe('ShoppingList', () => {
 
     it('should handle putting an item multiple times', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
         const list2 = list1.clone();
 
-        const delta = list1.putItem('item1', 'Milk', 3, 1);
+        const delta = list1.putItem('item1', 3, 1, 'Milk');
 
         const items = list1.getItems();
         expect(items.length).toBe(1);
@@ -302,8 +302,8 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a ShoppingList with multiple items', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
-        list.putItem('item2', 'Bread', 3, 1);
+        list.putItem('item1', 5, 2, 'Milk');
+        list.putItem('item2', 3, 1, 'Bread');
 
         const proto = list.toProto();
         const converted = ShoppingList.fromProto(proto);
@@ -313,7 +313,7 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a ShoppingList with an empty item', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 0, 0);
+        list.putItem('item1', 0, 0, 'Milk');
 
         const proto = list.toProto();
         const converted = ShoppingList.fromProto(proto);
@@ -323,10 +323,10 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a ShoppingList with conflicting updates', () => {
         const list1 = new ShoppingList('replica1', 'list1', 'Groceries');
-        list1.putItem('item1', 'Milk', 5, 2);
+        list1.putItem('item1', 5, 2, 'Milk');
 
         const list2 = new ShoppingList('replica2', 'list1', 'Groceries');
-        list2.putItem('item1', 'Milk', 10, 4);
+        list2.putItem('item1', 10, 4, 'Milk');
 
         list1.join(list2);
 
@@ -338,8 +338,8 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a ShoppingList after removing an item', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
-        list.putItem('item2', 'Bread', 3, 1);
+        list.putItem('item1', 5, 2, 'Milk');
+        list.putItem('item2', 3, 1, 'Bread');
 
         list.removeItem('item1');
 
@@ -351,12 +351,12 @@ describe('ShoppingList', () => {
 
     it('should serialize and deserialize a complex ShoppingList scenario', () => {
         const list = new ShoppingList('replica1', 'list1', 'Groceries');
-        list.putItem('item1', 'Milk', 5, 2);
-        list.putItem('item2', 'Bread', 3, 1);
-        list.putItem('item3', 'Eggs', 12, 6);
+        list.putItem('item1', 5, 2, 'Milk');
+        list.putItem('item2', 3, 1, 'Bread');
+        list.putItem('item3', 12, 6, 'Eggs');
 
         list.removeItem('item2');
-        list.putItem('item4', 'Butter', 2, 0);
+        list.putItem('item4', 2, 0, 'Butter');
 
         const proto = list.toProto();
         const converted = ShoppingList.fromProto(proto);
