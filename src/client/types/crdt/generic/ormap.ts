@@ -20,6 +20,10 @@ export default class ORMap<K, V extends ORMapValue<V>> {
 
     public setContext(context: DotContext): void {
         this.dotContext = context;
+
+        this.valueMap.forEach((value, _) => {
+            value.setContext(context);
+        });
     }
 
     public get(key: K): V {
@@ -31,6 +35,13 @@ export default class ORMap<K, V extends ORMapValue<V>> {
         value = this.newEmpty(this.replicaId);
         this.valueMap.set(key, value);
         return value;
+    }
+
+    public keys(): Iterable<K> {
+        return this.valueMap.keys().filter((key) => {
+            const value = this.valueMap.get(key);
+            return value !== undefined && !value.isNull();
+        });
     }
 
     public apply(key: K, operation: (value: V) => V): ORMap<K, V> {

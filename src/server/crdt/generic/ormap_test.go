@@ -115,7 +115,7 @@ func equalORMaps(a, b *ORMap[string, *CCounter]) bool {
 // === ORMap Tests ===
 
 func TestORMap_NewORMap(t *testing.T) {
-	ormap := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap := NewORMap[string]("replica1", NewCCounter)
 
 	if ormap.replicaId != "replica1" {
 		t.Errorf("Expected ORMap id to be 'replica1', got %s", ormap.replicaId)
@@ -129,7 +129,7 @@ func TestORMap_NewORMap(t *testing.T) {
 }
 
 func TestORMap_Get(t *testing.T) {
-	ormap := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap := NewORMap[string]("replica1", NewCCounter)
 
 	value1 := ormap.Get("key1")
 	if !value1.IsNull() {
@@ -143,7 +143,7 @@ func TestORMap_Get(t *testing.T) {
 }
 
 func TestORMap_Keys(t *testing.T) {
-	ormap := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap := NewORMap[string]("replica1", NewCCounter)
 	ormap.Get("key1").Inc(10)
 	ormap.Get("key2").Inc(20)
 
@@ -157,7 +157,7 @@ func TestORMap_Keys(t *testing.T) {
 }
 
 func TestORMap_KeysWithNullValues(t *testing.T) {
-	ormap := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap := NewORMap[string]("replica1", NewCCounter)
 	ormap.Get("key1").Inc(5)
 	ormap.Get("key2") // This will be null
 
@@ -170,7 +170,7 @@ func TestORMap_KeysWithNullValues(t *testing.T) {
 }
 
 func TestORMap_Apply(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap2 := ormap1.Clone()
 
 	// Apply an increment operation
@@ -200,7 +200,7 @@ func TestORMap_Apply(t *testing.T) {
 }
 
 func TestORMap_Remove(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap2 := ormap1.Clone()
 
 	delta := ormap1.Remove("key1")
@@ -216,7 +216,7 @@ func TestORMap_Remove(t *testing.T) {
 }
 
 func TestORMap_Reset(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 	ormap1.Get("key2").Inc(10)
 
@@ -244,10 +244,10 @@ func TestORMap_Reset(t *testing.T) {
 }
 
 func TestORMap_Join(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
-	ormap2 := NewORMap[string, *CCounter]("replica2", NewCCounter)
+	ormap2 := NewORMap[string]("replica2", NewCCounter)
 	ormap2.Get("key1").Inc(10)
 	ormap2.Get("key2").Inc(5)
 	ormap1.Join(ormap2)
@@ -261,10 +261,10 @@ func TestORMap_Join(t *testing.T) {
 }
 
 func TestORMap_JoinWithEmptyORMap(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
-	ormap2 := NewORMap[string, *CCounter]("replica2", NewCCounter)
+	ormap2 := NewORMap[string]("replica2", NewCCounter)
 
 	ormap1.Join(ormap2)
 
@@ -277,7 +277,7 @@ func TestORMap_JoinWithEmptyORMap(t *testing.T) {
 }
 
 func TestORMap_JoinIdempotent(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
 	ormap2 := ormap1.Clone()
@@ -289,10 +289,10 @@ func TestORMap_JoinIdempotent(t *testing.T) {
 }
 
 func TestORMap_JoinCommutative(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
-	ormap2 := NewORMap[string, *CCounter]("replica2", NewCCounter)
+	ormap2 := NewORMap[string]("replica2", NewCCounter)
 	ormap2.Get("key1").Inc(10)
 	ormap2.Get("key2").Inc(5)
 
@@ -312,10 +312,10 @@ func TestORMap_JoinCommutative(t *testing.T) {
 }
 
 func TestORMap_JoinIndependence(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
-	ormap2 := NewORMap[string, *CCounter]("replica2", NewCCounter)
+	ormap2 := NewORMap[string]("replica2", NewCCounter)
 	ormap2.Get("key2").Inc(10)
 
 	// Join ormap2 into ormap1
@@ -331,7 +331,7 @@ func TestORMap_JoinIndependence(t *testing.T) {
 }
 
 func TestORMap_JoinAfterRemove(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
 	ormap2 := ormap1.Clone()
@@ -349,7 +349,7 @@ func TestORMap_JoinAfterRemove(t *testing.T) {
 }
 
 func TestORMap_Clone(t *testing.T) {
-	ormap1 := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap1 := NewORMap[string]("replica1", NewCCounter)
 	ormap1.Get("key1").Inc(5)
 
 	ormap2 := ormap1.Clone()
@@ -366,7 +366,7 @@ func TestORMap_Clone(t *testing.T) {
 }
 
 func TestORMap_SetContext(t *testing.T) {
-	ormap := NewORMap[string, *CCounter]("replica1", NewCCounter)
+	ormap := NewORMap[string]("replica1", NewCCounter)
 	ormap.Get("key1").Inc(5)
 
 	newContext := NewDotContext()
