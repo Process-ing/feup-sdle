@@ -1,13 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"math/rand"
-	"net/http"
 	"os"
 	"os/signal"
-	"sdle-server/communication/websocket"
 	"sdle-server/node"
 	"syscall"
 	"time"
@@ -16,7 +11,7 @@ import (
 func create_node(id string) *node.Node {
 	dataDir := "./data/" + id
 
-	node, err := node.New(id, dataDir)
+	node, err := node.NewNode(id, dataDir)
 
 	if err != nil {
 		panic(err)
@@ -25,60 +20,24 @@ func create_node(id string) *node.Node {
 	return node
 }
 
-func startWebSocketServer() {
-	wsHandler := websocket.NewWebSocketHandler()
-
-	// Register handlers
-	http.Handle("/ws", wsHandler)
-
-	log.Println("Starting server on :8080")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal("Failed to start server on port 8080: ", err)
-	}
-}
-
 func main() {
-	go startWebSocketServer()
-
-	// Server nodes list
-	nodes := []*node.Node{}
-	for i := 5000; i < 5020; i++ {
-		node_id := fmt.Sprintf("localhost:%d", i)
-		node := create_node(node_id)
-		nodes = append(nodes, node)
+	nodes := []*node.Node{
+		create_node("localhost:5000"),
+		create_node("localhost:5001"),
+		create_node("localhost:5002"),
+		create_node("localhost:5003"),
 	}
 
-	errCh := make(chan error, 2)
+	errCh := make(chan error, len(nodes)*2)
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	// Starting nodes concurrently
-	for i, nd := range nodes {
-		go func(i int, n *node.Node) {
-			if err := n.StartReceiving(); err != nil {
-				errCh <- err
-			}
-		}(i, nd)
-
-		time.Sleep(300 * time.Millisecond)
-
-		// Join a random existing node to form the ring
-		randomIds := max(rand.Intn(i+1)-1, 0)
-
-		nd.JoinToRing(nodes[randomIds].GetAddress())
-	}
-
-	// Wait for stabilization
-	time.Sleep(4 * time.Second)
-
-	// Check ring view of each node
-	println("\n=== Ring View After Stabilization ===")
+	// Start nodes
 	for _, nd := range nodes {
-		knownIds := nd.GetRingView().GetKnownIds()
-		fmt.Printf("Node %s knows %d nodes: %v\n", nd.GetID(), len(knownIds), knownIds)
+		nd.Start(errCh)
+		time.Sleep(300 * time.Millisecond)
+		nd.JoinToRing(nodes[0].GetAddress())
 	}
-	println("=====================================\n")
 
 	// Wait for shutdown signal
 	select {
@@ -90,7 +49,7 @@ func main() {
 
 	// Gracefully close all nodes
 	for _, nd := range nodes {
-		if err := nd.StopReceiving(); err != nil {
+		if err := nd.Stop(); err != nil {
 			println("Error closing node:", err.Error())
 		}
 	}

@@ -18,7 +18,7 @@ func create_node(t *testing.T, id string) *Node {
 		os.RemoveAll(dataDir)
 	})
 
-	node, err := New(id, dataDir)
+	node, err := NewNode(id, dataDir)
 	if err != nil {
 		t.Fatalf("Failed to create node %s: %v", id, err)
 	}
@@ -34,19 +34,13 @@ func TestIntegration_FullCRUD(t *testing.T) {
 		create_node(t, "localhost:5013"),
 	}
 
-	errCh := make(chan error, len(nodes))
+	errCh := make(chan error, len(nodes)*2)
 
 	for _, nd := range nodes {
 		nodeInstance := nd
-		go func() {
-			if err := nodeInstance.StartReceiving(); err != nil {
-				if !isErrClosing(err) {
-					errCh <- err
-				}
-			}
-		}()
+		nodeInstance.Start(errCh)
 		t.Cleanup(func() {
-			nodeInstance.StopReceiving()
+			nodeInstance.Stop()
 		})
 	}
 
@@ -122,18 +116,10 @@ func TestIntegration_FullCRUD(t *testing.T) {
 
 	select {
 	case err := <-errCh:
-		t.Errorf("Received unexpected error from a node: %v", err)
+		// Check if the error is about a closed socket, which we expect during shutdown
+		if !strings.Contains(err.Error(), "use of closed network connection") && !strings.Contains(err.Error(), "operation was interrupted") {
+			t.Errorf("Received unexpected error from a node: %v", err)
+		}
 	default:
 	}
-}
-
-// isErrClosing is a helper to check for the specific error that zmq returns when a socket is closed.
-// This is not an actual error in our case, as we are closing the socket intentionally.
-func isErrClosing(err error) bool {
-	if err == nil {
-		return false
-	}
-	// This is a bit brittle as it relies on the error string from the zmq library.
-	// In a real project, you might use more robust error checking if the library provides it.
-	return strings.Contains(err.Error(), "operation was interrupted") || strings.Contains(err.Error(), "context was terminated")
 }

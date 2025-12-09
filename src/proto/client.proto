@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "gitlab.up.pt/classes/sdle/2025/t2/g01";
+
+import "shopping.proto";
+
+message GetShoppingListRequest {
+    string id = 1;
+}
+
+message ClientRequest {
+    oneof request_type {
+        ShoppingList shopping_list = 1;
+        GetShoppingListRequest get_shopping_list = 2;
+    }
+}
+
+message ServerResponse {
+    oneof response_type {
+        ShoppingList shopping_list = 1;
+    }
+}

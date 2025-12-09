@@ -20,11 +20,11 @@ export function ShoppingListItem({
 	return (
 		<div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
 			<div className="flex-1">
-				<h3 className="font-semibold text-foreground">{item.name}</h3>
+				<h3 className="font-semibold text-foreground">{item.getName()}</h3>
 				<p
-					className={`text-sm font-medium ${item.acquiredQuantity === item.totalQuantity ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+					className={`text-sm font-medium ${item.getAcquired() === item.getQuantity() ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
 				>
-					{item.acquiredQuantity} / {item.totalQuantity} acquired
+					{item.getAcquired()} / {item.getQuantity()} acquired
 				</p>
 			</div>
 
@@ -34,19 +34,19 @@ export function ShoppingListItem({
 					<Button
 						size="sm"
 						variant="ghost"
-						onClick={() => onUpdateTotalQuantity(item.id, -1)}
-						disabled={item.totalQuantity <= item.acquiredQuantity}
+						onClick={() => onUpdateTotalQuantity(item.getItemId(), -1)}
+						disabled={item.getQuantity() <= item.getAcquired()}
 						className="h-7 w-7 p-0"
 					>
 						<Minus className="w-3 h-3" />
 					</Button>
 					<span className="text-sm font-medium min-w-8 text-center">
-						{item.totalQuantity}
+						{item.getQuantity()}
 					</span>
 					<Button
 						size="sm"
 						variant="ghost"
-						onClick={() => onUpdateTotalQuantity(item.id, 1)}
+						onClick={() => onUpdateTotalQuantity(item.getItemId(), 1)}
 						className="h-7 w-7 p-0"
 					>
 						<Plus className="w-3 h-3" />
@@ -58,20 +58,20 @@ export function ShoppingListItem({
 					<Button
 						size="sm"
 						variant="ghost"
-						onClick={() => onAcquireItem(item.id, -1)}
-						disabled={item.acquiredQuantity === 0}
+						onClick={() => onAcquireItem(item.getItemId(), -1)}
+						disabled={item.getAcquired() === 0}
 						className="h-7 w-7 p-0"
 					>
 						<Minus className="w-3 h-3" />
 					</Button>
 					<span className="text-sm font-medium min-w-8 text-center">
-						{item.acquiredQuantity}
+						{item.getAcquired()}
 					</span>
 					<Button
 						size="sm"
 						variant="ghost"
-						onClick={() => onAcquireItem(item.id, 1)}
-						disabled={item.acquiredQuantity >= item.totalQuantity}
+						onClick={() => onAcquireItem(item.getItemId(), 1)}
+						disabled={item.getAcquired() >= item.getQuantity()}
 						className="h-7 w-7 p-0"
 					>
 						<Plus className="w-3 h-3" />
@@ -83,7 +83,7 @@ export function ShoppingListItem({
 				<Button
 					size="sm"
 					variant="destructive"
-					onClick={() => onDelete(item.id)}
+					onClick={() => onDelete(item.getItemId())}
 				>
 					<Trash2 className="w-4 h-4" />
 				</Button>

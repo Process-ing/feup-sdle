@@ -1,5 +1,5 @@
-import { IEntity } from "../proto/global";
+import { IClientRequest } from "../proto/client";
 
 export default interface ProtocolEntity {
-    toProto(): IEntity;
+    toClientRequest(): IClientRequest;
 }

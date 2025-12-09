@@ -17,6 +17,8 @@ import { useProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
 import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
+import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
+import GetShoppingListRequest from "@/lib/protocol/get-shopping-list-request";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -35,10 +37,11 @@ export function ShoppingListDetail({
 	const socket = useProtocolSocket();
 
 	const refreshList = useCallback(async () => {
-		const list = await db.getList(listId);
+		const dbList = await db.getList(listId);
 
-		if (list) {
-			setList(list);
+		if (dbList) {
+			setList(dbList);
+			setNotFound(false);
 		} else {
 			setNotFound(true);
 		}
@@ -49,9 +52,28 @@ export function ShoppingListDetail({
 		refreshList();
 	}, [refreshList]);
 
-	const updateList = useCallback(async (updatedList: ShoppingList) => {
+	useEffect(() => {
+		if (socket instanceof WebProtocolSocket) {
+			socket.setOnShoppingListCallback(async (receivedList: ShoppingList) => {
+				if (receivedList.getListId() !== listId) return;
+
+				let oldList = await db.getList(listId);
+				if (!oldList) {  // Create an empty list for merging
+					oldList = new ShoppingList(await db.getClientId(), listId, receivedList.getName());
+				}
+				oldList.join(receivedList);
+
+				await db.updateList(oldList);
+				await refreshList();
+			});
+
+			socket.send(new GetShoppingListRequest(listId));
+		}
+	}, [listId, socket]);
+
+	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
-		socket.send(updatedList);
+		socket.send(delta);
 		await refreshList();
 	}, [listId]);
 
@@ -62,46 +84,36 @@ export function ShoppingListDetail({
 		const quantity = Number.parseInt(itemQuantity, 10);
 		if (quantity <= 0) return;
 
-		list.addItem(itemName, quantity);
+		const itemId = crypto.randomUUID();
+		const delta = list.putItem(itemId, quantity, 0, itemName.trim());
+
 		setItemName("");
 		setItemQuantity("1");
 
-		updateList(list);
+		updateList(list, delta);
 	};
 
-	const handleAcquireItem = async (itemId: string, quantity: number) => {
+	const handleAcquireItem = async (itemId: string, amount: number) => {
 		if (!list) return;
 
-		const item = list.getItem(itemId);
-		if (!item) return;
-
-		const newAcquired = item.acquiredQuantity + quantity;
-		if (newAcquired < 0 || newAcquired > item.totalQuantity) return;
-
-		item.acquiredQuantity = newAcquired;
-
-		updateList(list);
+		const delta = list.putItem(itemId, 0, amount);
+		updateList(list, delta);
 	};
 
-	const handleUpdateTotalQuantity = async (itemId: string, change: number) => {
+	const handleUpdateTotalQuantity = async (itemId: string, amount: number) => {
 		if (!list) return;
 
-		const item = list.getItem(itemId);
-		if (!item) return;
+		const delta = list.putItem(itemId, amount, 0);
 
-		const newTotal = item.totalQuantity + change;
-		if (newTotal < item.acquiredQuantity || newTotal < 1) return;
-		item.totalQuantity = newTotal;
-
-		updateList(list);
+		updateList(list, delta);
 	};
 
 	const handleDeleteItem = async (itemId: string) => {
 		if (!list) return;
 
-		list.removeItem(itemId);
+		const delta = list.removeItem(itemId);
 
-		updateList(list);
+		updateList(list, delta);
 	};
 
 	if (loading) {
@@ -133,12 +145,12 @@ export function ShoppingListDetail({
 		return <div>Something went wrong.</div>;
 	}
 
-	const totalItems = list.getAllItems().reduce(
-		(sum, item) => sum + item.totalQuantity,
+	const totalItems = list.getItems().reduce(
+		(sum, item) => sum + item.getQuantity(),
 		0,
 	);
-	const acquiredItems = list.getAllItems().reduce(
-		(sum, item) => sum + item.acquiredQuantity,
+	const acquiredItems = list.getItems().reduce(
+		(sum, item) => sum + item.getAcquired(),
 		0,
 	);
 
@@ -153,7 +165,7 @@ export function ShoppingListDetail({
 
 			<Card className="mb-6">
 				<CardHeader>
-					<CardTitle className="text-2xl">{list.name}</CardTitle>
+					<CardTitle className="text-2xl">{list.getName()}</CardTitle>
 					<CardDescription>
 						{acquiredItems} of {totalItems} items acquired (
 						{Math.round(progress)}%)
@@ -205,24 +217,24 @@ export function ShoppingListDetail({
 				<CardHeader>
 					<CardTitle>Items</CardTitle>
 					<CardDescription>
-						{list.items.size === 0
+						{list.getItems().length === 0
 							? "No items yet"
-							: `${list.items.size} ${list.items.size === 1 ? "item" : "items"
+							: `${list.getItems().length} ${list.getItems().length === 1 ? "item" : "items"
 							} in your list`}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{list.items.size === 0 ? (
+					{list.getItems().length === 0 ? (
 						<p className="text-center text-muted-foreground py-8">
 							Add your first item to get started!
 						</p>
 					) : (
 						<div className="space-y-3">
-							{Array.from(list.items.values())
-								.sort((a, b) => a.name.localeCompare(b.name))
+							{list.getItems()
+								.sort((a, b) => a.getName().localeCompare(b.getName()))
 								.map((item) => (
 									<ShoppingListItem
-										key={item.id}
+										key={item.getItemId()}
 										item={item}
 										onUpdateTotalQuantity={handleUpdateTotalQuantity}
 										onAcquireItem={handleAcquireItem}

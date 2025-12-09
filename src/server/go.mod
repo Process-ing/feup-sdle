@@ -18,7 +18,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
-	gopkg.in/zeromq/goczmq.v4 v4.1.0 // indirect
 )
 
 require (
