@@ -3,6 +3,7 @@ package node
 import (
 	"fmt"
 	"sdle-server/replication"
+	"sdle-server/ringview"
 )
 
 // coordinateReplicatedPut orchestrates a replicated write operation.
@@ -157,4 +158,104 @@ func (n *Node) sendHintToNode(nodeId string, hint replication.Hint) error {
 	nodeAddr := nodeIdToZMQAddr(nodeId)
 	_, err := n.sendStoreHintRequest(nodeAddr, hint.IntendedNode, hint.Key, hint.Value)
 	return err
+}
+
+// Orchestrates a replicated read operation.
+// This node acts as the coordinator and reads from R replicas.
+// Returns the value after reading from R nodes (quorum read).
+func (n *Node) coordinateReplicatedGet(key string, prefList ringview.PreferenceList) ([]byte, error) {
+	if len(prefList.Nodes) == 0 {
+		return nil, fmt.Errorf("no nodes available for key")
+	}
+
+	n.log(fmt.Sprintf("Coordinating GET for key '%s' from preference list: %v (R=%d)",
+		key, prefList.Nodes, n.replConfig.R))
+
+	type readResult struct {
+		nodeId string
+		value  []byte
+		err    error
+	}
+
+	results := []readResult{}
+
+	// Attempt to read from nodes in preference list until we get R successful reads
+	for _, nodeId := range prefList.Nodes {
+		var value []byte
+		var err error
+
+		if nodeId == n.id {
+			// Read from local store
+			value, err = n.store.Get([]byte(key))
+			if err == nil {
+				n.log(fmt.Sprintf("✓ Local read successful for key '%s'", key))
+			} else {
+				n.log(fmt.Sprintf("✗ Local read failed for key '%s': %v", key, err))
+			}
+		} else {
+			// Read from remote replica
+			value, err = n.sendReplicaGet(nodeId, key)
+			if err == nil {
+				n.log(fmt.Sprintf("✓ Replica read from %s successful for key '%s'", nodeId, key))
+			} else {
+				n.log(fmt.Sprintf("✗ Replica read from %s failed for key '%s': %v", nodeId, key, err))
+			}
+		}
+
+		// Store result regardless of success/failure
+		results = append(results, readResult{
+			nodeId: nodeId,
+			value:  value,
+			err:    err,
+		})
+
+		// Check if we have R successful reads
+		successCount := 0
+		for _, r := range results {
+			if r.err == nil {
+				successCount++
+			}
+		}
+
+		if successCount >= n.replConfig.R {
+			n.log(fmt.Sprintf("Read quorum R=%d achieved", n.replConfig.R))
+
+			// Maybe we should do read repair here if values differ?
+			// For now, just return the first successful value
+			for _, r := range results {
+				if r.err == nil {
+					return r.value, nil
+				}
+			}
+		}
+	}
+
+	// Count successful reads
+	successCount := 0
+	var lastValue []byte
+	for _, r := range results {
+		if r.err == nil {
+			successCount++
+			lastValue = r.value
+		}
+	}
+
+	if successCount >= n.replConfig.R {
+		return lastValue, nil
+	}
+
+	return nil, fmt.Errorf("%w: only %d/%d reads succeeded",
+		replication.ErrQuorumNotMet, successCount, n.replConfig.R)
+}
+
+// sendReplicaGet sends a replica read request to a remote node
+func (n *Node) sendReplicaGet(nodeId, key string) ([]byte, error) {
+	nodeAddr := nodeIdToZMQAddr(nodeId)
+
+	resp, err := n.sendGet(nodeAddr, key)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetGet().Value, nil
 }

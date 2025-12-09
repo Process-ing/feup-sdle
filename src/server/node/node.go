@@ -272,7 +272,8 @@ func nodeIdToZMQAddr(id string) string {
 }
 
 func (n *Node) log(msg string) {
-	fmt.Printf("[Node %s]: %s\n", n.id, msg)
+	ts := time.Now().Format("15:04:05.000")
+	fmt.Printf("[%s] [Node %s]: %s\n", ts, n.id, msg)
 }
 
 func (n *Node) GetAddress() string {

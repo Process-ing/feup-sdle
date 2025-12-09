@@ -12,6 +12,25 @@ func (n *Node) handleGet(req *pb.Request) error {
 		return n.sendResponseError("invalid get request")
 	}
 
+	// Check if this node is the coordinator
+	prefList := n.ringView.GetPreferenceList(getReq.Key, n.replConfig.N)
+	if len(prefList.Nodes) > 0 && prefList.Nodes[0] == n.id {
+		// This node is coordinator orchestrate quorum read
+		value, err := n.coordinateReplicatedGet(getReq.Key, prefList)
+		if err != nil {
+			return n.sendResponseError(err.Error())
+		}
+
+		return n.sendResponseOK(&pb.Response{
+			Origin: n.id,
+			Ok:     true,
+			ResponseType: &pb.Response_Get{
+				Get: &pb.ResponseGet{Value: value},
+			},
+		})
+	}
+
+	// Not coordinator, do direct local read (for replica reads during quorum)
 	value, err := n.store.Get([]byte(getReq.Key))
 	if err != nil {
 		return n.sendResponseError(err.Error())
@@ -33,6 +52,25 @@ func (n *Node) handlePut(req *pb.Request) error {
 		return n.sendResponseError("invalid put request")
 	}
 
+	// Check if this node is the coordinator
+	prefList := n.ringView.GetPreferenceList(putReq.Key, n.replConfig.N)
+	if len(prefList.Nodes) > 0 && prefList.Nodes[0] == n.id {
+		// This node is coordinator, orchestrate replication
+		err := n.coordinateReplicatedPut(putReq.Key, putReq.Value)
+		if err != nil {
+			return n.sendResponseError(err.Error())
+		}
+
+		return n.sendResponseOK(&pb.Response{
+			Origin: n.id,
+			Ok:     true,
+			ResponseType: &pb.Response_Put{
+				Put: &pb.ResponsePut{},
+			},
+		})
+	}
+
+	// Not coordinator, do direct local write (for replica writes)
 	err := n.store.Put([]byte(putReq.Key), putReq.Value)
 	if err != nil {
 		return n.sendResponseError(err.Error())
