@@ -1,0 +1,160 @@
+package node
+
+import (
+	"fmt"
+	"sdle-server/replication"
+)
+
+// coordinateReplicatedPut orchestrates a replicated write operation.
+// This node acts as the coordinator and replicates the data to N nodes.
+// Returns success if W writes succeed (sloppy quorum with hinted handoff).
+func (n *Node) coordinateReplicatedPut(key string, value []byte) error {
+	prefList := n.ringView.GetPreferenceList(key, n.replConfig.N)
+
+	if len(prefList.Nodes) == 0 {
+		return fmt.Errorf("no nodes available for key")
+	}
+
+	n.log(fmt.Sprintf("Coordinating PUT for key '%s' to preference list: %v (W=%d)",
+		key, prefList.Nodes, n.replConfig.W))
+
+	successCount := 0
+	failedNodes := []string{}
+	successfulNodes := []string{}
+
+	// Try to write to all nodes in preference list
+	for _, nodeId := range prefList.Nodes {
+		var err error
+
+		if nodeId == n.id {
+			// Write to local store
+			err = n.store.Put([]byte(key), value)
+			if err == nil {
+				n.log(fmt.Sprintf("✓ Local write successful for key '%s'", key))
+			} else {
+				n.log(fmt.Sprintf("✗ Local write failed for key '%s': %v", key, err))
+			}
+		} else {
+			// Write to remote replica
+			err = n.sendReplicaPut(nodeId, key, value)
+			if err == nil {
+				n.log(fmt.Sprintf("✓ Replica write to %s successful for key '%s'", nodeId, key))
+			} else {
+				n.log(fmt.Sprintf("✗ Replica write to %s failed for key '%s': %v", nodeId, key, err))
+			}
+		}
+
+		if err == nil {
+			successCount++
+			successfulNodes = append(successfulNodes, nodeId)
+		} else {
+			failedNodes = append(failedNodes, nodeId)
+		}
+
+		// Early success if W writes achieved
+		if successCount >= n.replConfig.W {
+			n.log(fmt.Sprintf("Write quorum W=%d achieved with nodes: %v", n.replConfig.W, successfulNodes))
+			return nil
+		}
+	}
+
+	// If we didn't reach W with preference list, try hinted handoff (sloppy quorum)
+	if successCount < n.replConfig.W {
+		n.log(fmt.Sprintf("Only %d/%d writes succeeded, attempting hinted handoff for failed nodes: %v",
+			successCount, n.replConfig.W, failedNodes))
+
+		additionalWrites := n.attemptHintedHandoff(key, value, failedNodes)
+		successCount += additionalWrites
+
+		if successCount >= n.replConfig.W {
+			n.log(fmt.Sprintf("Write quorum W=%d achieved with hinted handoff", n.replConfig.W))
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%w: only %d/%d writes succeeded",
+		replication.ErrInsufficientReplicas, successCount, n.replConfig.W)
+}
+
+// Tries to store hints on additional nodes beyond the preference list
+// Returns the number of successful hint stores (counts toward W in sloppy quorum)
+func (n *Node) attemptHintedHandoff(key string, value []byte, failedNodes []string) int {
+	if len(failedNodes) == 0 {
+		return 0
+	}
+
+	// Get all known nodes and find candidates for hinted handoff
+	allNodes := n.ringView.GetKnownIds()
+	prefList := n.ringView.GetPreferenceList(key, n.replConfig.N)
+
+	// Create set of nodes already in preference list
+	inPrefList := make(map[string]bool)
+	for _, nodeId := range prefList.Nodes {
+		inPrefList[nodeId] = true
+	}
+
+	// Find candidate nodes (not in preference list)
+	candidates := []string{}
+	for _, nodeId := range allNodes {
+		if !inPrefList[nodeId] && nodeId != n.id {
+			candidates = append(candidates, nodeId)
+		}
+	}
+
+	if len(candidates) == 0 {
+		n.log("No candidates available for hinted handoff")
+		return 0
+	}
+
+	successCount := 0
+	candidateIdx := 0
+
+	// For each failed node, try to store a hint on a candidate node
+	for _, failedNodeId := range failedNodes {
+		if candidateIdx >= len(candidates) {
+			break
+		}
+
+		candidateNodeId := candidates[candidateIdx]
+		candidateIdx++
+
+		hint := replication.Hint{
+			IntendedNode: failedNodeId,
+			Key:          key,
+			Value:        value,
+		}
+
+		// Try to send hint to candidate node
+		err := n.sendHintToNode(candidateNodeId, hint)
+		if err == nil {
+			n.log(fmt.Sprintf("✓ Stored hint on %s for intended node %s (key: %s)",
+				candidateNodeId, failedNodeId, key))
+			successCount++
+		} else {
+			n.log(fmt.Sprintf("✗ Failed to store hint on %s: %v", candidateNodeId, err))
+		}
+	}
+
+	return successCount
+}
+
+// sendReplicaPut sends a replica write request to a remote node
+// Uses ReplicaPut message type to bypass coordinator routing logic
+func (n *Node) sendReplicaPut(nodeId, key string, value []byte) error {
+	nodeAddr := nodeIdToZMQAddr(nodeId)
+	_, err := n.sendReplicaPutRequest(nodeAddr, key, value)
+	return err
+}
+
+// sendHintToNode sends a hint to a remote node for storage
+func (n *Node) sendHintToNode(nodeId string, hint replication.Hint) error {
+	// If it's this node, store locally
+	if nodeId == n.id {
+		return n.hintStore.StoreHint(hint)
+	}
+
+	// Send StoreHint request to the remote node
+	nodeAddr := nodeIdToZMQAddr(nodeId)
+	_, err := n.sendStoreHintRequest(nodeAddr, hint.IntendedNode, hint.Key, hint.Value)
+	return err
+}

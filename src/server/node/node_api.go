@@ -32,23 +32,26 @@ func (n *Node) Get(key string) ([]byte, error) {
 }
 
 func (n *Node) Put(key string, value []byte) error {
-	responsibleNodeId, ok := n.ringView.Lookup(key)
-	if !ok {
+	// Get preference list to determine coordinator
+	prefList := n.ringView.GetPreferenceList(key, n.replConfig.N)
+	if len(prefList.Nodes) == 0 {
 		return errors.New("no node available for key")
 	}
 
-	n.log("Node " + responsibleNodeId + " is responsible for key '" + key + "'")
+	coordinatorId := prefList.Nodes[0] // First node is coordinator
 
-	if responsibleNodeId == n.id {
-		// This node is responsible, write to local store.
-		n.log("This node (" + n.id + ") is responsible. Putting into local store.")
-		return n.store.Put([]byte(key), value)
+	n.log("Coordinator " + coordinatorId + " is responsible for key '" + key + "'")
+
+	if coordinatorId == n.id {
+		// This node is the coordinator, so orchestrate replication
+		n.log("This node (" + n.id + ") is coordinator. Orchestrating replication.")
+		return n.coordinateReplicatedPut(key, value)
 	}
 
-	// Forward the request to the responsible node.
-	n.log("Forwarding PUT request for key '" + key + "' to node " + responsibleNodeId + ".")
-	responsibleNodeAddr := nodeIdToZMQAddr(responsibleNodeId)
-	_, err := n.sendPut(responsibleNodeAddr, key, value)
+	// Forward the request to the coordinator
+	n.log("Forwarding PUT request for key '" + key + "' to coordinator " + coordinatorId + ".")
+	coordinatorAddr := nodeIdToZMQAddr(coordinatorId)
+	_, err := n.sendPut(coordinatorAddr, key, value)
 	return err
 }
 

@@ -32,6 +32,10 @@ func (s *Store) Close() error {
 	return s.db.Close()
 }
 
+func (s *Store) GetDB() *badger.DB {
+	return s.db
+}
+
 func (s *Store) Put(key, value []byte) error {
 	return s.db.Update(func(txn *badger.Txn) error {
 		return txn.Set(key, value)
@@ -71,7 +75,9 @@ func (s *Store) Has(key []byte) (bool, error) {
 		return true, nil
 	}
 	if errors.Is(err, badger.ErrKeyNotFound) {
-	return false, nil}
+		return false, nil
+	}
 
 	return false, err
 }
+

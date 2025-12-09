@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sdle-server/communication/websocket"
 	pb "sdle-server/proto"
+	"sdle-server/replication"
 	"sdle-server/ringview"
 	"sdle-server/storage"
 	"strconv"
@@ -30,6 +31,8 @@ type Node struct {
 	httpServer *http.Server
 	stopCh     chan struct{}
 	wg         sync.WaitGroup
+	replConfig replication.Config
+	hintStore  *replication.HintStore
 }
 
 func NewNode(id string, baseDir string) (*Node, error) {
@@ -68,15 +71,20 @@ func NewNode(id string, baseDir string) (*Node, error) {
 	wsPort := port + 3000 // 5000 -> 8000, etc
 	wsAddr := net.JoinHostPort(host, strconv.Itoa(wsPort))
 
+	replConfig := replication.DefaultConfig()
+	hintStore := replication.NewHintStore(store.GetDB())
+
 	// Create node instance
 	n := &Node{
-		id:       id,
-		addr:     addr,
-		wsAddr:   wsAddr,
-		ringView: ringView,
-		store:    *store,
-		repSock:  rep,
-		stopCh:   make(chan struct{}),
+		id:         id,
+		addr:       addr,
+		wsAddr:     wsAddr,
+		ringView:   ringView,
+		store:      *store,
+		repSock:    rep,
+		stopCh:     make(chan struct{}),
+		replConfig: replConfig,
+		hintStore:  hintStore,
 	}
 
 	// Setup WebSocket server
@@ -166,6 +174,10 @@ func (n *Node) startZMQLoop(errCh chan<- error) {
 			n.handleDelete(&req)
 		case *pb.Request_Has:
 			n.handleHas(&req)
+		case *pb.Request_ReplicaPut:
+			n.handleReplicaPut(&req)
+		case *pb.Request_StoreHint:
+			n.handleStoreHint(&req)
 		default:
 			_ = n.sendResponseError("unknown request type")
 		}
