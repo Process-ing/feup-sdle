@@ -16,14 +16,15 @@ export const WebProtocolSocketProvider = ({ children }: { children: React.ReactN
   }
 
   const onError = (event: Event) => {
-    console.error("Connection failed to server: ", event);
+    console.error("Connection failed to server");
 
     setTimeout(() => {
       initSocket();
-    }, 5000);
+    }, process.env.NEXT_PUBLIC_WEBSOCKET_RETRY_INTERVAL ? parseInt(process.env.NEXT_PUBLIC_WEBSOCKET_RETRY_INTERVAL) : 5000);
   }
 
-  if (!(socketRef.current instanceof WebProtocolSocket)) {
+
+  if (!socketRef.current.isConnected()) {
     // Initialize the WebSocket connection only once
     initSocket();
   }
