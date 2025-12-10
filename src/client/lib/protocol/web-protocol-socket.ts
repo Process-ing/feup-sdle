@@ -1,4 +1,4 @@
-import { ClientRequest, ServerResponse, ShoppingList as ShoppingListProto } from "../proto/client";
+import { ClientRequest, ServerResponse } from "../proto/client";
 import ProtocolRequest from "./protocol-entity";
 import ProtocolSocket from "./protocol-socket";
 
@@ -62,6 +62,10 @@ class WebProtocolSocket implements ProtocolSocket {
 
         this.resHandlers.set(clientReq.messageId!, onRes);
         this.socket.send(buffer);
+    }
+
+    isConnected(): boolean {
+        return this.socket.readyState === WebSocket.OPEN;
     }
 }
 
