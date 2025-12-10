@@ -37,7 +37,7 @@ export function ShoppingListDetail({
 	const [itemQuantity, setItemQuantity] = useState("1");
 	const socket = useProtocolSocket();
 
-	const refreshList = useCallback(async () => {
+	const refreshList = useCallback(async (): Promise<ShoppingList | undefined> => {
 		const dbList = await db.getList(listId);
 
 		if (dbList) {
@@ -46,11 +46,9 @@ export function ShoppingListDetail({
 
 		setNotFound(dbList === undefined);
 		setLoading(false);
-	}, [listId]);
 
-	useEffect(() => {
-		refreshList();
-	}, [refreshList]);
+		return dbList;
+	}, [listId]);
 
 
 	const handleReceivedList = useCallback(async (listReceived: ShoppingList) => {
@@ -88,17 +86,24 @@ export function ShoppingListDetail({
 		return false; // Keep the handler for future updates
 	}, [handleReceivedList]);
 
+	useEffect(() => {
+		const initializeSubscription = async () => {
+			const list = await refreshList();
+			if (list)
+				socket.send(list, handleSubscribeResponse);
+
+			socket.send(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
+		};
+
+		initializeSubscription();
+	}, [listId, socket]);
+
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
 		socket.send(delta, handleServerResponse);
 		await refreshList();
 	}, [listId]);
-
-	useEffect(() => {
-			socket.send(new GetShoppingListRequest(listId), handleServerResponse);
-			socket.send(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
-	}, [socket, listId, handleServerResponse, handleSubscribeResponse]);
 
 
 	const handleAddItem = async (e: React.FormEvent) => {

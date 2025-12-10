@@ -339,10 +339,10 @@ func (n *Node) HandleShoppingList(delta *crdt.ShoppingList) error {
 	return nil
 }
 
-func (n *Node) GetShoppingList(id string) (*pb.ShoppingList, error) {
-	n.log(fmt.Sprintf("get shopping list %s", id))
+func (n *Node) GetShoppingList(listID string) (*pb.ShoppingList, error) {
+	n.log(fmt.Sprintf("get shopping list %s", listID))
 
-	listData, err := n.store.Get([]byte("shoppinglist_" + id))
+	listData, err := n.store.Get([]byte("shoppinglist_" + listID))
 	if err != nil {
 		return nil, err
 	}
@@ -355,8 +355,14 @@ func (n *Node) GetShoppingList(id string) (*pb.ShoppingList, error) {
 	return &listProto, nil
 }
 
-func (n *Node) HandleSubscribeShoppingList(listID string, messageID string, conn *websocket.Conn) error {
+func (n *Node) SubscribeShoppingList(listID string, messageID string, conn *websocket.Conn) error {
 	n.log(fmt.Sprintf("handle subscribe shopping list %s", listID))
 	n.subController.AddSubscriber(listID, messageID, conn)
+	return nil
+}
+
+func (n *Node) UnsubscribeShoppingList(listID string, messageID string) error {
+	n.log(fmt.Sprintf("handle unsubscribe shopping list %s", listID))
+	n.subController.RemoveSubscriber(listID, messageID)
 	return nil
 }

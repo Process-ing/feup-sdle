@@ -10,5 +10,6 @@ import (
 type NodeInterface interface {
 	HandleShoppingList(list *crdt.ShoppingList) error
 	GetShoppingList(id string) (*pb.ShoppingList, error)
-	HandleSubscribeShoppingList(listID string, messageID string, conn *websocket.Conn) error
+	SubscribeShoppingList(listID string, messageID string, conn *websocket.Conn) error
+	UnsubscribeShoppingList(listID string, messageID string) error
 }
