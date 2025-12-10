@@ -19,6 +19,7 @@ import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
 import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
 import GetShoppingListRequest from "@/lib/protocol/get-shopping-list-request";
+import { ErrorCode } from "@/lib/proto/client";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -49,10 +50,6 @@ export function ShoppingListDetail({
 	}, [listId]);
 
 	useEffect(() => {
-		refreshList();
-	}, [refreshList]);
-
-	useEffect(() => {
 		if (socket instanceof WebProtocolSocket) {
 			socket.setOnShoppingListCallback(async (receivedList: ShoppingList) => {
 				if (receivedList.getListId() !== listId) return;
@@ -67,13 +64,23 @@ export function ShoppingListDetail({
 				await refreshList();
 			});
 
-			socket.send(new GetShoppingListRequest(listId));
+			db.getList(listId).then((dbList) => {
+				if (dbList) {
+					socket.send(dbList, () => {});
+				}
+				socket.send(new GetShoppingListRequest(listId), (error) => {
+					if (error === ErrorCode.NOT_FOUND) {
+						setNotFound(true);
+						setLoading(false);
+					}
+				});
+			});
 		}
 	}, [listId, socket]);
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
-		socket.send(delta);
+		socket.send(delta, () => {});
 		await refreshList();
 	}, [listId]);
 

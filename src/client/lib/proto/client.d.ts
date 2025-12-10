@@ -194,20 +194,100 @@ export class SubscribeShoppingListRequest implements ISubscribeShoppingListReque
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a ClientRequest. */
-export interface IClientRequest {
+/** Properties of an Ok. */
+export interface IOk {
+}
 
-    /** ClientRequest messageId */
-    messageId?: (string|null);
+/** Represents an Ok. */
+export class Ok implements IOk {
 
-    /** ClientRequest shoppingList */
-    shoppingList?: (IShoppingList|null);
+    /**
+     * Constructs a new Ok.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IOk);
 
-    /** ClientRequest getShoppingList */
-    getShoppingList?: (IGetShoppingListRequest|null);
+    /**
+     * Creates a new Ok instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Ok instance
+     */
+    public static create(properties?: IOk): Ok;
 
-    /** ClientRequest subscribeShoppingList */
-    subscribeShoppingList?: (ISubscribeShoppingListRequest|null);
+    /**
+     * Encodes the specified Ok message. Does not implicitly {@link Ok.verify|verify} messages.
+     * @param message Ok message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IOk, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified Ok message, length delimited. Does not implicitly {@link Ok.verify|verify} messages.
+     * @param message Ok message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IOk, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes an Ok message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Ok
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Ok;
+
+    /**
+     * Decodes an Ok message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Ok
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Ok;
+
+    /**
+     * Verifies an Ok message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates an Ok message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Ok
+     */
+    public static fromObject(object: { [k: string]: any }): Ok;
+
+    /**
+     * Creates a plain object from an Ok message. Also converts values to other types if specified.
+     * @param message Ok
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: Ok, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this Ok to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Ok
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** ErrorCode enum. */
+export enum ErrorCode {
+    NOT_FOUND = 0
 }
 
 /** Represents a ClientRequest. */
@@ -312,16 +392,6 @@ export class ClientRequest implements IClientRequest {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a ServerResponse. */
-export interface IServerResponse {
-
-    /** ServerResponse messageId */
-    messageId?: (string|null);
-
-    /** ServerResponse shoppingList */
-    shoppingList?: (IShoppingList|null);
-}
-
 /** Represents a ServerResponse. */
 export class ServerResponse implements IServerResponse {
 
@@ -337,8 +407,11 @@ export class ServerResponse implements IServerResponse {
     /** ServerResponse shoppingList. */
     public shoppingList?: (IShoppingList|null);
 
+    /** ServerResponse error. */
+    public error?: (ErrorCode|null);
+
     /** ServerResponse responseType. */
-    public responseType?: "shoppingList";
+    public responseType?: ("shoppingList"|"error");
 
     /**
      * Creates a new ServerResponse instance using the specified properties.
@@ -416,19 +489,6 @@ export class ServerResponse implements IServerResponse {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
-}
-
-/** Properties of a ShoppingItem. */
-export interface IShoppingItem {
-
-    /** ShoppingItem name */
-    name?: (string|null);
-
-    /** ShoppingItem quantity */
-    quantity?: (ICCounter|null);
-
-    /** ShoppingItem acquired */
-    acquired?: (ICCounter|null);
 }
 
 /** Represents a ShoppingItem. */
@@ -525,25 +585,6 @@ export class ShoppingItem implements IShoppingItem {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
-}
-
-/** Properties of a ShoppingList. */
-export interface IShoppingList {
-
-    /** ShoppingList replicaId */
-    replicaId?: (string|null);
-
-    /** ShoppingList id */
-    id?: (string|null);
-
-    /** ShoppingList name */
-    name?: (string|null);
-
-    /** ShoppingList items */
-    items?: ({ [k: string]: IShoppingItem }|null);
-
-    /** ShoppingList dotContext */
-    dotContext?: (IDotContext|null);
 }
 
 /** Represents a ShoppingList. */
@@ -648,16 +689,6 @@ export class ShoppingList implements IShoppingList {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a Dot. */
-export interface IDot {
-
-    /** Dot id */
-    id?: (string|null);
-
-    /** Dot seq */
-    seq?: (number|null);
-}
-
 /** Represents a Dot. */
 export class Dot implements IDot {
 
@@ -749,16 +780,6 @@ export class Dot implements IDot {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
-}
-
-/** Properties of a DotContext. */
-export interface IDotContext {
-
-    /** DotContext versionVector */
-    versionVector?: ({ [k: string]: number }|null);
-
-    /** DotContext dots */
-    dots?: (IDot[]|null);
 }
 
 /** Represents a DotContext. */
@@ -854,16 +875,6 @@ export class DotContext implements IDotContext {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a DotKernel. */
-export interface IDotKernel {
-
-    /** DotKernel dotKeys */
-    dotKeys?: (IDot[]|null);
-
-    /** DotKernel dotValues */
-    dotValues?: ((number|Long)[]|null);
-}
-
 /** Represents a DotKernel. */
 export class DotKernel implements IDotKernel {
 
@@ -955,13 +966,6 @@ export class DotKernel implements IDotKernel {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
-}
-
-/** Properties of a CCounter. */
-export interface ICCounter {
-
-    /** CCounter dotKernel */
-    dotKernel?: (IDotKernel|null);
 }
 
 /** Represents a CCounter. */

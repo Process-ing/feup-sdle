@@ -68,19 +68,41 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 			case *pb.ClientRequest_GetShoppingList_:
-				list, err := h.node.GetShoppingList(req.GetGetShoppingList_().GetId())
+				getShoppingListReq := req.GetGetShoppingList_()
+
+				list, err := h.node.GetShoppingList(getShoppingListReq.GetId())
 				if err != nil {
 					log.Println("Error getting shopping list:", err)
+
+					notFoundRes := &pb.ServerResponse{
+						MessageId: req.MessageId,
+						ResponseType: &pb.ServerResponse_Error{
+							Error: pb.ErrorCode_NOT_FOUND,
+						},
+					}
+
+					resBytes, err := proto.Marshal(notFoundRes)
+					if err != nil {
+						log.Println("Failed to marshal not found response:", err)
+						continue
+					}
+
+					if err := conn.WriteMessage(websocket.BinaryMessage, resBytes); err != nil {
+						log.Println("Error writing message:", err)
+						break
+					}
+
 					continue
 				}
 
 				// Send the shopping list back to the client
 				serverResp := &pb.ServerResponse{
+					MessageId: req.MessageId,
 					ResponseType: &pb.ServerResponse_ShoppingList{
 						ShoppingList: list,
 					},
 				}
-				
+
 				respBytes, err := proto.Marshal(serverResp)
 				if err != nil {
 					log.Println("Failed to marshal shopping list:", err)

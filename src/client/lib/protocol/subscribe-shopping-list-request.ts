@@ -1,15 +1,15 @@
 import { randomUUID } from "crypto";
-import { ClientRequest, IClientRequest } from "../proto/client";
-import ProtocolEntity from "./protocol-entity";
+import { ClientRequest } from "../proto/client";
+import ProtocolRequest from "./protocol-entity";
 
-export default class SubscribeShoppingListRequest implements ProtocolEntity {
+export default class SubscribeShoppingListRequest implements ProtocolRequest {
     private listId: string;
 
     constructor(id: string) {
         this.listId = id;
     }
 
-    public toClientRequest(): IClientRequest {
+    public toClientRequest(): ClientRequest {
         return ClientRequest.create({
             messageId: randomUUID(),
             subscribeShoppingList: {

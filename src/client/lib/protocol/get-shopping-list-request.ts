@@ -1,7 +1,7 @@
-import { ClientRequest, IClientRequest } from "../proto/client";
-import ProtocolEntity from "./protocol-entity";
+import { ClientRequest } from "../proto/client";
+import ProtocolRequest from "./protocol-entity";
 
-export default class GetShoppingListRequest implements ProtocolEntity {
+export default class GetShoppingListRequest implements ProtocolRequest {
     private listId: string;
 
     constructor(listId: string) {
@@ -12,7 +12,7 @@ export default class GetShoppingListRequest implements ProtocolEntity {
         return this.listId;
     }
 
-    public toClientRequest(): IClientRequest {
+    public toClientRequest(): ClientRequest {
         return ClientRequest.create({
             messageId: crypto.randomUUID(),
             getShoppingList: {
