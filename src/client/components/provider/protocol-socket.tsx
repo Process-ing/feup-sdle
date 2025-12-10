@@ -3,7 +3,7 @@
 import NullProtocolSocket from "@/lib/protocol/null-protocol-socket";
 import ProtocolSocket from "@/lib/protocol/protocol-socket";
 import WebProtocolSocket from "@/lib/protocol/web-protocol-socket";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useRef } from "react";
 
 const ProtocolSocketContext = createContext<ProtocolSocket>(new NullProtocolSocket());
 
@@ -12,7 +12,8 @@ export const WebProtocolSocketProvider = ({ children }: { children: React.ReactN
 
   if (!socketRef.current) {
     // Initialize the WebSocket connection only once
-    socketRef.current = new WebProtocolSocket(new WebSocket("ws://localhost:8000/ws"));
+    const websocket = new WebSocket("ws://localhost:8000/ws");
+    socketRef.current = new WebProtocolSocket(websocket);
   }
 
   return (

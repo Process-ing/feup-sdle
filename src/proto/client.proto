@@ -12,6 +12,12 @@ message SubscribeShoppingListRequest {
     string id = 1;
 }
 
+message Ok {}
+
+enum ErrorCode {
+    NOT_FOUND = 0;
+}
+
 message ClientRequest {
     string message_id = 1;
 
@@ -27,5 +33,6 @@ message ServerResponse {
 
     oneof response_type {
         ShoppingList shopping_list = 2;
+        ErrorCode error = 3;
     }
 }

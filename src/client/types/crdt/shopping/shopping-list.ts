@@ -7,9 +7,9 @@ import {
     ShoppingItem as ShoppingItemProto,
     DotContext as DotContextProto,
 } from "@/lib/proto/global";
-import ProtocolEntity from "@/lib/protocol/protocol-entity";
+import ProtocolRequest from "@/lib/protocol/protocol-entity";
 
-export default class ShoppingList implements ProtocolEntity {
+export default class ShoppingList implements ProtocolRequest {
     private replicaId: string;
     private listId: string;
     private name: string;

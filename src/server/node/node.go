@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"sdle-server/communication/websocket"
+	crdt "sdle-server/crdt/shopping"
 	pb "sdle-server/proto"
 	"sdle-server/replication"
 	"sdle-server/ringview"
@@ -22,17 +23,18 @@ import (
 )
 
 type Node struct {
-	id         string
-	addr       string
-	wsAddr     string
-	ringView   *ringview.RingView
-	store      storage.Store
-	repSock    *zmq4.Socket
-	httpServer *http.Server
-	stopCh     chan struct{}
-	wg         sync.WaitGroup
+	id            string
+	addr          string
+	wsAddr        string
+	ringView      *ringview.RingView
+	store         storage.Store
+	repSock       *zmq4.Socket
+	httpServer    *http.Server
+	stopCh        chan struct{}
+	wg            sync.WaitGroup
 	replConfig replication.Config
 	hintStore  *replication.HintStore
+	subController *SubController
 }
 
 func NewNode(id string, baseDir string) (*Node, error) {
@@ -84,7 +86,11 @@ func NewNode(id string, baseDir string) (*Node, error) {
 		stopCh:     make(chan struct{}),
 		replConfig: replConfig,
 		hintStore:  hintStore,
+		subController: NewSubController(nil), // Will set node reference later
 	}
+
+	// Set node reference in SubController
+	n.subController.SetNode(n)
 
 	// Setup WebSocket server
 	wsHandler := websocket.NewWebSocketHandler(n)
@@ -310,4 +316,41 @@ func (n *Node) GetID() string {
 
 func (n *Node) GetRingView() *ringview.RingView {
 	return n.ringView
+}
+
+func (n *Node) HandleShoppingList(delta *crdt.ShoppingList) error {
+	n.log(fmt.Sprintf("received shopping list %s", delta.ListID()))
+
+	var oldList *crdt.ShoppingList
+
+	if oldListData, err := n.store.Get([]byte("shoppinglist_" + delta.ListID())); err == nil {
+		var oldListProto pb.ShoppingList
+
+		proto.Unmarshal(oldListData, &oldListProto)
+		oldList = crdt.ShoppingListFromProto(&oldListProto)
+	} else {
+		oldList = crdt.NewShoppingList(n.id, delta.ListID(), delta.Name())
+	}
+
+	oldList.Join(delta)
+
+	newListProto := oldList.ToProto()
+	newListData, err := proto.Marshal(newListProto)
+
+	if err != nil {
+		return err
+	}
+
+	if err := n.store.Put([]byte("shoppinglist_" + delta.ListID()), newListData); err != nil {
+		return err
+	}
+
+	deltaData, err := proto.Marshal(delta.ToProto())
+	if err != nil {
+		return err
+	}
+
+	n.subController.NotifySubscribers(delta.ListID(), deltaData)
+
+	return nil
 }

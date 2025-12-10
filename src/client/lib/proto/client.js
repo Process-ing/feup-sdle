@@ -417,6 +417,195 @@ export const SubscribeShoppingListRequest = $root.SubscribeShoppingListRequest =
     return SubscribeShoppingListRequest;
 })();
 
+export const Ok = $root.Ok = (() => {
+
+    /**
+     * Properties of an Ok.
+     * @exports IOk
+     * @interface IOk
+     */
+
+    /**
+     * Constructs a new Ok.
+     * @exports Ok
+     * @classdesc Represents an Ok.
+     * @implements IOk
+     * @constructor
+     * @param {IOk=} [properties] Properties to set
+     */
+    function Ok(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * Creates a new Ok instance using the specified properties.
+     * @function create
+     * @memberof Ok
+     * @static
+     * @param {IOk=} [properties] Properties to set
+     * @returns {Ok} Ok instance
+     */
+    Ok.create = function create(properties) {
+        return new Ok(properties);
+    };
+
+    /**
+     * Encodes the specified Ok message. Does not implicitly {@link Ok.verify|verify} messages.
+     * @function encode
+     * @memberof Ok
+     * @static
+     * @param {IOk} message Ok message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    Ok.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified Ok message, length delimited. Does not implicitly {@link Ok.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof Ok
+     * @static
+     * @param {IOk} message Ok message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    Ok.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes an Ok message from the specified reader or buffer.
+     * @function decode
+     * @memberof Ok
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {Ok} Ok
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    Ok.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Ok();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes an Ok message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof Ok
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {Ok} Ok
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    Ok.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies an Ok message.
+     * @function verify
+     * @memberof Ok
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    Ok.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        return null;
+    };
+
+    /**
+     * Creates an Ok message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof Ok
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {Ok} Ok
+     */
+    Ok.fromObject = function fromObject(object) {
+        if (object instanceof $root.Ok)
+            return object;
+        return new $root.Ok();
+    };
+
+    /**
+     * Creates a plain object from an Ok message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof Ok
+     * @static
+     * @param {Ok} message Ok
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    Ok.toObject = function toObject() {
+        return {};
+    };
+
+    /**
+     * Converts this Ok to JSON.
+     * @function toJSON
+     * @memberof Ok
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    Ok.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for Ok
+     * @function getTypeUrl
+     * @memberof Ok
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    Ok.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/Ok";
+    };
+
+    return Ok;
+})();
+
+/**
+ * ErrorCode enum.
+ * @exports ErrorCode
+ * @enum {number}
+ * @property {number} NOT_FOUND=0 NOT_FOUND value
+ */
+export const ErrorCode = $root.ErrorCode = (() => {
+    const valuesById = {}, values = Object.create(valuesById);
+    values[valuesById[0] = "NOT_FOUND"] = 0;
+    return values;
+})();
+
 export const ClientRequest = $root.ClientRequest = (() => {
 
     /**
@@ -748,6 +937,7 @@ export const ServerResponse = $root.ServerResponse = (() => {
      * @interface IServerResponse
      * @property {string|null} [messageId] ServerResponse messageId
      * @property {IShoppingList|null} [shoppingList] ServerResponse shoppingList
+     * @property {ErrorCode|null} [error] ServerResponse error
      */
 
     /**
@@ -781,17 +971,25 @@ export const ServerResponse = $root.ServerResponse = (() => {
      */
     ServerResponse.prototype.shoppingList = null;
 
+    /**
+     * ServerResponse error.
+     * @member {ErrorCode|null|undefined} error
+     * @memberof ServerResponse
+     * @instance
+     */
+    ServerResponse.prototype.error = null;
+
     // OneOf field names bound to virtual getters and setters
     let $oneOfFields;
 
     /**
      * ServerResponse responseType.
-     * @member {"shoppingList"|undefined} responseType
+     * @member {"shoppingList"|"error"|undefined} responseType
      * @memberof ServerResponse
      * @instance
      */
     Object.defineProperty(ServerResponse.prototype, "responseType", {
-        get: $util.oneOfGetter($oneOfFields = ["shoppingList"]),
+        get: $util.oneOfGetter($oneOfFields = ["shoppingList", "error"]),
         set: $util.oneOfSetter($oneOfFields)
     });
 
@@ -823,6 +1021,8 @@ export const ServerResponse = $root.ServerResponse = (() => {
             writer.uint32(/* id 1, wireType 2 =*/10).string(message.messageId);
         if (message.shoppingList != null && Object.hasOwnProperty.call(message, "shoppingList"))
             $root.ShoppingList.encode(message.shoppingList, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+        if (message.error != null && Object.hasOwnProperty.call(message, "error"))
+            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.error);
         return writer;
     };
 
@@ -865,6 +1065,10 @@ export const ServerResponse = $root.ServerResponse = (() => {
                 }
             case 2: {
                     message.shoppingList = $root.ShoppingList.decode(reader, reader.uint32());
+                    break;
+                }
+            case 3: {
+                    message.error = reader.int32();
                     break;
                 }
             default:
@@ -914,6 +1118,17 @@ export const ServerResponse = $root.ServerResponse = (() => {
                     return "shoppingList." + error;
             }
         }
+        if (message.error != null && message.hasOwnProperty("error")) {
+            if (properties.responseType === 1)
+                return "responseType: multiple values";
+            properties.responseType = 1;
+            switch (message.error) {
+            default:
+                return "error: enum value expected";
+            case 0:
+                break;
+            }
+        }
         return null;
     };
 
@@ -935,6 +1150,18 @@ export const ServerResponse = $root.ServerResponse = (() => {
             if (typeof object.shoppingList !== "object")
                 throw TypeError(".ServerResponse.shoppingList: object expected");
             message.shoppingList = $root.ShoppingList.fromObject(object.shoppingList);
+        }
+        switch (object.error) {
+        default:
+            if (typeof object.error === "number") {
+                message.error = object.error;
+                break;
+            }
+            break;
+        case "NOT_FOUND":
+        case 0:
+            message.error = 0;
+            break;
         }
         return message;
     };
@@ -960,6 +1187,11 @@ export const ServerResponse = $root.ServerResponse = (() => {
             object.shoppingList = $root.ShoppingList.toObject(message.shoppingList, options);
             if (options.oneofs)
                 object.responseType = "shoppingList";
+        }
+        if (message.error != null && message.hasOwnProperty("error")) {
+            object.error = options.enums === String ? $root.ErrorCode[message.error] === undefined ? message.error : $root.ErrorCode[message.error] : message.error;
+            if (options.oneofs)
+                object.responseType = "error";
         }
         return object;
     };

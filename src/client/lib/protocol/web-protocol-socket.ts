@@ -1,12 +1,13 @@
 import { ShoppingList } from "@/types";
-import { ClientRequest, ServerResponse, ShoppingList as ShoppingListProto } from "../proto/client";
-import ProtocolEntity from "./protocol-entity";
+import { ClientRequest, ErrorCode, ServerResponse, ShoppingList as ShoppingListProto } from "../proto/client";
+import ProtocolRequest from "./protocol-entity";
 import ProtocolSocket from "./protocol-socket";
 
 class WebProtocolSocket implements ProtocolSocket {
     private socket: WebSocket;
     private isOpen: Promise<void>;
-    private onShoppingList: (list: ShoppingList) => void = () => {};
+    private onShoppingList: (list: ShoppingList) => void = () => { };
+    private errorHandlers: Map<string, (error: ErrorCode) => void> = new Map();
 
     constructor(ws: WebSocket) {
         this.socket = ws;
@@ -32,10 +33,21 @@ class WebProtocolSocket implements ProtocolSocket {
         const buffer = await (event.data as Blob).arrayBuffer();
         const response = ServerResponse.decode(new Uint8Array(buffer));
 
+        console.log("Received message via WebSocket:", response);
+
+        const errorHandler = this.errorHandlers.get(response.messageId);
+        this.errorHandlers.delete(response.messageId);
+
         switch (response.responseType) {
             case "shoppingList":
                 const shoppingList = ShoppingList.fromProto(response.shoppingList as ShoppingListProto)
                 this.onShoppingList(shoppingList);
+                break;
+
+            case "error":
+                if (errorHandler) {
+                    errorHandler(response.error!);
+                }
                 break;
         }
     }
@@ -44,7 +56,7 @@ class WebProtocolSocket implements ProtocolSocket {
         console.log("WebSocket connection closed on " + this.socket.url, event);
     }
 
-    async send(entity: ProtocolEntity): Promise<void> {
+    async send(request: ProtocolRequest, onError: (error: ErrorCode) => void): Promise<void> {
         // Wait for the WebSocket to be open
         await this.isOpen;
 
@@ -53,10 +65,12 @@ class WebProtocolSocket implements ProtocolSocket {
             return;
         }
 
-        const buffer = ClientRequest.encode(entity.toClientRequest()).finish();
+        const clientReq = request.toClientRequest();
+        const buffer = ClientRequest.encode(clientReq).finish();
 
         console.log("Sending entity via WebSocket:", buffer);
 
+        this.errorHandlers.set(clientReq.messageId!, onError);
         this.socket.send(buffer);
     }
 

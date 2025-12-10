@@ -9,6 +9,8 @@ interface ShoppingListCardProps {
 }
 
 export function ShoppingListCard({ list, onSelect, onDelete }: ShoppingListCardProps) {
+  const items = list.getItems();
+
   return <>
     <div
       key={list.getListId()}
@@ -21,8 +23,8 @@ export function ShoppingListCard({ list, onSelect, onDelete }: ShoppingListCardP
             {list.getName()}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {list.getItems().length}{" "}
-            {list.getItems().length === 1 ? "item" : "items"}
+            {items.length}{" "}
+            {items.length === 1 ? "item" : "items"}
           </p>
         </div>
         <div className="flex items-center gap-2">
