@@ -117,9 +117,35 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case *pb.ClientRequest_SubscribeShoppingList:
 				subscribeReq := req.GetSubscribeShoppingList()
 
-				err := h.node.HandleSubscribeShoppingList(subscribeReq.GetId(), req.MessageId, conn)
+				err := h.node.SubscribeShoppingList(subscribeReq.GetId(), req.MessageId, conn)
 				if err != nil {
 					log.Println("Error handling subscribe shopping list:", err)
+				}
+				defer h.node.UnsubscribeShoppingList(subscribeReq.GetId(), req.MessageId)
+
+				// Synchronize client with local state
+				list, err := h.node.GetShoppingList(subscribeReq.GetId())
+				if err != nil {
+					log.Println("Error getting shopping list for synchronization:", err)
+					continue
+				}
+
+				syncResp := &pb.ServerResponse{
+					MessageId: req.MessageId,
+					ResponseType: &pb.ServerResponse_ShoppingList{
+						ShoppingList: list,
+					},
+				}
+
+				syncBytes, err := proto.Marshal(syncResp)
+				if err != nil {
+					log.Println("Failed to marshal synchronization shopping list:", err)
+					continue
+				}
+
+				if err := conn.WriteMessage(websocket.BinaryMessage, syncBytes); err != nil {
+					log.Println("Error writing synchronization message:", err)
+					break
 				}
 
 			default:
