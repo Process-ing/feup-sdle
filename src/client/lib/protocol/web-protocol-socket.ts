@@ -67,6 +67,18 @@ class WebProtocolSocket implements ProtocolSocket {
     isConnected(): boolean {
         return this.socket.readyState === WebSocket.OPEN;
     }
+
+    connect(): Promise<void> {
+        return this.isOpen;
+    }
+
+    close(): void {
+        this.socket.close();
+    }
+
+    getUrl(): string {
+        return this.socket.url;
+    }
 }
 
 export default WebProtocolSocket;

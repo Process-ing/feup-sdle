@@ -6,4 +6,7 @@ export default interface ProtocolSocket {
     // onRes returns whether the handler is done and can be removed
 
     isConnected(): boolean;
+    connect(): Promise<void>;
+    close(): void;
+    getUrl(): string;
 }

@@ -9,4 +9,16 @@ export default class NullProtocolSocket implements ProtocolSocket {
     isConnected(): boolean {
         return false;
     }
+
+    async connect(): Promise<void> {
+        console.warn("NullProtocolSocket cannot connect.");
+    }
+
+    close(): void {
+        console.warn("NullProtocolSocket cannot be closed because it is not connected.");
+    }
+
+    getUrl(): string {
+        return "null://";
+    }
 }
