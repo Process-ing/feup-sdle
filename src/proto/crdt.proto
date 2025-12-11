@@ -34,6 +34,6 @@ message StringMVReg {
     StringDotKernel dot_kernel = 1;
 }
 
-message EWFlag {
+message DWFlag {
     EmptyDotKernel dot_kernel = 1;
 }

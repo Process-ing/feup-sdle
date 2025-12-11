@@ -106,14 +106,14 @@ export interface IShoppingItem {
     /** ShoppingItem name */
     name?: (IStringMVReg|null);
 
-    /** ShoppingItem nonErased */
-    nonErased?: (IEWFlag|null);
-
     /** ShoppingItem quantity */
     quantity?: (ICCounter|null);
 
     /** ShoppingItem acquired */
     acquired?: (ICCounter|null);
+
+    /** ShoppingItem deleted */
+    deleted?: (IDWFlag|null);
 }
 
 /** Represents a ShoppingItem. */
@@ -128,14 +128,14 @@ export class ShoppingItem implements IShoppingItem {
     /** ShoppingItem name. */
     public name?: (IStringMVReg|null);
 
-    /** ShoppingItem nonErased. */
-    public nonErased?: (IEWFlag|null);
-
     /** ShoppingItem quantity. */
     public quantity?: (ICCounter|null);
 
     /** ShoppingItem acquired. */
     public acquired?: (ICCounter|null);
+
+    /** ShoppingItem deleted. */
+    public deleted?: (IDWFlag|null);
 
     /**
      * Creates a new ShoppingItem instance using the specified properties.
@@ -1033,97 +1033,97 @@ export class StringMVReg implements IStringMVReg {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/** Properties of a EWFlag. */
-export interface IEWFlag {
+/** Properties of a DWFlag. */
+export interface IDWFlag {
 
-    /** EWFlag dotKernel */
+    /** DWFlag dotKernel */
     dotKernel?: (IEmptyDotKernel|null);
 }
 
-/** Represents a EWFlag. */
-export class EWFlag implements IEWFlag {
+/** Represents a DWFlag. */
+export class DWFlag implements IDWFlag {
 
     /**
-     * Constructs a new EWFlag.
+     * Constructs a new DWFlag.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IEWFlag);
+    constructor(properties?: IDWFlag);
 
-    /** EWFlag dotKernel. */
+    /** DWFlag dotKernel. */
     public dotKernel?: (IEmptyDotKernel|null);
 
     /**
-     * Creates a new EWFlag instance using the specified properties.
+     * Creates a new DWFlag instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns EWFlag instance
+     * @returns DWFlag instance
      */
-    public static create(properties?: IEWFlag): EWFlag;
+    public static create(properties?: IDWFlag): DWFlag;
 
     /**
-     * Encodes the specified EWFlag message. Does not implicitly {@link EWFlag.verify|verify} messages.
-     * @param message EWFlag message or plain object to encode
+     * Encodes the specified DWFlag message. Does not implicitly {@link DWFlag.verify|verify} messages.
+     * @param message DWFlag message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IEWFlag, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: IDWFlag, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Encodes the specified EWFlag message, length delimited. Does not implicitly {@link EWFlag.verify|verify} messages.
-     * @param message EWFlag message or plain object to encode
+     * Encodes the specified DWFlag message, length delimited. Does not implicitly {@link DWFlag.verify|verify} messages.
+     * @param message DWFlag message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encodeDelimited(message: IEWFlag, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encodeDelimited(message: IDWFlag, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a EWFlag message from the specified reader or buffer.
+     * Decodes a DWFlag message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns EWFlag
+     * @returns DWFlag
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): EWFlag;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): DWFlag;
 
     /**
-     * Decodes a EWFlag message from the specified reader or buffer, length delimited.
+     * Decodes a DWFlag message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns EWFlag
+     * @returns DWFlag
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): EWFlag;
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): DWFlag;
 
     /**
-     * Verifies a EWFlag message.
+     * Verifies a DWFlag message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * Creates a EWFlag message from a plain object. Also converts values to their respective internal types.
+     * Creates a DWFlag message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
-     * @returns EWFlag
+     * @returns DWFlag
      */
-    public static fromObject(object: { [k: string]: any }): EWFlag;
+    public static fromObject(object: { [k: string]: any }): DWFlag;
 
     /**
-     * Creates a plain object from a EWFlag message. Also converts values to other types if specified.
-     * @param message EWFlag
+     * Creates a plain object from a DWFlag message. Also converts values to other types if specified.
+     * @param message DWFlag
      * @param [options] Conversion options
      * @returns Plain object
      */
-    public static toObject(message: EWFlag, options?: $protobuf.IConversionOptions): { [k: string]: any };
+    public static toObject(message: DWFlag, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * Converts this EWFlag to JSON.
+     * Converts this DWFlag to JSON.
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * Gets the default type url for EWFlag
+     * Gets the default type url for DWFlag
      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns The default type url
      */

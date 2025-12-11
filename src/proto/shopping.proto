@@ -6,9 +6,9 @@ import "crdt.proto";
 
 message ShoppingItem {
     StringMVReg name = 1;
-    EWFlag nonErased = 2;
-    CCounter quantity = 3;
-    CCounter acquired = 4;
+    CCounter quantity = 2;
+    CCounter acquired = 3;
+    DWFlag deleted = 4;
 }
 
 message ShoppingList {
