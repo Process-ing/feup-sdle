@@ -243,9 +243,9 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
      * @exports IShoppingItem
      * @interface IShoppingItem
      * @property {IStringMVReg|null} [name] ShoppingItem name
-     * @property {IEWFlag|null} [nonErased] ShoppingItem nonErased
      * @property {ICCounter|null} [quantity] ShoppingItem quantity
      * @property {ICCounter|null} [acquired] ShoppingItem acquired
+     * @property {IDWFlag|null} [deleted] ShoppingItem deleted
      */
 
     /**
@@ -272,14 +272,6 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
     ShoppingItem.prototype.name = null;
 
     /**
-     * ShoppingItem nonErased.
-     * @member {IEWFlag|null|undefined} nonErased
-     * @memberof ShoppingItem
-     * @instance
-     */
-    ShoppingItem.prototype.nonErased = null;
-
-    /**
      * ShoppingItem quantity.
      * @member {ICCounter|null|undefined} quantity
      * @memberof ShoppingItem
@@ -294,6 +286,14 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
      * @instance
      */
     ShoppingItem.prototype.acquired = null;
+
+    /**
+     * ShoppingItem deleted.
+     * @member {IDWFlag|null|undefined} deleted
+     * @memberof ShoppingItem
+     * @instance
+     */
+    ShoppingItem.prototype.deleted = null;
 
     /**
      * Creates a new ShoppingItem instance using the specified properties.
@@ -321,12 +321,12 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
             writer = $Writer.create();
         if (message.name != null && Object.hasOwnProperty.call(message, "name"))
             $root.StringMVReg.encode(message.name, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-        if (message.nonErased != null && Object.hasOwnProperty.call(message, "nonErased"))
-            $root.EWFlag.encode(message.nonErased, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
         if (message.quantity != null && Object.hasOwnProperty.call(message, "quantity"))
-            $root.CCounter.encode(message.quantity, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            $root.CCounter.encode(message.quantity, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
         if (message.acquired != null && Object.hasOwnProperty.call(message, "acquired"))
-            $root.CCounter.encode(message.acquired, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            $root.CCounter.encode(message.acquired, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+        if (message.deleted != null && Object.hasOwnProperty.call(message, "deleted"))
+            $root.DWFlag.encode(message.deleted, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
         return writer;
     };
 
@@ -368,15 +368,15 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
                     break;
                 }
             case 2: {
-                    message.nonErased = $root.EWFlag.decode(reader, reader.uint32());
-                    break;
-                }
-            case 3: {
                     message.quantity = $root.CCounter.decode(reader, reader.uint32());
                     break;
                 }
-            case 4: {
+            case 3: {
                     message.acquired = $root.CCounter.decode(reader, reader.uint32());
+                    break;
+                }
+            case 4: {
+                    message.deleted = $root.DWFlag.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -419,11 +419,6 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
             if (error)
                 return "name." + error;
         }
-        if (message.nonErased != null && message.hasOwnProperty("nonErased")) {
-            let error = $root.EWFlag.verify(message.nonErased);
-            if (error)
-                return "nonErased." + error;
-        }
         if (message.quantity != null && message.hasOwnProperty("quantity")) {
             let error = $root.CCounter.verify(message.quantity);
             if (error)
@@ -433,6 +428,11 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
             let error = $root.CCounter.verify(message.acquired);
             if (error)
                 return "acquired." + error;
+        }
+        if (message.deleted != null && message.hasOwnProperty("deleted")) {
+            let error = $root.DWFlag.verify(message.deleted);
+            if (error)
+                return "deleted." + error;
         }
         return null;
     };
@@ -454,11 +454,6 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
                 throw TypeError(".ShoppingItem.name: object expected");
             message.name = $root.StringMVReg.fromObject(object.name);
         }
-        if (object.nonErased != null) {
-            if (typeof object.nonErased !== "object")
-                throw TypeError(".ShoppingItem.nonErased: object expected");
-            message.nonErased = $root.EWFlag.fromObject(object.nonErased);
-        }
         if (object.quantity != null) {
             if (typeof object.quantity !== "object")
                 throw TypeError(".ShoppingItem.quantity: object expected");
@@ -468,6 +463,11 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
             if (typeof object.acquired !== "object")
                 throw TypeError(".ShoppingItem.acquired: object expected");
             message.acquired = $root.CCounter.fromObject(object.acquired);
+        }
+        if (object.deleted != null) {
+            if (typeof object.deleted !== "object")
+                throw TypeError(".ShoppingItem.deleted: object expected");
+            message.deleted = $root.DWFlag.fromObject(object.deleted);
         }
         return message;
     };
@@ -487,18 +487,18 @@ export const ShoppingItem = $root.ShoppingItem = (() => {
         let object = {};
         if (options.defaults) {
             object.name = null;
-            object.nonErased = null;
             object.quantity = null;
             object.acquired = null;
+            object.deleted = null;
         }
         if (message.name != null && message.hasOwnProperty("name"))
             object.name = $root.StringMVReg.toObject(message.name, options);
-        if (message.nonErased != null && message.hasOwnProperty("nonErased"))
-            object.nonErased = $root.EWFlag.toObject(message.nonErased, options);
         if (message.quantity != null && message.hasOwnProperty("quantity"))
             object.quantity = $root.CCounter.toObject(message.quantity, options);
         if (message.acquired != null && message.hasOwnProperty("acquired"))
             object.acquired = $root.CCounter.toObject(message.acquired, options);
+        if (message.deleted != null && message.hasOwnProperty("deleted"))
+            object.deleted = $root.DWFlag.toObject(message.deleted, options);
         return object;
     };
 
@@ -2569,24 +2569,24 @@ export const StringMVReg = $root.StringMVReg = (() => {
     return StringMVReg;
 })();
 
-export const EWFlag = $root.EWFlag = (() => {
+export const DWFlag = $root.DWFlag = (() => {
 
     /**
-     * Properties of a EWFlag.
-     * @exports IEWFlag
-     * @interface IEWFlag
-     * @property {IEmptyDotKernel|null} [dotKernel] EWFlag dotKernel
+     * Properties of a DWFlag.
+     * @exports IDWFlag
+     * @interface IDWFlag
+     * @property {IEmptyDotKernel|null} [dotKernel] DWFlag dotKernel
      */
 
     /**
-     * Constructs a new EWFlag.
-     * @exports EWFlag
-     * @classdesc Represents a EWFlag.
-     * @implements IEWFlag
+     * Constructs a new DWFlag.
+     * @exports DWFlag
+     * @classdesc Represents a DWFlag.
+     * @implements IDWFlag
      * @constructor
-     * @param {IEWFlag=} [properties] Properties to set
+     * @param {IDWFlag=} [properties] Properties to set
      */
-    function EWFlag(properties) {
+    function DWFlag(properties) {
         if (properties)
             for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
@@ -2594,35 +2594,35 @@ export const EWFlag = $root.EWFlag = (() => {
     }
 
     /**
-     * EWFlag dotKernel.
+     * DWFlag dotKernel.
      * @member {IEmptyDotKernel|null|undefined} dotKernel
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @instance
      */
-    EWFlag.prototype.dotKernel = null;
+    DWFlag.prototype.dotKernel = null;
 
     /**
-     * Creates a new EWFlag instance using the specified properties.
+     * Creates a new DWFlag instance using the specified properties.
      * @function create
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
-     * @param {IEWFlag=} [properties] Properties to set
-     * @returns {EWFlag} EWFlag instance
+     * @param {IDWFlag=} [properties] Properties to set
+     * @returns {DWFlag} DWFlag instance
      */
-    EWFlag.create = function create(properties) {
-        return new EWFlag(properties);
+    DWFlag.create = function create(properties) {
+        return new DWFlag(properties);
     };
 
     /**
-     * Encodes the specified EWFlag message. Does not implicitly {@link EWFlag.verify|verify} messages.
+     * Encodes the specified DWFlag message. Does not implicitly {@link DWFlag.verify|verify} messages.
      * @function encode
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
-     * @param {IEWFlag} message EWFlag message or plain object to encode
+     * @param {IDWFlag} message DWFlag message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    EWFlag.encode = function encode(message, writer) {
+    DWFlag.encode = function encode(message, writer) {
         if (!writer)
             writer = $Writer.create();
         if (message.dotKernel != null && Object.hasOwnProperty.call(message, "dotKernel"))
@@ -2631,33 +2631,33 @@ export const EWFlag = $root.EWFlag = (() => {
     };
 
     /**
-     * Encodes the specified EWFlag message, length delimited. Does not implicitly {@link EWFlag.verify|verify} messages.
+     * Encodes the specified DWFlag message, length delimited. Does not implicitly {@link DWFlag.verify|verify} messages.
      * @function encodeDelimited
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
-     * @param {IEWFlag} message EWFlag message or plain object to encode
+     * @param {IDWFlag} message DWFlag message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    EWFlag.encodeDelimited = function encodeDelimited(message, writer) {
+    DWFlag.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
     };
 
     /**
-     * Decodes a EWFlag message from the specified reader or buffer.
+     * Decodes a DWFlag message from the specified reader or buffer.
      * @function decode
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {EWFlag} EWFlag
+     * @returns {DWFlag} DWFlag
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    EWFlag.decode = function decode(reader, length, error) {
+    DWFlag.decode = function decode(reader, length, error) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.EWFlag();
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.DWFlag();
         while (reader.pos < end) {
             let tag = reader.uint32();
             if (tag === error)
@@ -2676,30 +2676,30 @@ export const EWFlag = $root.EWFlag = (() => {
     };
 
     /**
-     * Decodes a EWFlag message from the specified reader or buffer, length delimited.
+     * Decodes a DWFlag message from the specified reader or buffer, length delimited.
      * @function decodeDelimited
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {EWFlag} EWFlag
+     * @returns {DWFlag} DWFlag
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    EWFlag.decodeDelimited = function decodeDelimited(reader) {
+    DWFlag.decodeDelimited = function decodeDelimited(reader) {
         if (!(reader instanceof $Reader))
             reader = new $Reader(reader);
         return this.decode(reader, reader.uint32());
     };
 
     /**
-     * Verifies a EWFlag message.
+     * Verifies a DWFlag message.
      * @function verify
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    EWFlag.verify = function verify(message) {
+    DWFlag.verify = function verify(message) {
         if (typeof message !== "object" || message === null)
             return "object expected";
         if (message.dotKernel != null && message.hasOwnProperty("dotKernel")) {
@@ -2711,35 +2711,35 @@ export const EWFlag = $root.EWFlag = (() => {
     };
 
     /**
-     * Creates a EWFlag message from a plain object. Also converts values to their respective internal types.
+     * Creates a DWFlag message from a plain object. Also converts values to their respective internal types.
      * @function fromObject
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
      * @param {Object.<string,*>} object Plain object
-     * @returns {EWFlag} EWFlag
+     * @returns {DWFlag} DWFlag
      */
-    EWFlag.fromObject = function fromObject(object) {
-        if (object instanceof $root.EWFlag)
+    DWFlag.fromObject = function fromObject(object) {
+        if (object instanceof $root.DWFlag)
             return object;
-        let message = new $root.EWFlag();
+        let message = new $root.DWFlag();
         if (object.dotKernel != null) {
             if (typeof object.dotKernel !== "object")
-                throw TypeError(".EWFlag.dotKernel: object expected");
+                throw TypeError(".DWFlag.dotKernel: object expected");
             message.dotKernel = $root.EmptyDotKernel.fromObject(object.dotKernel);
         }
         return message;
     };
 
     /**
-     * Creates a plain object from a EWFlag message. Also converts values to other types if specified.
+     * Creates a plain object from a DWFlag message. Also converts values to other types if specified.
      * @function toObject
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
-     * @param {EWFlag} message EWFlag
+     * @param {DWFlag} message DWFlag
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    EWFlag.toObject = function toObject(message, options) {
+    DWFlag.toObject = function toObject(message, options) {
         if (!options)
             options = {};
         let object = {};
@@ -2751,32 +2751,32 @@ export const EWFlag = $root.EWFlag = (() => {
     };
 
     /**
-     * Converts this EWFlag to JSON.
+     * Converts this DWFlag to JSON.
      * @function toJSON
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @instance
      * @returns {Object.<string,*>} JSON object
      */
-    EWFlag.prototype.toJSON = function toJSON() {
+    DWFlag.prototype.toJSON = function toJSON() {
         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
     /**
-     * Gets the default type url for EWFlag
+     * Gets the default type url for DWFlag
      * @function getTypeUrl
-     * @memberof EWFlag
+     * @memberof DWFlag
      * @static
      * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns {string} The default type url
      */
-    EWFlag.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    DWFlag.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
         if (typeUrlPrefix === undefined) {
             typeUrlPrefix = "type.googleapis.com";
         }
-        return typeUrlPrefix + "/EWFlag";
+        return typeUrlPrefix + "/DWFlag";
     };
 
-    return EWFlag;
+    return DWFlag;
 })();
 
 export { $root as default };

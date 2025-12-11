@@ -1,4 +1,4 @@
-import { ClientRequest, IClientRequest } from "@/lib/proto/client";
+import { ClientRequest } from "@/lib/proto/client";
 import DotContext from "../generic/dot-context";
 import ORMap from "../generic/ormap";
 import ShoppingItem from "./shopping-item";
@@ -8,23 +8,26 @@ import {
     DotContext as DotContextProto,
 } from "@/lib/proto/global";
 import ProtocolRequest from "@/lib/protocol/protocol-entity";
+import MVReg from "../generic/mvreg";
 
 export default class ShoppingList implements ProtocolRequest {
     private replicaId: string;
     private listId: string;
-    private name: string;
+    private name: MVReg<string>;
     private items: ORMap<string, ShoppingItem>
     private dotContext: DotContext;
 
-    constructor(replicaId: string, listId: string, name: string) {
+    constructor(replicaId: string, listId: string) {
         this.replicaId = replicaId;
         this.listId = listId;
-        this.name = name;
         this.dotContext = new DotContext();
+
+        this.name = new MVReg<string>(replicaId);
+        this.name.setContext(this.dotContext);
 
         this.items = new ORMap<string, ShoppingItem>(
             this.replicaId,
-            (replicaId: string) => new ShoppingItem(replicaId, "", ""),
+            (replicaId: string) => new ShoppingItem(replicaId, ""),
             this.dotContext
         );
     }
@@ -38,7 +41,17 @@ export default class ShoppingList implements ProtocolRequest {
     }
 
     public getName(): string {
-        return this.name;
+        // Assume single value for name
+        return this.name.read().at(0) || "";
+    }
+
+    public setName(name: string): ShoppingList {
+        const delta = new ShoppingList(this.replicaId, this.listId);
+
+        delta.name = this.name.write(name);
+        delta.setContext(delta.name.getContext());
+
+        return delta;
     }
 
     public getContext(): DotContext {
@@ -47,13 +60,14 @@ export default class ShoppingList implements ProtocolRequest {
 
     public setContext(context: DotContext): void {
         this.dotContext = context;
+        this.name.setContext(context);
         this.items.setContext(context);
     }
 
     public getItems(): ShoppingItem[] {
         return Array.from(this.items.keys())
             .map((itemId: string) => this.items.get(itemId).clone())
-            .filter((item: ShoppingItem) => !item.isNull());
+            .filter((item: ShoppingItem) => !item.isDeleted());
     }
 
     public getItem(itemId: string): ShoppingItem | undefined {
@@ -65,15 +79,18 @@ export default class ShoppingList implements ProtocolRequest {
     }
 
     public putItem(itemId: string, quantityDiff: number, acquiredDiff: number, name?: string): ShoppingList {
-        const delta = new ShoppingList(this.replicaId, this.listId, this.name);
+        const delta = new ShoppingList(this.replicaId, this.listId);
 
         const itemsDelta = this.items.apply(itemId, (item: ShoppingItem) => {
             item.setItemId(itemId);
-            if (name !== undefined)
-                item.setName(name);
 
             const itemDelta = item.incQuantity(quantityDiff);
             itemDelta.join(item.incAcquired(acquiredDiff));
+            itemDelta.join(item.restore());
+
+            if (name !== undefined) {
+                itemDelta.join(item.setName(name));
+            }
 
             return itemDelta;
         });
@@ -85,9 +102,12 @@ export default class ShoppingList implements ProtocolRequest {
     }
 
     public removeItem(itemId: string): ShoppingList {
-        const delta = new ShoppingList(this.replicaId, this.listId, this.name);
+        const delta = new ShoppingList(this.replicaId, this.listId);
 
-        const itemsDelta = this.items.remove(itemId);
+        const itemsDelta = this.items.apply(itemId, (item: ShoppingItem) => {
+            return item.delete();
+        });
+
         delta.items = itemsDelta;
         delta.setContext(itemsDelta.getContext());
 
@@ -95,21 +115,30 @@ export default class ShoppingList implements ProtocolRequest {
     }
 
     public join(other: ShoppingList): void {
+        const originalCtx = this.dotContext.clone();
+
+        this.name.join(other.name);
+        this.dotContext.copy(originalCtx);
+
         this.items.join(other.items);
+        // No need to restore context here
+
         this.dotContext.join(other.getContext());
     }
 
     public clone(): ShoppingList {
-        const clone = new ShoppingList(this.replicaId, this.listId, this.name);
-        clone.dotContext = this.dotContext.clone();
+        const clone = new ShoppingList(this.replicaId, this.listId);
 
+        clone.name = this.name.clone();
         clone.items = this.items.clone();
-        clone.items.setContext(clone.dotContext);
+        clone.setContext(this.dotContext.clone());
 
         return clone;
     }
 
     public toProto(): ShoppingListProto {
+        const nameProto = this.name.toStringProto();
+
         const itemProtos: { [key: string]: ShoppingItemProto } = {};
 
         for (const itemId of this.items.keys()) {
@@ -118,39 +147,38 @@ export default class ShoppingList implements ProtocolRequest {
         }
 
         return ShoppingListProto.create({
-            replicaId: this.replicaId,
             id: this.listId,
-            name: this.name,
+            name: nameProto,
             items: itemProtos,
             dotContext: this.dotContext.toProto(),
         });
     }
 
-    public static fromProto(proto: ShoppingListProto): ShoppingList {
+    public static fromProto(proto: ShoppingListProto, replicaId: string): ShoppingList {
         const ctx = DotContext.fromProto(proto.dotContext as DotContextProto);
 
         const itemMap = new Map<string, ShoppingItem>();
         for (const itemId in proto.items) {
             const itemProto = proto.items[itemId] as ShoppingItemProto;
-            const item = ShoppingItem.fromProto(itemProto, proto.replicaId, itemId, ctx);
+            const item = ShoppingItem.fromProto(itemProto, replicaId, itemId, ctx);
             itemMap.set(itemId, item);
         }
 
         const items = new ORMap<string, ShoppingItem>(
-            proto.replicaId,
-            (replicaId: string) => new ShoppingItem(replicaId, "", ""),
+            replicaId,
+            (replicaId: string) => new ShoppingItem(replicaId, ""),
             ctx,
             itemMap
         );
 
-        const shoppingList = new ShoppingList(proto.replicaId, proto.id, proto.name);
+        const shoppingList = new ShoppingList(replicaId, proto.id);
         shoppingList.setContext(ctx);
         shoppingList.items = items;
 
         return shoppingList;
     }
 
-    public toClientRequest(): IClientRequest {
+    public toClientRequest(): ClientRequest {
         return ClientRequest.create({
             shoppingList: this.toProto(),
         });

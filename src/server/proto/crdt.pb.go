@@ -361,27 +361,27 @@ func (x *StringMVReg) GetDotKernel() *StringDotKernel {
 	return nil
 }
 
-type EWFlag struct {
+type DWFlag struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DotKernel     *EmptyDotKernel        `protobuf:"bytes,1,opt,name=dot_kernel,json=dotKernel,proto3" json:"dot_kernel,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *EWFlag) Reset() {
-	*x = EWFlag{}
+func (x *DWFlag) Reset() {
+	*x = DWFlag{}
 	mi := &file_crdt_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *EWFlag) String() string {
+func (x *DWFlag) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*EWFlag) ProtoMessage() {}
+func (*DWFlag) ProtoMessage() {}
 
-func (x *EWFlag) ProtoReflect() protoreflect.Message {
+func (x *DWFlag) ProtoReflect() protoreflect.Message {
 	mi := &file_crdt_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -393,12 +393,12 @@ func (x *EWFlag) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use EWFlag.ProtoReflect.Descriptor instead.
-func (*EWFlag) Descriptor() ([]byte, []int) {
+// Deprecated: Use DWFlag.ProtoReflect.Descriptor instead.
+func (*DWFlag) Descriptor() ([]byte, []int) {
 	return file_crdt_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *EWFlag) GetDotKernel() *EmptyDotKernel {
+func (x *DWFlag) GetDotKernel() *EmptyDotKernel {
 	if x != nil {
 		return x.DotKernel
 	}
@@ -437,7 +437,7 @@ const file_crdt_proto_rawDesc = "" +
 	"\vStringMVReg\x12/\n" +
 	"\n" +
 	"dot_kernel\x18\x01 \x01(\v2\x10.StringDotKernelR\tdotKernel\"8\n" +
-	"\x06EWFlag\x12.\n" +
+	"\x06DWFlag\x12.\n" +
 	"\n" +
 	"dot_kernel\x18\x01 \x01(\v2\x0f.EmptyDotKernelR\tdotKernelB'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
 
@@ -462,7 +462,7 @@ var file_crdt_proto_goTypes = []any{
 	(*EmptyDotKernel)(nil),  // 4: EmptyDotKernel
 	(*CCounter)(nil),        // 5: CCounter
 	(*StringMVReg)(nil),     // 6: StringMVReg
-	(*EWFlag)(nil),          // 7: EWFlag
+	(*DWFlag)(nil),          // 7: DWFlag
 	nil,                     // 8: DotContext.VersionVectorEntry
 }
 var file_crdt_proto_depIdxs = []int32{
@@ -473,7 +473,7 @@ var file_crdt_proto_depIdxs = []int32{
 	0, // 4: EmptyDotKernel.dot_keys:type_name -> Dot
 	2, // 5: CCounter.dot_kernel:type_name -> IntDotKernel
 	3, // 6: StringMVReg.dot_kernel:type_name -> StringDotKernel
-	4, // 7: EWFlag.dot_kernel:type_name -> EmptyDotKernel
+	4, // 7: DWFlag.dot_kernel:type_name -> EmptyDotKernel
 	8, // [8:8] is the sub-list for method output_type
 	8, // [8:8] is the sub-list for method input_type
 	8, // [8:8] is the sub-list for extension type_name

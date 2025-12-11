@@ -24,9 +24,9 @@ const (
 type ShoppingItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          *StringMVReg           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	NonErased     *EWFlag                `protobuf:"bytes,2,opt,name=nonErased,proto3" json:"nonErased,omitempty"`
-	Quantity      *CCounter              `protobuf:"bytes,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	Acquired      *CCounter              `protobuf:"bytes,4,opt,name=acquired,proto3" json:"acquired,omitempty"`
+	Quantity      *CCounter              `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Acquired      *CCounter              `protobuf:"bytes,3,opt,name=acquired,proto3" json:"acquired,omitempty"`
+	Deleted       *DWFlag                `protobuf:"bytes,4,opt,name=deleted,proto3" json:"deleted,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -68,13 +68,6 @@ func (x *ShoppingItem) GetName() *StringMVReg {
 	return nil
 }
 
-func (x *ShoppingItem) GetNonErased() *EWFlag {
-	if x != nil {
-		return x.NonErased
-	}
-	return nil
-}
-
 func (x *ShoppingItem) GetQuantity() *CCounter {
 	if x != nil {
 		return x.Quantity
@@ -85,6 +78,13 @@ func (x *ShoppingItem) GetQuantity() *CCounter {
 func (x *ShoppingItem) GetAcquired() *CCounter {
 	if x != nil {
 		return x.Acquired
+	}
+	return nil
+}
+
+func (x *ShoppingItem) GetDeleted() *DWFlag {
+	if x != nil {
+		return x.Deleted
 	}
 	return nil
 }
@@ -162,12 +162,12 @@ var File_shopping_proto protoreflect.FileDescriptor
 const file_shopping_proto_rawDesc = "" +
 	"\n" +
 	"\x0eshopping.proto\x1a\n" +
-	"crdt.proto\"\xa5\x01\n" +
+	"crdt.proto\"\xa1\x01\n" +
 	"\fShoppingItem\x12 \n" +
 	"\x04name\x18\x01 \x01(\v2\f.StringMVRegR\x04name\x12%\n" +
-	"\tnonErased\x18\x02 \x01(\v2\a.EWFlagR\tnonErased\x12%\n" +
-	"\bquantity\x18\x03 \x01(\v2\t.CCounterR\bquantity\x12%\n" +
-	"\bacquired\x18\x04 \x01(\v2\t.CCounterR\bacquired\"\xe7\x01\n" +
+	"\bquantity\x18\x02 \x01(\v2\t.CCounterR\bquantity\x12%\n" +
+	"\bacquired\x18\x03 \x01(\v2\t.CCounterR\bacquired\x12!\n" +
+	"\adeleted\x18\x04 \x01(\v2\a.DWFlagR\adeleted\"\xe7\x01\n" +
 	"\fShoppingList\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\x04name\x18\x02 \x01(\v2\f.StringMVRegR\x04name\x12.\n" +
@@ -197,15 +197,15 @@ var file_shopping_proto_goTypes = []any{
 	(*ShoppingList)(nil), // 1: ShoppingList
 	nil,                  // 2: ShoppingList.ItemsEntry
 	(*StringMVReg)(nil),  // 3: StringMVReg
-	(*EWFlag)(nil),       // 4: EWFlag
-	(*CCounter)(nil),     // 5: CCounter
+	(*CCounter)(nil),     // 4: CCounter
+	(*DWFlag)(nil),       // 5: DWFlag
 	(*DotContext)(nil),   // 6: DotContext
 }
 var file_shopping_proto_depIdxs = []int32{
 	3, // 0: ShoppingItem.name:type_name -> StringMVReg
-	4, // 1: ShoppingItem.nonErased:type_name -> EWFlag
-	5, // 2: ShoppingItem.quantity:type_name -> CCounter
-	5, // 3: ShoppingItem.acquired:type_name -> CCounter
+	4, // 1: ShoppingItem.quantity:type_name -> CCounter
+	4, // 2: ShoppingItem.acquired:type_name -> CCounter
+	5, // 3: ShoppingItem.deleted:type_name -> DWFlag
 	3, // 4: ShoppingList.name:type_name -> StringMVReg
 	2, // 5: ShoppingList.items:type_name -> ShoppingList.ItemsEntry
 	6, // 6: ShoppingList.dot_context:type_name -> DotContext

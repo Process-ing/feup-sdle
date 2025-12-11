@@ -36,15 +36,12 @@ func (reg *MVReg[T]) Read() []T {
 }
 
 func (reg *MVReg[T]) Write(value T) *MVReg[T] {
-	delta1 := NewMVReg[T](reg.id)
-	delta2 := NewMVReg[T](reg.id)
+	delta := NewMVReg[T](reg.id)
 
-	delta1.dotKernel = reg.dotKernel.Reset()
-	delta2.dotKernel = reg.dotKernel.Add(reg.id, value)
+	delta.dotKernel = reg.dotKernel.Reset()
+	delta.dotKernel.Join(reg.dotKernel.Add(reg.id, value))
 
-	delta1.Join(delta2)
-
-	return delta1
+	return delta
 }
 
 func (reg *MVReg[T]) Reset() *MVReg[T] {

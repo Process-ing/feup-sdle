@@ -132,7 +132,6 @@ func TestShoppingItem_SetContext(t *testing.T) {
 
 func TestShoppingItem_Reset(t *testing.T) {
 	item1 := NewShoppingItem("replica1", "item1")
-	item1.Enable()
 	item1.IncAcquired(5)
 	item1.IncAcquired(2)
 	item2 := item1.Clone()
@@ -157,7 +156,6 @@ func TestShoppingItem_Reset(t *testing.T) {
 
 func TestShoppingItem_ResetIsNull(t *testing.T) {
 	item := NewShoppingItem("replica1", "item1")
-	item.Enable()
 	item.IncQuantity(5)
 
 	if item.IsNull() {
