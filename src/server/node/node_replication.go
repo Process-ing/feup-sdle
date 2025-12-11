@@ -145,7 +145,7 @@ func (n *Node) attemptHintedHandoff(key string, value []byte, failedNodes []stri
 // sendReplicaPut sends a replica write request to a remote node
 // Uses ReplicaPut message type to bypass coordinator routing logic
 func (n *Node) sendReplicaPut(nodeId, key string, value []byte) error {
-	nodeAddr := nodeIdToZMQAddr(nodeId)
+	nodeAddr := NodeIdToZMQAddr(nodeId)
 	_, err := n.sendReplicaPutRequest(nodeAddr, key, value)
 	return err
 }
@@ -158,7 +158,7 @@ func (n *Node) sendHintToNode(nodeId string, hint replication.Hint) error {
 	}
 
 	// Send StoreHint request to the remote node
-	nodeAddr := nodeIdToZMQAddr(nodeId)
+	nodeAddr := NodeIdToZMQAddr(nodeId)
 	_, err := n.sendStoreHintRequest(nodeAddr, hint.IntendedNode, hint.Key, hint.Value)
 	return err
 }
@@ -253,7 +253,7 @@ func (n *Node) coordinateReplicatedGet(key string, prefList ringview.PreferenceL
 
 // sendReplicaGet sends a replica read request to a remote node
 func (n *Node) sendReplicaGet(nodeId, key string) ([]byte, error) {
-	nodeAddr := nodeIdToZMQAddr(nodeId)
+	nodeAddr := NodeIdToZMQAddr(nodeId)
 
 	resp, err := n.sendGet(nodeAddr, key)
 	if err != nil {

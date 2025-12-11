@@ -81,8 +81,8 @@ func (r *RingView) JoinToRing(nodeId string) (tokens []uint64, transferredHashSp
 	generated_tokens := make([]uint64, 0, N_TOKENS_PER_NODE)
 	transferredHashSpaces = make([]TransferredHashSpace, 0, N_TOKENS_PER_NODE)
 
-	for i := range N_TOKENS_PER_NODE {
-		newToken := r.generateNewToken(nodeId, i)
+	for range N_TOKENS_PER_NODE {
+		newToken := r.generateNewToken(nodeId, generated_tokens)
 		generated_tokens = append(generated_tokens, newToken)
 	}
 
@@ -189,7 +189,7 @@ func (r *RingView) Lookup(key string) (string, bool) {
 		return "", false
 	}
 
-	keyHash := hashKey(key)
+	keyHash := HashKey(key)
 	nextDefinedToken, err := r.getNextDefinedTokenIdx(keyHash)
 
 	if err {
@@ -267,19 +267,23 @@ func (r *RingView) ToString() string {
 }
 
 // Hashes a string key into the hash space
-func hashKey(s string) uint64 {
+func HashKey(s string) uint64 {
 	sum := sha1.Sum([]byte(s))
 	return binary.BigEndian.Uint64(sum[:8]) % HASH_SPACE_SIZE
 }
 
 // Generates a new unique token for a node based on the node ID and a counter (counter should be unique per node)
-func (r *RingView) generateNewToken(nodeId string, counter int) uint64 {
+func (r *RingView) generateNewToken(nodeId string, additionalUsedIds []uint64) uint64 {
 	var newToken uint64
+
+	usedIds := append(r.tokens, additionalUsedIds...)
+
+	counter := 0
 
 	for {
 		virtualKey := nodeId + "#" + strconv.Itoa(counter)
-		newToken = hashKey(virtualKey)
-		if _, exists := r.tokenToNode[newToken]; !exists {
+		newToken = HashKey(virtualKey)
+		if !slices.Contains(usedIds, newToken) {
 			break
 		}
 		counter++
@@ -297,7 +301,7 @@ func (r *RingView) GetPreferenceList(key string, N int) PreferenceList {
 		return PreferenceList{Nodes: []string{}, N: N}
 	}
 
-	keyHash := hashKey(key)
+	keyHash := HashKey(key)
 	startIdx, _ := r.getNextDefinedTokenIdx(keyHash)
 
 	nodes := make([]string, 0, N)

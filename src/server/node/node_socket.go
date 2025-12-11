@@ -66,13 +66,13 @@ func (n *Node) sendFetchRing(peerAddr string) (*pb.Response, error) {
 	return n.sendRequest(peerAddr, req, 5*time.Second)
 }
 
-func (n *Node) sendGetHashSpace(peerAddr string, startHashSpace int, endHashSpace int) (*pb.Response, error) {
+func (n *Node) sendGetHashSpace(peerAddr string, startHashSpace uint64, endHashSpace uint64) (*pb.Response, error) {
 	req := &pb.Request{
 		Origin: n.addr,
 		RequestType: &pb.Request_GetHashSpace{
 			GetHashSpace: &pb.RequestGetHashSpace{
-				StartHashSpace: uint64(startHashSpace),
-				EndHashSpace:   uint64(endHashSpace),
+				StartHashSpace: startHashSpace,
+				EndHashSpace:   endHashSpace,
 			},
 		},
 	}

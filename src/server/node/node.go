@@ -36,7 +36,7 @@ type Node struct {
 }
 
 func NewNode(id string, baseDir string) (*Node, error) {
-	addr := nodeIdToZMQAddr(id)
+	addr := NodeIdToZMQAddr(id)
 
 	// Prepare ring view, storage, and ZMQ socket
 	ringView := ringview.New()
@@ -59,7 +59,9 @@ func NewNode(id string, baseDir string) (*Node, error) {
 		return nil, err
 	}
 
-	// Configure websockets
+	replConfig := replication.DefaultConfig()
+	hintStore := replication.NewHintStore(store.GetDB())
+
 	host, portStr, err := net.SplitHostPort(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid node ID format: %w", err)
@@ -70,9 +72,6 @@ func NewNode(id string, baseDir string) (*Node, error) {
 	}
 	wsPort := port + 3000 // 5000 -> 8000, etc
 	wsAddr := net.JoinHostPort(host, strconv.Itoa(wsPort))
-
-	replConfig := replication.DefaultConfig()
-	hintStore := replication.NewHintStore(store.GetDB())
 
 	// Create node instance
 	n := &Node{
@@ -104,13 +103,15 @@ func NewNode(id string, baseDir string) (*Node, error) {
 func (n *Node) Start(errCh chan<- error) {
 	n.wg.Add(2)
 	go n.startZMQLoop(errCh)
-	go func() {
-		defer n.wg.Done()
-		n.log("starting WebSocket server at " + n.wsAddr)
-		if err := n.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			errCh <- fmt.Errorf("WebSocket server error: %w", err)
-		}
-	}()
+	go n.startHTTPLoop(errCh)
+}
+
+func (n *Node) startHTTPLoop(errCh chan<- error) {
+	defer n.wg.Done()
+	n.log("starting WebSocket server at " + n.wsAddr)
+	if err := n.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		errCh <- fmt.Errorf("WebSocket server error: %w", err)
+	}
 }
 
 // ZMQ message receiving loop
@@ -162,12 +163,12 @@ func (n *Node) startZMQLoop(errCh chan<- error) {
 			n.handlePing(&req)
 		case *pb.Request_FetchRing:
 			n.handleFetchRing(&req)
-		case *pb.Request_GetHashSpace:
-			n.handleGetHashSpace(&req)
 		case *pb.Request_GossipJoin:
 			n.handleGossipJoin(&req)
 		case *pb.Request_Get:
 			n.handleGet(&req)
+		case *pb.Request_GetHashSpace:
+			n.handleGetHashSpace(&req)
 		case *pb.Request_Put:
 			n.handlePut(&req)
 		case *pb.Request_Delete:
@@ -251,14 +252,33 @@ func (n *Node) JoinToRing(targetAddr string) error {
 	n.log("joined the ring with tokens: " + fmt.Sprint(tokens))
 
 	for _, transferredHashSpace := range transferredHashSpaces {
-		n.log(" (fake) importing data for token range " + fmt.Sprintf("[%d - %d]", transferredHashSpace.Start, transferredHashSpace.End) + " from " + transferredHashSpace.PreviousOwnerId)
+		n.log("importing data for token range " + fmt.Sprintf("[%d - %d]", transferredHashSpace.Start, transferredHashSpace.End) + " from " + transferredHashSpace.PreviousOwnerId)
+
+		targetAddr := NodeIdToZMQAddr(transferredHashSpace.PreviousOwnerId)
+		hashSpaceResponse, error := n.sendGetHashSpace(targetAddr, transferredHashSpace.Start, transferredHashSpace.End)
+
+		if error != nil {
+			fmt.Println(error)
+			return error
+		}
+
+		valuesSpace := hashSpaceResponse.GetGetHashSpace().GetHashSpaceValues()
+
+		for key, value := range valuesSpace {
+			err := n.store.Put([]byte(key), value)
+			if err != nil {
+				return fmt.Errorf("failed to import key '%s': %w", key, err)
+			}
+		}
+
+		n.log("imported " + fmt.Sprint(len(valuesSpace)) + " key-value pairs for token range " + fmt.Sprintf("[%d - %d]", transferredHashSpace.Start, transferredHashSpace.End))
 	}
 
 	neighborsGossip := n.ringView.GetGossipNeighborsNodes(n.GetID())
 	n.log("Starting gossip to inform other nodes about my joining. Neighbors: " + fmt.Sprint(neighborsGossip))
 
 	for _, nodeId := range neighborsGossip {
-		nodeAddr := nodeIdToZMQAddr(nodeId)
+		nodeAddr := NodeIdToZMQAddr(nodeId)
 		resp, err := n.sendJoinGossip(nodeAddr, n.GetID(), tokens)
 
 		n.log("Gossip Response: Ok=" + fmt.Sprint(resp.Ok) + ", Error='" + fmt.Sprint(err) + "'")
@@ -267,13 +287,17 @@ func (n *Node) JoinToRing(targetAddr string) error {
 	return err
 }
 
-func nodeIdToZMQAddr(id string) string {
-	return "tcp://" + id
-}
-
 func (n *Node) log(msg string) {
 	ts := time.Now().Format("15:04:05.000")
 	fmt.Printf("[%s] [Node %s]: %s\n", ts, n.id, msg)
+}
+
+func NodeIdToZMQAddr(id string) string {
+	return "tcp://" + id
+}
+
+func ZMQAddrToNodeId(addr string) string {
+	return addr[len("tcp://"):]
 }
 
 func (n *Node) GetAddress() string {
