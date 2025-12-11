@@ -72,6 +72,16 @@ func (reg *MVReg[T]) Collapse(maxFn func(a, b T) T) *MVReg[T] {
 	return delta
 }
 
+func (reg *MVReg[T]) IsNull() bool {
+	return len(reg.dotKernel.dotValues) == 0
+}
+
+func (reg *MVReg[T]) Clone() *MVReg[T] {
+	clone := NewMVReg[T](reg.id)
+	clone.dotKernel = reg.dotKernel.Clone()
+	return clone
+}
+
 func (reg *MVReg[T]) String() string {
 	return fmt.Sprintf("MVReg{id: %s, dotKernel: %v}", reg.id, reg.dotKernel)
 }
