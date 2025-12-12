@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Frown, Plus } from "lucide-react";
+import { ArrowLeft, Frown, Plus, WifiOff } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { ShoppingListItem } from "@/components/shopping-list-item";
@@ -21,6 +21,7 @@ import SubscribeShoppingListRequest from "@/lib/protocol/subscribe-shopping-list
 import NullProtocolSocket from "@/lib/protocol/null-protocol-socket";
 import { useSocketCoordinator } from "./provider/client-coordinator";
 import ProtocolSocket from "@/lib/protocol/protocol-socket";
+import ProtocolRequest from "@/lib/protocol/protocol-entity";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -38,6 +39,7 @@ export function ShoppingListDetail({
 	const [itemQuantity, setItemQuantity] = useState("1");
 	const [socket, setSocket] = useState<ProtocolSocket>(new NullProtocolSocket());
 	const coordinator = useSocketCoordinator();
+	const [connected, setConnected] = useState(false);
 
 
 	useEffect(() => {
@@ -45,6 +47,7 @@ export function ShoppingListDetail({
 			await coordinator.updateMembership();
 			const sock = await coordinator.getBestSocketForList(listId);
 			setSocket(sock);
+			setConnected(sock.isConnected());
 		};
 
 		// Run once first
@@ -56,6 +59,12 @@ export function ShoppingListDetail({
 		// Cleanup on unmount
 		return () => clearInterval(intervalId);
 	}, [coordinator, listId]);
+
+	const sendToSocket = useCallback((request: ProtocolRequest, handler: (response: ServerResponse) => Promise<boolean>) => {
+		if (socket.isConnected()) {
+			socket.send(request, handler);
+		}
+	}, [socket]);
 
 
 	const refreshList = useCallback(async (): Promise<ShoppingList | undefined> => {
@@ -111,9 +120,8 @@ export function ShoppingListDetail({
 		const initializeSubscription = async () => {
 			const list = await refreshList();
 			if (list)
-				socket.send(list, handleSubscribeResponse);
-
-			socket.send(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
+				sendToSocket(list, handleSubscribeResponse);
+			sendToSocket(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
 		};
 
 		if (socket.isConnected()) {
@@ -124,7 +132,7 @@ export function ShoppingListDetail({
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
-		socket.send(delta, handleServerResponse);
+		sendToSocket(delta, handleServerResponse);
 		await refreshList();
 	}, [socket, listId]);
 
@@ -210,6 +218,15 @@ export function ShoppingListDetail({
 
 	return (
 		<div>
+			{connected && (
+				<div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+					<WifiOff className="w-5 h-5" />
+					<span className="text-sm font-medium">
+						Disconnected from server. Changes will sync when reconnected.
+					</span>
+				</div>
+			)}
+
 			<Button variant="ghost" onClick={onBack} className="mb-4">
 				<ArrowLeft className="w-4 h-4 mr-2" />
 				Back to Lists

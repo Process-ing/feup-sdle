@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
-import { useProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListCard } from "./shopping-list-card";
 
 interface ShoppingListHomeProps {
@@ -25,7 +24,6 @@ interface ShoppingListHomeProps {
 export function ShoppingListHome({ onSelect, onDelete }: ShoppingListHomeProps) {
 	const [lists, setLists] = useState<ShoppingList[]>([]);
 	const [listName, setListName] = useState("");
-	const socket = useProtocolSocket();
 
 	const fetchLists = async () => {
 			setLists(await db.getAllLists());
