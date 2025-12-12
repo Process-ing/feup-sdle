@@ -20,7 +20,7 @@ export const WebProtocolSocketProvider = ({ children }: { children: React.ReactN
 
     setTimeout(() => {
       initSocket();
-    }, process.env.NEXT_PUBLIC_WEBSOCKET_RETRY_INTERVAL ? parseInt(process.env.NEXT_PUBLIC_WEBSOCKET_RETRY_INTERVAL) : 5000);
+    }, parseInt(process.env.NEXT_PUBLIC_WEBSOCKET_RETRY_INTERVAL || "5000"));
   }
 
 

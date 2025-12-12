@@ -19,7 +19,7 @@ import { db } from "@/lib/storage/db";
 import { ServerResponse } from "@/lib/proto/client";
 import SubscribeShoppingListRequest from "@/lib/protocol/subscribe-shopping-list-request";
 import NullProtocolSocket from "@/lib/protocol/null-protocol-socket";
-import { useSocketCoordinator } from "./provider/client-coordinator";
+import { useSocketCoordinator } from "./provider/socket-coordinator";
 import ProtocolSocket from "@/lib/protocol/protocol-socket";
 import ProtocolRequest from "@/lib/protocol/protocol-entity";
 
@@ -54,11 +54,15 @@ export function ShoppingListDetail({
 		setupSocket();
 
 		// Then, run periodically
-		const intervalId = setInterval(setupSocket, Number(process.env.NEXT_PUBLIC_MEMBERSHIP_UPDATE_INTERVAL) || 10000);
+		const intervalId = setInterval(setupSocket, Number(process.env.NEXT_PUBLIC_MEMBERSHIP_UPDATE_INTERVAL || "10000"));
 
 		// Cleanup on unmount
 		return () => clearInterval(intervalId);
 	}, [coordinator, listId]);
+
+	useEffect(() => {
+		setConnected(socket.isConnected());
+	}, [socket]);
 
 	const sendToSocket = useCallback((request: ProtocolRequest, handler: (response: ServerResponse) => Promise<boolean>) => {
 		if (socket.isConnected()) {
