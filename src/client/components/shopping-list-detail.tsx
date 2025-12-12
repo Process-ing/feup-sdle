@@ -218,7 +218,7 @@ export function ShoppingListDetail({
 
 	return (
 		<div>
-			{connected && (
+			{!connected && (
 				<div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
 					<WifiOff className="w-5 h-5" />
 					<span className="text-sm font-medium">
