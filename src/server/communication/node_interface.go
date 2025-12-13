@@ -3,6 +3,7 @@ package communication
 import (
 	crdt "sdle-server/crdt/shopping"
 	pb "sdle-server/proto"
+	"sdle-server/ringview"
 
 	"github.com/gorilla/websocket"
 )
@@ -13,4 +14,5 @@ type NodeInterface interface {
 	GetShoppingList(id string) (*pb.ShoppingList, error)
 	SubscribeShoppingList(listID string, messageID string, conn *websocket.Conn) error
 	UnsubscribeShoppingList(listID string, messageID string) error
+	GetRingView() *ringview.RingView
 }

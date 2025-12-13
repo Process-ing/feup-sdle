@@ -3,6 +3,7 @@ syntax = "proto3";
 option go_package = "gitlab.up.pt/classes/sdle/2025/t2/g01";
 
 import "shopping.proto";
+import "node.proto";
 
 message GetShoppingListRequest {
     string id = 1;
@@ -11,6 +12,8 @@ message GetShoppingListRequest {
 message SubscribeShoppingListRequest {
     string id = 1;
 }
+
+message RequestRingView {}
 
 message Ok {}
 
@@ -25,6 +28,7 @@ message ClientRequest {
         ShoppingList shopping_list = 2;
         GetShoppingListRequest get_shopping_list = 3;
         SubscribeShoppingListRequest subscribe_shopping_list = 4;
+        RequestRingView ring_view = 5;
     }
 }
 
@@ -34,5 +38,6 @@ message ServerResponse {
     oneof response_type {
         ShoppingList shopping_list = 2;
         ErrorCode error = 3;
+        RingView ring_view = 4;
     }
 }

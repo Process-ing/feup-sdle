@@ -224,7 +224,7 @@ func (n *Node) updateRingView(targetAddr string) error {
 	}
 
 	// Create new RingView from received tokenToNode map
-	newRingView := ringview.NewFromTokenMap(fetchRingResp.TokenToNode)
+	newRingView := ringview.NewFromTokenMap(fetchRingResp.RingView.TokenToNode)
 	n.ringView = newRingView
 
 	n.log("Updated ring view: " + n.ringView.ToString())

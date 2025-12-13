@@ -152,6 +152,42 @@ func (x *SubscribeShoppingListRequest) GetId() string {
 	return ""
 }
 
+type RequestRingView struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RequestRingView) Reset() {
+	*x = RequestRingView{}
+	mi := &file_client_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RequestRingView) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestRingView) ProtoMessage() {}
+
+func (x *RequestRingView) ProtoReflect() protoreflect.Message {
+	mi := &file_client_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestRingView.ProtoReflect.Descriptor instead.
+func (*RequestRingView) Descriptor() ([]byte, []int) {
+	return file_client_proto_rawDescGZIP(), []int{2}
+}
+
 type Ok struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -160,7 +196,7 @@ type Ok struct {
 
 func (x *Ok) Reset() {
 	*x = Ok{}
-	mi := &file_client_proto_msgTypes[2]
+	mi := &file_client_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -172,7 +208,7 @@ func (x *Ok) String() string {
 func (*Ok) ProtoMessage() {}
 
 func (x *Ok) ProtoReflect() protoreflect.Message {
-	mi := &file_client_proto_msgTypes[2]
+	mi := &file_client_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -185,7 +221,7 @@ func (x *Ok) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Ok.ProtoReflect.Descriptor instead.
 func (*Ok) Descriptor() ([]byte, []int) {
-	return file_client_proto_rawDescGZIP(), []int{2}
+	return file_client_proto_rawDescGZIP(), []int{3}
 }
 
 type ClientRequest struct {
@@ -196,6 +232,7 @@ type ClientRequest struct {
 	//	*ClientRequest_ShoppingList
 	//	*ClientRequest_GetShoppingList_
 	//	*ClientRequest_SubscribeShoppingList
+	//	*ClientRequest_RingView
 	RequestType   isClientRequest_RequestType `protobuf_oneof:"request_type"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -203,7 +240,7 @@ type ClientRequest struct {
 
 func (x *ClientRequest) Reset() {
 	*x = ClientRequest{}
-	mi := &file_client_proto_msgTypes[3]
+	mi := &file_client_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -215,7 +252,7 @@ func (x *ClientRequest) String() string {
 func (*ClientRequest) ProtoMessage() {}
 
 func (x *ClientRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_client_proto_msgTypes[3]
+	mi := &file_client_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -228,7 +265,7 @@ func (x *ClientRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClientRequest.ProtoReflect.Descriptor instead.
 func (*ClientRequest) Descriptor() ([]byte, []int) {
-	return file_client_proto_rawDescGZIP(), []int{3}
+	return file_client_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ClientRequest) GetMessageId() string {
@@ -272,6 +309,15 @@ func (x *ClientRequest) GetSubscribeShoppingList() *SubscribeShoppingListRequest
 	return nil
 }
 
+func (x *ClientRequest) GetRingView() *RequestRingView {
+	if x != nil {
+		if x, ok := x.RequestType.(*ClientRequest_RingView); ok {
+			return x.RingView
+		}
+	}
+	return nil
+}
+
 type isClientRequest_RequestType interface {
 	isClientRequest_RequestType()
 }
@@ -288,11 +334,17 @@ type ClientRequest_SubscribeShoppingList struct {
 	SubscribeShoppingList *SubscribeShoppingListRequest `protobuf:"bytes,4,opt,name=subscribe_shopping_list,json=subscribeShoppingList,proto3,oneof"`
 }
 
+type ClientRequest_RingView struct {
+	RingView *RequestRingView `protobuf:"bytes,5,opt,name=ring_view,json=ringView,proto3,oneof"`
+}
+
 func (*ClientRequest_ShoppingList) isClientRequest_RequestType() {}
 
 func (*ClientRequest_GetShoppingList_) isClientRequest_RequestType() {}
 
 func (*ClientRequest_SubscribeShoppingList) isClientRequest_RequestType() {}
+
+func (*ClientRequest_RingView) isClientRequest_RequestType() {}
 
 type ServerResponse struct {
 	state     protoimpl.MessageState `protogen:"open.v1"`
@@ -301,6 +353,7 @@ type ServerResponse struct {
 	//
 	//	*ServerResponse_ShoppingList
 	//	*ServerResponse_Error
+	//	*ServerResponse_RingView
 	ResponseType  isServerResponse_ResponseType `protobuf_oneof:"response_type"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -308,7 +361,7 @@ type ServerResponse struct {
 
 func (x *ServerResponse) Reset() {
 	*x = ServerResponse{}
-	mi := &file_client_proto_msgTypes[4]
+	mi := &file_client_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -320,7 +373,7 @@ func (x *ServerResponse) String() string {
 func (*ServerResponse) ProtoMessage() {}
 
 func (x *ServerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_client_proto_msgTypes[4]
+	mi := &file_client_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -333,7 +386,7 @@ func (x *ServerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerResponse.ProtoReflect.Descriptor instead.
 func (*ServerResponse) Descriptor() ([]byte, []int) {
-	return file_client_proto_rawDescGZIP(), []int{4}
+	return file_client_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ServerResponse) GetMessageId() string {
@@ -368,6 +421,15 @@ func (x *ServerResponse) GetError() ErrorCode {
 	return ErrorCode_NOT_FOUND
 }
 
+func (x *ServerResponse) GetRingView() *RingView {
+	if x != nil {
+		if x, ok := x.ResponseType.(*ServerResponse_RingView); ok {
+			return x.RingView
+		}
+	}
+	return nil
+}
+
 type isServerResponse_ResponseType interface {
 	isServerResponse_ResponseType()
 }
@@ -380,33 +442,43 @@ type ServerResponse_Error struct {
 	Error ErrorCode `protobuf:"varint,3,opt,name=error,proto3,enum=ErrorCode,oneof"`
 }
 
+type ServerResponse_RingView struct {
+	RingView *RingView `protobuf:"bytes,4,opt,name=ring_view,json=ringView,proto3,oneof"`
+}
+
 func (*ServerResponse_ShoppingList) isServerResponse_ResponseType() {}
 
 func (*ServerResponse_Error) isServerResponse_ResponseType() {}
+
+func (*ServerResponse_RingView) isServerResponse_ResponseType() {}
 
 var File_client_proto protoreflect.FileDescriptor
 
 const file_client_proto_rawDesc = "" +
 	"\n" +
-	"\fclient.proto\x1a\x0eshopping.proto\"(\n" +
+	"\fclient.proto\x1a\x0eshopping.proto\x1a\n" +
+	"node.proto\"(\n" +
 	"\x16GetShoppingListRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\".\n" +
 	"\x1cSubscribeShoppingListRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x04\n" +
-	"\x02Ok\"\x94\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x11\n" +
+	"\x0fRequestRingView\"\x04\n" +
+	"\x02Ok\"\xc5\x02\n" +
 	"\rClientRequest\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId\x124\n" +
 	"\rshopping_list\x18\x02 \x01(\v2\r.ShoppingListH\x00R\fshoppingList\x12E\n" +
 	"\x11get_shopping_list\x18\x03 \x01(\v2\x17.GetShoppingListRequestH\x00R\x0fgetShoppingList\x12W\n" +
-	"\x17subscribe_shopping_list\x18\x04 \x01(\v2\x1d.SubscribeShoppingListRequestH\x00R\x15subscribeShoppingListB\x0e\n" +
-	"\frequest_type\"\x9a\x01\n" +
+	"\x17subscribe_shopping_list\x18\x04 \x01(\v2\x1d.SubscribeShoppingListRequestH\x00R\x15subscribeShoppingList\x12/\n" +
+	"\tring_view\x18\x05 \x01(\v2\x10.RequestRingViewH\x00R\bringViewB\x0e\n" +
+	"\frequest_type\"\xc4\x01\n" +
 	"\x0eServerResponse\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId\x124\n" +
 	"\rshopping_list\x18\x02 \x01(\v2\r.ShoppingListH\x00R\fshoppingList\x12\"\n" +
 	"\x05error\x18\x03 \x01(\x0e2\n" +
-	".ErrorCodeH\x00R\x05errorB\x0f\n" +
+	".ErrorCodeH\x00R\x05error\x12(\n" +
+	"\tring_view\x18\x04 \x01(\v2\t.RingViewH\x00R\bringViewB\x0f\n" +
 	"\rresponse_type*\x1a\n" +
 	"\tErrorCode\x12\r\n" +
 	"\tNOT_FOUND\x10\x00B'Z%gitlab.up.pt/classes/sdle/2025/t2/g01b\x06proto3"
@@ -424,27 +496,31 @@ func file_client_proto_rawDescGZIP() []byte {
 }
 
 var file_client_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_client_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_client_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_client_proto_goTypes = []any{
 	(ErrorCode)(0),                       // 0: ErrorCode
 	(*GetShoppingListRequest)(nil),       // 1: GetShoppingListRequest
 	(*SubscribeShoppingListRequest)(nil), // 2: SubscribeShoppingListRequest
-	(*Ok)(nil),                           // 3: Ok
-	(*ClientRequest)(nil),                // 4: ClientRequest
-	(*ServerResponse)(nil),               // 5: ServerResponse
-	(*ShoppingList)(nil),                 // 6: ShoppingList
+	(*RequestRingView)(nil),              // 3: RequestRingView
+	(*Ok)(nil),                           // 4: Ok
+	(*ClientRequest)(nil),                // 5: ClientRequest
+	(*ServerResponse)(nil),               // 6: ServerResponse
+	(*ShoppingList)(nil),                 // 7: ShoppingList
+	(*RingView)(nil),                     // 8: RingView
 }
 var file_client_proto_depIdxs = []int32{
-	6, // 0: ClientRequest.shopping_list:type_name -> ShoppingList
+	7, // 0: ClientRequest.shopping_list:type_name -> ShoppingList
 	1, // 1: ClientRequest.get_shopping_list:type_name -> GetShoppingListRequest
 	2, // 2: ClientRequest.subscribe_shopping_list:type_name -> SubscribeShoppingListRequest
-	6, // 3: ServerResponse.shopping_list:type_name -> ShoppingList
-	0, // 4: ServerResponse.error:type_name -> ErrorCode
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	3, // 3: ClientRequest.ring_view:type_name -> RequestRingView
+	7, // 4: ServerResponse.shopping_list:type_name -> ShoppingList
+	0, // 5: ServerResponse.error:type_name -> ErrorCode
+	8, // 6: ServerResponse.ring_view:type_name -> RingView
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_client_proto_init() }
@@ -453,14 +529,17 @@ func file_client_proto_init() {
 		return
 	}
 	file_shopping_proto_init()
-	file_client_proto_msgTypes[3].OneofWrappers = []any{
+	file_node_proto_init()
+	file_client_proto_msgTypes[4].OneofWrappers = []any{
 		(*ClientRequest_ShoppingList)(nil),
 		(*ClientRequest_GetShoppingList_)(nil),
 		(*ClientRequest_SubscribeShoppingList)(nil),
+		(*ClientRequest_RingView)(nil),
 	}
-	file_client_proto_msgTypes[4].OneofWrappers = []any{
+	file_client_proto_msgTypes[5].OneofWrappers = []any{
 		(*ServerResponse_ShoppingList)(nil),
 		(*ServerResponse_Error)(nil),
+		(*ServerResponse_RingView)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -468,7 +547,7 @@ func file_client_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_client_proto_rawDesc), len(file_client_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

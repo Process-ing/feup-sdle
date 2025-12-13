@@ -194,6 +194,97 @@ export class SubscribeShoppingListRequest implements ISubscribeShoppingListReque
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
+/** Properties of a RequestRingView. */
+export interface IRequestRingView {
+}
+
+/** Represents a RequestRingView. */
+export class RequestRingView implements IRequestRingView {
+
+    /**
+     * Constructs a new RequestRingView.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestRingView);
+
+    /**
+     * Creates a new RequestRingView instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestRingView instance
+     */
+    public static create(properties?: IRequestRingView): RequestRingView;
+
+    /**
+     * Encodes the specified RequestRingView message. Does not implicitly {@link RequestRingView.verify|verify} messages.
+     * @param message RequestRingView message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestRingView, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestRingView message, length delimited. Does not implicitly {@link RequestRingView.verify|verify} messages.
+     * @param message RequestRingView message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestRingView, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestRingView message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestRingView
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestRingView;
+
+    /**
+     * Decodes a RequestRingView message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestRingView
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestRingView;
+
+    /**
+     * Verifies a RequestRingView message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestRingView message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestRingView
+     */
+    public static fromObject(object: { [k: string]: any }): RequestRingView;
+
+    /**
+     * Creates a plain object from a RequestRingView message. Also converts values to other types if specified.
+     * @param message RequestRingView
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestRingView, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestRingView to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestRingView
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
 /** Properties of an Ok. */
 export interface IOk {
 }
@@ -311,8 +402,11 @@ export class ClientRequest implements IClientRequest {
     /** ClientRequest subscribeShoppingList. */
     public subscribeShoppingList?: (ISubscribeShoppingListRequest|null);
 
+    /** ClientRequest ringView. */
+    public ringView?: (IRequestRingView|null);
+
     /** ClientRequest requestType. */
-    public requestType?: ("shoppingList"|"getShoppingList"|"subscribeShoppingList");
+    public requestType?: ("shoppingList"|"getShoppingList"|"subscribeShoppingList"|"ringView");
 
     /**
      * Creates a new ClientRequest instance using the specified properties.
@@ -410,8 +504,11 @@ export class ServerResponse implements IServerResponse {
     /** ServerResponse error. */
     public error?: (ErrorCode|null);
 
+    /** ServerResponse ringView. */
+    public ringView?: (IRingView|null);
+
     /** ServerResponse responseType. */
-    public responseType?: ("shoppingList"|"error");
+    public responseType?: ("shoppingList"|"error"|"ringView");
 
     /**
      * Creates a new ServerResponse instance using the specified properties.
@@ -1415,6 +1512,1770 @@ export class DWFlag implements IDWFlag {
 
     /**
      * Gets the default type url for DWFlag
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RingView. */
+export class RingView implements IRingView {
+
+    /**
+     * Constructs a new RingView.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRingView);
+
+    /** RingView tokenToNode. */
+    public tokenToNode: { [k: string]: string };
+
+    /**
+     * Creates a new RingView instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RingView instance
+     */
+    public static create(properties?: IRingView): RingView;
+
+    /**
+     * Encodes the specified RingView message. Does not implicitly {@link RingView.verify|verify} messages.
+     * @param message RingView message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRingView, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RingView message, length delimited. Does not implicitly {@link RingView.verify|verify} messages.
+     * @param message RingView message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRingView, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RingView message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RingView
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RingView;
+
+    /**
+     * Decodes a RingView message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RingView
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RingView;
+
+    /**
+     * Verifies a RingView message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RingView message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RingView
+     */
+    public static fromObject(object: { [k: string]: any }): RingView;
+
+    /**
+     * Creates a plain object from a RingView message. Also converts values to other types if specified.
+     * @param message RingView
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RingView, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RingView to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RingView
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a Request. */
+export class Request implements IRequest {
+
+    /**
+     * Constructs a new Request.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequest);
+
+    /** Request origin. */
+    public origin: string;
+
+    /** Request ping. */
+    public ping?: (IRequestPing|null);
+
+    /** Request fetchRing. */
+    public fetchRing?: (IRequestFetchRing|null);
+
+    /** Request gossipJoin. */
+    public gossipJoin?: (IRequestGossipJoin|null);
+
+    /** Request getHashSpace. */
+    public getHashSpace?: (IRequestGetHashSpace|null);
+
+    /** Request get. */
+    public get?: (IRequestGet|null);
+
+    /** Request put. */
+    public put?: (IRequestPut|null);
+
+    /** Request delete. */
+    public delete?: (IRequestDelete|null);
+
+    /** Request has. */
+    public has?: (IRequestHas|null);
+
+    /** Request requestType. */
+    public requestType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has");
+
+    /**
+     * Creates a new Request instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Request instance
+     */
+    public static create(properties?: IRequest): Request;
+
+    /**
+     * Encodes the specified Request message. Does not implicitly {@link Request.verify|verify} messages.
+     * @param message Request message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified Request message, length delimited. Does not implicitly {@link Request.verify|verify} messages.
+     * @param message Request message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a Request message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Request
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Request;
+
+    /**
+     * Decodes a Request message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Request
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Request;
+
+    /**
+     * Verifies a Request message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a Request message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Request
+     */
+    public static fromObject(object: { [k: string]: any }): Request;
+
+    /**
+     * Creates a plain object from a Request message. Also converts values to other types if specified.
+     * @param message Request
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this Request to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Request
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestPing. */
+export class RequestPing implements IRequestPing {
+
+    /**
+     * Constructs a new RequestPing.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestPing);
+
+    /**
+     * Creates a new RequestPing instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestPing instance
+     */
+    public static create(properties?: IRequestPing): RequestPing;
+
+    /**
+     * Encodes the specified RequestPing message. Does not implicitly {@link RequestPing.verify|verify} messages.
+     * @param message RequestPing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestPing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestPing message, length delimited. Does not implicitly {@link RequestPing.verify|verify} messages.
+     * @param message RequestPing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestPing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestPing message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestPing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestPing;
+
+    /**
+     * Decodes a RequestPing message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestPing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestPing;
+
+    /**
+     * Verifies a RequestPing message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestPing message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestPing
+     */
+    public static fromObject(object: { [k: string]: any }): RequestPing;
+
+    /**
+     * Creates a plain object from a RequestPing message. Also converts values to other types if specified.
+     * @param message RequestPing
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestPing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestPing to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestPing
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestFetchRing. */
+export class RequestFetchRing implements IRequestFetchRing {
+
+    /**
+     * Constructs a new RequestFetchRing.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestFetchRing);
+
+    /**
+     * Creates a new RequestFetchRing instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestFetchRing instance
+     */
+    public static create(properties?: IRequestFetchRing): RequestFetchRing;
+
+    /**
+     * Encodes the specified RequestFetchRing message. Does not implicitly {@link RequestFetchRing.verify|verify} messages.
+     * @param message RequestFetchRing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestFetchRing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestFetchRing message, length delimited. Does not implicitly {@link RequestFetchRing.verify|verify} messages.
+     * @param message RequestFetchRing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestFetchRing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestFetchRing message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestFetchRing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestFetchRing;
+
+    /**
+     * Decodes a RequestFetchRing message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestFetchRing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestFetchRing;
+
+    /**
+     * Verifies a RequestFetchRing message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestFetchRing message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestFetchRing
+     */
+    public static fromObject(object: { [k: string]: any }): RequestFetchRing;
+
+    /**
+     * Creates a plain object from a RequestFetchRing message. Also converts values to other types if specified.
+     * @param message RequestFetchRing
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestFetchRing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestFetchRing to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestFetchRing
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestGossipJoin. */
+export class RequestGossipJoin implements IRequestGossipJoin {
+
+    /**
+     * Constructs a new RequestGossipJoin.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestGossipJoin);
+
+    /** RequestGossipJoin newNodeId. */
+    public newNodeId: string;
+
+    /** RequestGossipJoin tokens. */
+    public tokens: (number|Long)[];
+
+    /**
+     * Creates a new RequestGossipJoin instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestGossipJoin instance
+     */
+    public static create(properties?: IRequestGossipJoin): RequestGossipJoin;
+
+    /**
+     * Encodes the specified RequestGossipJoin message. Does not implicitly {@link RequestGossipJoin.verify|verify} messages.
+     * @param message RequestGossipJoin message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestGossipJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestGossipJoin message, length delimited. Does not implicitly {@link RequestGossipJoin.verify|verify} messages.
+     * @param message RequestGossipJoin message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestGossipJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestGossipJoin message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestGossipJoin
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestGossipJoin;
+
+    /**
+     * Decodes a RequestGossipJoin message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestGossipJoin
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestGossipJoin;
+
+    /**
+     * Verifies a RequestGossipJoin message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestGossipJoin message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestGossipJoin
+     */
+    public static fromObject(object: { [k: string]: any }): RequestGossipJoin;
+
+    /**
+     * Creates a plain object from a RequestGossipJoin message. Also converts values to other types if specified.
+     * @param message RequestGossipJoin
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestGossipJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestGossipJoin to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestGossipJoin
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestGetHashSpace. */
+export class RequestGetHashSpace implements IRequestGetHashSpace {
+
+    /**
+     * Constructs a new RequestGetHashSpace.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestGetHashSpace);
+
+    /** RequestGetHashSpace startHashSpace. */
+    public startHashSpace: (number|Long);
+
+    /** RequestGetHashSpace endHashSpace. */
+    public endHashSpace: (number|Long);
+
+    /**
+     * Creates a new RequestGetHashSpace instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestGetHashSpace instance
+     */
+    public static create(properties?: IRequestGetHashSpace): RequestGetHashSpace;
+
+    /**
+     * Encodes the specified RequestGetHashSpace message. Does not implicitly {@link RequestGetHashSpace.verify|verify} messages.
+     * @param message RequestGetHashSpace message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestGetHashSpace, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestGetHashSpace message, length delimited. Does not implicitly {@link RequestGetHashSpace.verify|verify} messages.
+     * @param message RequestGetHashSpace message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestGetHashSpace, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestGetHashSpace message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestGetHashSpace
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestGetHashSpace;
+
+    /**
+     * Decodes a RequestGetHashSpace message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestGetHashSpace
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestGetHashSpace;
+
+    /**
+     * Verifies a RequestGetHashSpace message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestGetHashSpace message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestGetHashSpace
+     */
+    public static fromObject(object: { [k: string]: any }): RequestGetHashSpace;
+
+    /**
+     * Creates a plain object from a RequestGetHashSpace message. Also converts values to other types if specified.
+     * @param message RequestGetHashSpace
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestGetHashSpace, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestGetHashSpace to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestGetHashSpace
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestGet. */
+export class RequestGet implements IRequestGet {
+
+    /**
+     * Constructs a new RequestGet.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestGet);
+
+    /** RequestGet key. */
+    public key: string;
+
+    /**
+     * Creates a new RequestGet instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestGet instance
+     */
+    public static create(properties?: IRequestGet): RequestGet;
+
+    /**
+     * Encodes the specified RequestGet message. Does not implicitly {@link RequestGet.verify|verify} messages.
+     * @param message RequestGet message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestGet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestGet message, length delimited. Does not implicitly {@link RequestGet.verify|verify} messages.
+     * @param message RequestGet message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestGet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestGet message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestGet
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestGet;
+
+    /**
+     * Decodes a RequestGet message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestGet
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestGet;
+
+    /**
+     * Verifies a RequestGet message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestGet message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestGet
+     */
+    public static fromObject(object: { [k: string]: any }): RequestGet;
+
+    /**
+     * Creates a plain object from a RequestGet message. Also converts values to other types if specified.
+     * @param message RequestGet
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestGet to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestGet
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestPut. */
+export class RequestPut implements IRequestPut {
+
+    /**
+     * Constructs a new RequestPut.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestPut);
+
+    /** RequestPut key. */
+    public key: string;
+
+    /** RequestPut value. */
+    public value: Uint8Array;
+
+    /**
+     * Creates a new RequestPut instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestPut instance
+     */
+    public static create(properties?: IRequestPut): RequestPut;
+
+    /**
+     * Encodes the specified RequestPut message. Does not implicitly {@link RequestPut.verify|verify} messages.
+     * @param message RequestPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestPut message, length delimited. Does not implicitly {@link RequestPut.verify|verify} messages.
+     * @param message RequestPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestPut message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestPut;
+
+    /**
+     * Decodes a RequestPut message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestPut;
+
+    /**
+     * Verifies a RequestPut message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestPut message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestPut
+     */
+    public static fromObject(object: { [k: string]: any }): RequestPut;
+
+    /**
+     * Creates a plain object from a RequestPut message. Also converts values to other types if specified.
+     * @param message RequestPut
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestPut, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestPut to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestPut
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestDelete. */
+export class RequestDelete implements IRequestDelete {
+
+    /**
+     * Constructs a new RequestDelete.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestDelete);
+
+    /** RequestDelete key. */
+    public key: string;
+
+    /**
+     * Creates a new RequestDelete instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestDelete instance
+     */
+    public static create(properties?: IRequestDelete): RequestDelete;
+
+    /**
+     * Encodes the specified RequestDelete message. Does not implicitly {@link RequestDelete.verify|verify} messages.
+     * @param message RequestDelete message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestDelete, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestDelete message, length delimited. Does not implicitly {@link RequestDelete.verify|verify} messages.
+     * @param message RequestDelete message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestDelete, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestDelete message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestDelete
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestDelete;
+
+    /**
+     * Decodes a RequestDelete message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestDelete
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestDelete;
+
+    /**
+     * Verifies a RequestDelete message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestDelete message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestDelete
+     */
+    public static fromObject(object: { [k: string]: any }): RequestDelete;
+
+    /**
+     * Creates a plain object from a RequestDelete message. Also converts values to other types if specified.
+     * @param message RequestDelete
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestDelete, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestDelete to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestDelete
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestHas. */
+export class RequestHas implements IRequestHas {
+
+    /**
+     * Constructs a new RequestHas.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestHas);
+
+    /** RequestHas key. */
+    public key: string;
+
+    /**
+     * Creates a new RequestHas instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestHas instance
+     */
+    public static create(properties?: IRequestHas): RequestHas;
+
+    /**
+     * Encodes the specified RequestHas message. Does not implicitly {@link RequestHas.verify|verify} messages.
+     * @param message RequestHas message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestHas, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestHas message, length delimited. Does not implicitly {@link RequestHas.verify|verify} messages.
+     * @param message RequestHas message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestHas, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestHas message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestHas
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestHas;
+
+    /**
+     * Decodes a RequestHas message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestHas
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestHas;
+
+    /**
+     * Verifies a RequestHas message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestHas message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestHas
+     */
+    public static fromObject(object: { [k: string]: any }): RequestHas;
+
+    /**
+     * Creates a plain object from a RequestHas message. Also converts values to other types if specified.
+     * @param message RequestHas
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestHas, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestHas to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestHas
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a Response. */
+export class Response implements IResponse {
+
+    /**
+     * Constructs a new Response.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponse);
+
+    /** Response origin. */
+    public origin: string;
+
+    /** Response ok. */
+    public ok: boolean;
+
+    /** Response error. */
+    public error: string;
+
+    /** Response ping. */
+    public ping?: (IResponsePing|null);
+
+    /** Response fetchRing. */
+    public fetchRing?: (IResponseFetchRing|null);
+
+    /** Response gossipJoin. */
+    public gossipJoin?: (IResponseGossipJoin|null);
+
+    /** Response getHashSpace. */
+    public getHashSpace?: (IResponseGetHashSpace|null);
+
+    /** Response get. */
+    public get?: (IResponseGet|null);
+
+    /** Response put. */
+    public put?: (IResponsePut|null);
+
+    /** Response delete. */
+    public delete?: (IResponseDelete|null);
+
+    /** Response has. */
+    public has?: (IResponseHas|null);
+
+    /** Response responseType. */
+    public responseType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has");
+
+    /**
+     * Creates a new Response instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Response instance
+     */
+    public static create(properties?: IResponse): Response;
+
+    /**
+     * Encodes the specified Response message. Does not implicitly {@link Response.verify|verify} messages.
+     * @param message Response message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified Response message, length delimited. Does not implicitly {@link Response.verify|verify} messages.
+     * @param message Response message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a Response message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Response
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Response;
+
+    /**
+     * Decodes a Response message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Response
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Response;
+
+    /**
+     * Verifies a Response message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a Response message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Response
+     */
+    public static fromObject(object: { [k: string]: any }): Response;
+
+    /**
+     * Creates a plain object from a Response message. Also converts values to other types if specified.
+     * @param message Response
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: Response, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this Response to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Response
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponsePing. */
+export class ResponsePing implements IResponsePing {
+
+    /**
+     * Constructs a new ResponsePing.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponsePing);
+
+    /** ResponsePing pongMessage. */
+    public pongMessage: string;
+
+    /**
+     * Creates a new ResponsePing instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponsePing instance
+     */
+    public static create(properties?: IResponsePing): ResponsePing;
+
+    /**
+     * Encodes the specified ResponsePing message. Does not implicitly {@link ResponsePing.verify|verify} messages.
+     * @param message ResponsePing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponsePing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponsePing message, length delimited. Does not implicitly {@link ResponsePing.verify|verify} messages.
+     * @param message ResponsePing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponsePing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponsePing message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponsePing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponsePing;
+
+    /**
+     * Decodes a ResponsePing message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponsePing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponsePing;
+
+    /**
+     * Verifies a ResponsePing message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponsePing message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponsePing
+     */
+    public static fromObject(object: { [k: string]: any }): ResponsePing;
+
+    /**
+     * Creates a plain object from a ResponsePing message. Also converts values to other types if specified.
+     * @param message ResponsePing
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponsePing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponsePing to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponsePing
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseFetchRing. */
+export class ResponseFetchRing implements IResponseFetchRing {
+
+    /**
+     * Constructs a new ResponseFetchRing.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseFetchRing);
+
+    /** ResponseFetchRing ringView. */
+    public ringView?: (IRingView|null);
+
+    /**
+     * Creates a new ResponseFetchRing instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseFetchRing instance
+     */
+    public static create(properties?: IResponseFetchRing): ResponseFetchRing;
+
+    /**
+     * Encodes the specified ResponseFetchRing message. Does not implicitly {@link ResponseFetchRing.verify|verify} messages.
+     * @param message ResponseFetchRing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseFetchRing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseFetchRing message, length delimited. Does not implicitly {@link ResponseFetchRing.verify|verify} messages.
+     * @param message ResponseFetchRing message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseFetchRing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseFetchRing message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseFetchRing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseFetchRing;
+
+    /**
+     * Decodes a ResponseFetchRing message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseFetchRing
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseFetchRing;
+
+    /**
+     * Verifies a ResponseFetchRing message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseFetchRing message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseFetchRing
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseFetchRing;
+
+    /**
+     * Creates a plain object from a ResponseFetchRing message. Also converts values to other types if specified.
+     * @param message ResponseFetchRing
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseFetchRing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseFetchRing to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseFetchRing
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseGossipJoin. */
+export class ResponseGossipJoin implements IResponseGossipJoin {
+
+    /**
+     * Constructs a new ResponseGossipJoin.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseGossipJoin);
+
+    /**
+     * Creates a new ResponseGossipJoin instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseGossipJoin instance
+     */
+    public static create(properties?: IResponseGossipJoin): ResponseGossipJoin;
+
+    /**
+     * Encodes the specified ResponseGossipJoin message. Does not implicitly {@link ResponseGossipJoin.verify|verify} messages.
+     * @param message ResponseGossipJoin message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseGossipJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseGossipJoin message, length delimited. Does not implicitly {@link ResponseGossipJoin.verify|verify} messages.
+     * @param message ResponseGossipJoin message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseGossipJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseGossipJoin message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseGossipJoin
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseGossipJoin;
+
+    /**
+     * Decodes a ResponseGossipJoin message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseGossipJoin
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseGossipJoin;
+
+    /**
+     * Verifies a ResponseGossipJoin message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseGossipJoin message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseGossipJoin
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseGossipJoin;
+
+    /**
+     * Creates a plain object from a ResponseGossipJoin message. Also converts values to other types if specified.
+     * @param message ResponseGossipJoin
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseGossipJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseGossipJoin to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseGossipJoin
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseGetHashSpace. */
+export class ResponseGetHashSpace implements IResponseGetHashSpace {
+
+    /**
+     * Constructs a new ResponseGetHashSpace.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseGetHashSpace);
+
+    /** ResponseGetHashSpace hashSpaceValues. */
+    public hashSpaceValues: { [k: string]: Uint8Array };
+
+    /**
+     * Creates a new ResponseGetHashSpace instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseGetHashSpace instance
+     */
+    public static create(properties?: IResponseGetHashSpace): ResponseGetHashSpace;
+
+    /**
+     * Encodes the specified ResponseGetHashSpace message. Does not implicitly {@link ResponseGetHashSpace.verify|verify} messages.
+     * @param message ResponseGetHashSpace message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseGetHashSpace, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseGetHashSpace message, length delimited. Does not implicitly {@link ResponseGetHashSpace.verify|verify} messages.
+     * @param message ResponseGetHashSpace message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseGetHashSpace, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseGetHashSpace message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseGetHashSpace
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseGetHashSpace;
+
+    /**
+     * Decodes a ResponseGetHashSpace message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseGetHashSpace
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseGetHashSpace;
+
+    /**
+     * Verifies a ResponseGetHashSpace message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseGetHashSpace message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseGetHashSpace
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseGetHashSpace;
+
+    /**
+     * Creates a plain object from a ResponseGetHashSpace message. Also converts values to other types if specified.
+     * @param message ResponseGetHashSpace
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseGetHashSpace, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseGetHashSpace to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseGetHashSpace
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseGet. */
+export class ResponseGet implements IResponseGet {
+
+    /**
+     * Constructs a new ResponseGet.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseGet);
+
+    /** ResponseGet value. */
+    public value: Uint8Array;
+
+    /**
+     * Creates a new ResponseGet instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseGet instance
+     */
+    public static create(properties?: IResponseGet): ResponseGet;
+
+    /**
+     * Encodes the specified ResponseGet message. Does not implicitly {@link ResponseGet.verify|verify} messages.
+     * @param message ResponseGet message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseGet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseGet message, length delimited. Does not implicitly {@link ResponseGet.verify|verify} messages.
+     * @param message ResponseGet message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseGet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseGet message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseGet
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseGet;
+
+    /**
+     * Decodes a ResponseGet message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseGet
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseGet;
+
+    /**
+     * Verifies a ResponseGet message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseGet message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseGet
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseGet;
+
+    /**
+     * Creates a plain object from a ResponseGet message. Also converts values to other types if specified.
+     * @param message ResponseGet
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseGet to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseGet
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponsePut. */
+export class ResponsePut implements IResponsePut {
+
+    /**
+     * Constructs a new ResponsePut.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponsePut);
+
+    /**
+     * Creates a new ResponsePut instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponsePut instance
+     */
+    public static create(properties?: IResponsePut): ResponsePut;
+
+    /**
+     * Encodes the specified ResponsePut message. Does not implicitly {@link ResponsePut.verify|verify} messages.
+     * @param message ResponsePut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponsePut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponsePut message, length delimited. Does not implicitly {@link ResponsePut.verify|verify} messages.
+     * @param message ResponsePut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponsePut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponsePut message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponsePut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponsePut;
+
+    /**
+     * Decodes a ResponsePut message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponsePut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponsePut;
+
+    /**
+     * Verifies a ResponsePut message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponsePut message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponsePut
+     */
+    public static fromObject(object: { [k: string]: any }): ResponsePut;
+
+    /**
+     * Creates a plain object from a ResponsePut message. Also converts values to other types if specified.
+     * @param message ResponsePut
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponsePut, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponsePut to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponsePut
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseDelete. */
+export class ResponseDelete implements IResponseDelete {
+
+    /**
+     * Constructs a new ResponseDelete.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseDelete);
+
+    /**
+     * Creates a new ResponseDelete instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseDelete instance
+     */
+    public static create(properties?: IResponseDelete): ResponseDelete;
+
+    /**
+     * Encodes the specified ResponseDelete message. Does not implicitly {@link ResponseDelete.verify|verify} messages.
+     * @param message ResponseDelete message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseDelete, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseDelete message, length delimited. Does not implicitly {@link ResponseDelete.verify|verify} messages.
+     * @param message ResponseDelete message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseDelete, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseDelete message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseDelete
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseDelete;
+
+    /**
+     * Decodes a ResponseDelete message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseDelete
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseDelete;
+
+    /**
+     * Verifies a ResponseDelete message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseDelete message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseDelete
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseDelete;
+
+    /**
+     * Creates a plain object from a ResponseDelete message. Also converts values to other types if specified.
+     * @param message ResponseDelete
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseDelete, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseDelete to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseDelete
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseHas. */
+export class ResponseHas implements IResponseHas {
+
+    /**
+     * Constructs a new ResponseHas.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseHas);
+
+    /** ResponseHas hasKey. */
+    public hasKey: boolean;
+
+    /**
+     * Creates a new ResponseHas instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseHas instance
+     */
+    public static create(properties?: IResponseHas): ResponseHas;
+
+    /**
+     * Encodes the specified ResponseHas message. Does not implicitly {@link ResponseHas.verify|verify} messages.
+     * @param message ResponseHas message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseHas, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseHas message, length delimited. Does not implicitly {@link ResponseHas.verify|verify} messages.
+     * @param message ResponseHas message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseHas, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseHas message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseHas
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseHas;
+
+    /**
+     * Decodes a ResponseHas message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseHas
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseHas;
+
+    /**
+     * Verifies a ResponseHas message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseHas message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseHas
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseHas;
+
+    /**
+     * Creates a plain object from a ResponseHas message. Also converts values to other types if specified.
+     * @param message ResponseHas
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseHas, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseHas to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseHas
      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns The default type url
      */
