@@ -6,11 +6,12 @@ import (
 )
 
 type Config struct {
-	N int // Replication factor
-	W int // Write quorum
-	R int // Read quorum
+	N int  // Replication factor
+	W int  // Write quorum
+	R int  // Read quorum
 
-	HintDeliveryInterval time.Duration // Interval between handoff tries
+	RequestTimeout       time.Duration  // Timeout for requests to other nodes
+	HintDeliveryInterval time.Duration  // Interval between handoff tries
 }
 
 func DefaultConfig() Config {
@@ -19,6 +20,7 @@ func DefaultConfig() Config {
 		W:                    2,
 		R:                    2,
 		HintDeliveryInterval: 10 * time.Second,
+		RequestTimeout:       250 * time.Millisecond,
 	}
 }
 
