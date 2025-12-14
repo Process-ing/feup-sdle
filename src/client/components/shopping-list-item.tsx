@@ -17,14 +17,17 @@ export function ShoppingListItem({
 	onAcquireItem,
 	onDelete,
 }: ShoppingListItemProps) {
+	const quantity = Math.max(1, item.getQuantity());
+	const acquired = Math.max(0, Math.min(quantity, item.getAcquired()));
+
 	return (
 		<div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
 			<div className="flex-1">
 				<h3 className="font-semibold text-foreground">{item.getName()}</h3>
 				<p
-					className={`text-sm font-medium ${item.getAcquired() === item.getQuantity() ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+					className={`text-sm font-medium ${acquired === quantity ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
 				>
-					{item.getAcquired()} / {item.getQuantity()} acquired
+					{acquired} / {quantity} acquired
 				</p>
 			</div>
 
@@ -35,13 +38,13 @@ export function ShoppingListItem({
 						size="sm"
 						variant="ghost"
 						onClick={() => onUpdateTotalQuantity(item.getItemId(), -1)}
-						disabled={item.getQuantity() <= item.getAcquired()}
+						disabled={quantity <= acquired}
 						className="h-7 w-7 p-0"
 					>
 						<Minus className="w-3 h-3" />
 					</Button>
 					<span className="text-sm font-medium min-w-8 text-center">
-						{Math.max(1, item.getQuantity())}
+						{quantity}
 					</span>
 					<Button
 						size="sm"
@@ -65,7 +68,7 @@ export function ShoppingListItem({
 						<Minus className="w-3 h-3" />
 					</Button>
 					<span className="text-sm font-medium min-w-8 text-center">
-						{Math.max(0, Math.min(item.getQuantity(), item.getAcquired()))}
+						{acquired}
 					</span>
 					<Button
 						size="sm"
