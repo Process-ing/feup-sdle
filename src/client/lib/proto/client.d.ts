@@ -1644,8 +1644,14 @@ export class Request implements IRequest {
     /** Request has. */
     public has?: (IRequestHas|null);
 
+    /** Request replicaPut. */
+    public replicaPut?: (IRequestReplicaPut|null);
+
+    /** Request storeHint. */
+    public storeHint?: (IRequestStoreHint|null);
+
     /** Request requestType. */
-    public requestType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has");
+    public requestType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|"replicaPut"|"storeHint");
 
     /**
      * Creates a new Request instance using the specified properties.
@@ -2448,6 +2454,195 @@ export class RequestHas implements IRequestHas {
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
+/** Represents a RequestReplicaPut. */
+export class RequestReplicaPut implements IRequestReplicaPut {
+
+    /**
+     * Constructs a new RequestReplicaPut.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestReplicaPut);
+
+    /** RequestReplicaPut key. */
+    public key: string;
+
+    /** RequestReplicaPut value. */
+    public value: Uint8Array;
+
+    /**
+     * Creates a new RequestReplicaPut instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestReplicaPut instance
+     */
+    public static create(properties?: IRequestReplicaPut): RequestReplicaPut;
+
+    /**
+     * Encodes the specified RequestReplicaPut message. Does not implicitly {@link RequestReplicaPut.verify|verify} messages.
+     * @param message RequestReplicaPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestReplicaPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestReplicaPut message, length delimited. Does not implicitly {@link RequestReplicaPut.verify|verify} messages.
+     * @param message RequestReplicaPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestReplicaPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestReplicaPut message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestReplicaPut;
+
+    /**
+     * Decodes a RequestReplicaPut message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestReplicaPut;
+
+    /**
+     * Verifies a RequestReplicaPut message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestReplicaPut message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestReplicaPut
+     */
+    public static fromObject(object: { [k: string]: any }): RequestReplicaPut;
+
+    /**
+     * Creates a plain object from a RequestReplicaPut message. Also converts values to other types if specified.
+     * @param message RequestReplicaPut
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestReplicaPut, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestReplicaPut to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestReplicaPut
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a RequestStoreHint. */
+export class RequestStoreHint implements IRequestStoreHint {
+
+    /**
+     * Constructs a new RequestStoreHint.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IRequestStoreHint);
+
+    /** RequestStoreHint intendedNode. */
+    public intendedNode: string;
+
+    /** RequestStoreHint key. */
+    public key: string;
+
+    /** RequestStoreHint value. */
+    public value: Uint8Array;
+
+    /**
+     * Creates a new RequestStoreHint instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns RequestStoreHint instance
+     */
+    public static create(properties?: IRequestStoreHint): RequestStoreHint;
+
+    /**
+     * Encodes the specified RequestStoreHint message. Does not implicitly {@link RequestStoreHint.verify|verify} messages.
+     * @param message RequestStoreHint message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IRequestStoreHint, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified RequestStoreHint message, length delimited. Does not implicitly {@link RequestStoreHint.verify|verify} messages.
+     * @param message RequestStoreHint message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IRequestStoreHint, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a RequestStoreHint message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns RequestStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): RequestStoreHint;
+
+    /**
+     * Decodes a RequestStoreHint message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns RequestStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): RequestStoreHint;
+
+    /**
+     * Verifies a RequestStoreHint message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a RequestStoreHint message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns RequestStoreHint
+     */
+    public static fromObject(object: { [k: string]: any }): RequestStoreHint;
+
+    /**
+     * Creates a plain object from a RequestStoreHint message. Also converts values to other types if specified.
+     * @param message RequestStoreHint
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: RequestStoreHint, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this RequestStoreHint to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for RequestStoreHint
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
 /** Represents a Response. */
 export class Response implements IResponse {
 
@@ -2490,8 +2685,14 @@ export class Response implements IResponse {
     /** Response has. */
     public has?: (IResponseHas|null);
 
+    /** Response replicaPut. */
+    public replicaPut?: (IResponseReplicaPut|null);
+
+    /** Response storeHint. */
+    public storeHint?: (IResponseStoreHint|null);
+
     /** Response responseType. */
-    public responseType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has");
+    public responseType?: ("ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|"replicaPut"|"storeHint");
 
     /**
      * Creates a new Response instance using the specified properties.
@@ -3276,6 +3477,180 @@ export class ResponseHas implements IResponseHas {
 
     /**
      * Gets the default type url for ResponseHas
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseReplicaPut. */
+export class ResponseReplicaPut implements IResponseReplicaPut {
+
+    /**
+     * Constructs a new ResponseReplicaPut.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseReplicaPut);
+
+    /**
+     * Creates a new ResponseReplicaPut instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseReplicaPut instance
+     */
+    public static create(properties?: IResponseReplicaPut): ResponseReplicaPut;
+
+    /**
+     * Encodes the specified ResponseReplicaPut message. Does not implicitly {@link ResponseReplicaPut.verify|verify} messages.
+     * @param message ResponseReplicaPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseReplicaPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseReplicaPut message, length delimited. Does not implicitly {@link ResponseReplicaPut.verify|verify} messages.
+     * @param message ResponseReplicaPut message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseReplicaPut, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseReplicaPut message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseReplicaPut;
+
+    /**
+     * Decodes a ResponseReplicaPut message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseReplicaPut;
+
+    /**
+     * Verifies a ResponseReplicaPut message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseReplicaPut message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseReplicaPut
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseReplicaPut;
+
+    /**
+     * Creates a plain object from a ResponseReplicaPut message. Also converts values to other types if specified.
+     * @param message ResponseReplicaPut
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseReplicaPut, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseReplicaPut to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseReplicaPut
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Represents a ResponseStoreHint. */
+export class ResponseStoreHint implements IResponseStoreHint {
+
+    /**
+     * Constructs a new ResponseStoreHint.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IResponseStoreHint);
+
+    /**
+     * Creates a new ResponseStoreHint instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ResponseStoreHint instance
+     */
+    public static create(properties?: IResponseStoreHint): ResponseStoreHint;
+
+    /**
+     * Encodes the specified ResponseStoreHint message. Does not implicitly {@link ResponseStoreHint.verify|verify} messages.
+     * @param message ResponseStoreHint message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IResponseStoreHint, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified ResponseStoreHint message, length delimited. Does not implicitly {@link ResponseStoreHint.verify|verify} messages.
+     * @param message ResponseStoreHint message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IResponseStoreHint, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ResponseStoreHint message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns ResponseStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ResponseStoreHint;
+
+    /**
+     * Decodes a ResponseStoreHint message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns ResponseStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ResponseStoreHint;
+
+    /**
+     * Verifies a ResponseStoreHint message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a ResponseStoreHint message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns ResponseStoreHint
+     */
+    public static fromObject(object: { [k: string]: any }): ResponseStoreHint;
+
+    /**
+     * Creates a plain object from a ResponseStoreHint message. Also converts values to other types if specified.
+     * @param message ResponseStoreHint
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: ResponseStoreHint, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this ResponseStoreHint to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for ResponseStoreHint
      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
      * @returns The default type url
      */

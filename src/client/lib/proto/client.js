@@ -4273,6 +4273,8 @@ export const Request = $root.Request = (() => {
      * @property {IRequestPut|null} [put] Request put
      * @property {IRequestDelete|null} ["delete"] Request delete
      * @property {IRequestHas|null} [has] Request has
+     * @property {IRequestReplicaPut|null} [replicaPut] Request replicaPut
+     * @property {IRequestStoreHint|null} [storeHint] Request storeHint
      */
 
     /**
@@ -4362,17 +4364,33 @@ export const Request = $root.Request = (() => {
      */
     Request.prototype.has = null;
 
+    /**
+     * Request replicaPut.
+     * @member {IRequestReplicaPut|null|undefined} replicaPut
+     * @memberof Request
+     * @instance
+     */
+    Request.prototype.replicaPut = null;
+
+    /**
+     * Request storeHint.
+     * @member {IRequestStoreHint|null|undefined} storeHint
+     * @memberof Request
+     * @instance
+     */
+    Request.prototype.storeHint = null;
+
     // OneOf field names bound to virtual getters and setters
     let $oneOfFields;
 
     /**
      * Request requestType.
-     * @member {"ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|undefined} requestType
+     * @member {"ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|"replicaPut"|"storeHint"|undefined} requestType
      * @memberof Request
      * @instance
      */
     Object.defineProperty(Request.prototype, "requestType", {
-        get: $util.oneOfGetter($oneOfFields = ["ping", "fetchRing", "gossipJoin", "getHashSpace", "get", "put", "delete", "has"]),
+        get: $util.oneOfGetter($oneOfFields = ["ping", "fetchRing", "gossipJoin", "getHashSpace", "get", "put", "delete", "has", "replicaPut", "storeHint"]),
         set: $util.oneOfSetter($oneOfFields)
     });
 
@@ -4418,6 +4436,10 @@ export const Request = $root.Request = (() => {
             $root.RequestDelete.encode(message["delete"], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
         if (message.has != null && Object.hasOwnProperty.call(message, "has"))
             $root.RequestHas.encode(message.has, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+        if (message.replicaPut != null && Object.hasOwnProperty.call(message, "replicaPut"))
+            $root.RequestReplicaPut.encode(message.replicaPut, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+        if (message.storeHint != null && Object.hasOwnProperty.call(message, "storeHint"))
+            $root.RequestStoreHint.encode(message.storeHint, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
         return writer;
     };
 
@@ -4488,6 +4510,14 @@ export const Request = $root.Request = (() => {
                 }
             case 18: {
                     message.has = $root.RequestHas.decode(reader, reader.uint32());
+                    break;
+                }
+            case 19: {
+                    message.replicaPut = $root.RequestReplicaPut.decode(reader, reader.uint32());
+                    break;
+                }
+            case 20: {
+                    message.storeHint = $root.RequestStoreHint.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -4607,6 +4637,26 @@ export const Request = $root.Request = (() => {
                     return "has." + error;
             }
         }
+        if (message.replicaPut != null && message.hasOwnProperty("replicaPut")) {
+            if (properties.requestType === 1)
+                return "requestType: multiple values";
+            properties.requestType = 1;
+            {
+                let error = $root.RequestReplicaPut.verify(message.replicaPut);
+                if (error)
+                    return "replicaPut." + error;
+            }
+        }
+        if (message.storeHint != null && message.hasOwnProperty("storeHint")) {
+            if (properties.requestType === 1)
+                return "requestType: multiple values";
+            properties.requestType = 1;
+            {
+                let error = $root.RequestStoreHint.verify(message.storeHint);
+                if (error)
+                    return "storeHint." + error;
+            }
+        }
         return null;
     };
 
@@ -4663,6 +4713,16 @@ export const Request = $root.Request = (() => {
             if (typeof object.has !== "object")
                 throw TypeError(".Request.has: object expected");
             message.has = $root.RequestHas.fromObject(object.has);
+        }
+        if (object.replicaPut != null) {
+            if (typeof object.replicaPut !== "object")
+                throw TypeError(".Request.replicaPut: object expected");
+            message.replicaPut = $root.RequestReplicaPut.fromObject(object.replicaPut);
+        }
+        if (object.storeHint != null) {
+            if (typeof object.storeHint !== "object")
+                throw TypeError(".Request.storeHint: object expected");
+            message.storeHint = $root.RequestStoreHint.fromObject(object.storeHint);
         }
         return message;
     };
@@ -4723,6 +4783,16 @@ export const Request = $root.Request = (() => {
             object.has = $root.RequestHas.toObject(message.has, options);
             if (options.oneofs)
                 object.requestType = "has";
+        }
+        if (message.replicaPut != null && message.hasOwnProperty("replicaPut")) {
+            object.replicaPut = $root.RequestReplicaPut.toObject(message.replicaPut, options);
+            if (options.oneofs)
+                object.requestType = "replicaPut";
+        }
+        if (message.storeHint != null && message.hasOwnProperty("storeHint")) {
+            object.storeHint = $root.RequestStoreHint.toObject(message.storeHint, options);
+            if (options.oneofs)
+                object.requestType = "storeHint";
         }
         return object;
     };
@@ -6483,6 +6553,505 @@ export const RequestHas = $root.RequestHas = (() => {
     return RequestHas;
 })();
 
+export const RequestReplicaPut = $root.RequestReplicaPut = (() => {
+
+    /**
+     * Properties of a RequestReplicaPut.
+     * @exports IRequestReplicaPut
+     * @interface IRequestReplicaPut
+     * @property {string|null} [key] RequestReplicaPut key
+     * @property {Uint8Array|null} [value] RequestReplicaPut value
+     */
+
+    /**
+     * Constructs a new RequestReplicaPut.
+     * @exports RequestReplicaPut
+     * @classdesc Represents a RequestReplicaPut.
+     * @implements IRequestReplicaPut
+     * @constructor
+     * @param {IRequestReplicaPut=} [properties] Properties to set
+     */
+    function RequestReplicaPut(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * RequestReplicaPut key.
+     * @member {string} key
+     * @memberof RequestReplicaPut
+     * @instance
+     */
+    RequestReplicaPut.prototype.key = "";
+
+    /**
+     * RequestReplicaPut value.
+     * @member {Uint8Array} value
+     * @memberof RequestReplicaPut
+     * @instance
+     */
+    RequestReplicaPut.prototype.value = $util.newBuffer([]);
+
+    /**
+     * Creates a new RequestReplicaPut instance using the specified properties.
+     * @function create
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {IRequestReplicaPut=} [properties] Properties to set
+     * @returns {RequestReplicaPut} RequestReplicaPut instance
+     */
+    RequestReplicaPut.create = function create(properties) {
+        return new RequestReplicaPut(properties);
+    };
+
+    /**
+     * Encodes the specified RequestReplicaPut message. Does not implicitly {@link RequestReplicaPut.verify|verify} messages.
+     * @function encode
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {IRequestReplicaPut} message RequestReplicaPut message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    RequestReplicaPut.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.key != null && Object.hasOwnProperty.call(message, "key"))
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.key);
+        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+            writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.value);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified RequestReplicaPut message, length delimited. Does not implicitly {@link RequestReplicaPut.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {IRequestReplicaPut} message RequestReplicaPut message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    RequestReplicaPut.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a RequestReplicaPut message from the specified reader or buffer.
+     * @function decode
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {RequestReplicaPut} RequestReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    RequestReplicaPut.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.RequestReplicaPut();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            case 1: {
+                    message.key = reader.string();
+                    break;
+                }
+            case 2: {
+                    message.value = reader.bytes();
+                    break;
+                }
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a RequestReplicaPut message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {RequestReplicaPut} RequestReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    RequestReplicaPut.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a RequestReplicaPut message.
+     * @function verify
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    RequestReplicaPut.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.key != null && message.hasOwnProperty("key"))
+            if (!$util.isString(message.key))
+                return "key: string expected";
+        if (message.value != null && message.hasOwnProperty("value"))
+            if (!(message.value && typeof message.value.length === "number" || $util.isString(message.value)))
+                return "value: buffer expected";
+        return null;
+    };
+
+    /**
+     * Creates a RequestReplicaPut message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {RequestReplicaPut} RequestReplicaPut
+     */
+    RequestReplicaPut.fromObject = function fromObject(object) {
+        if (object instanceof $root.RequestReplicaPut)
+            return object;
+        let message = new $root.RequestReplicaPut();
+        if (object.key != null)
+            message.key = String(object.key);
+        if (object.value != null)
+            if (typeof object.value === "string")
+                $util.base64.decode(object.value, message.value = $util.newBuffer($util.base64.length(object.value)), 0);
+            else if (object.value.length >= 0)
+                message.value = object.value;
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a RequestReplicaPut message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {RequestReplicaPut} message RequestReplicaPut
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    RequestReplicaPut.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        let object = {};
+        if (options.defaults) {
+            object.key = "";
+            if (options.bytes === String)
+                object.value = "";
+            else {
+                object.value = [];
+                if (options.bytes !== Array)
+                    object.value = $util.newBuffer(object.value);
+            }
+        }
+        if (message.key != null && message.hasOwnProperty("key"))
+            object.key = message.key;
+        if (message.value != null && message.hasOwnProperty("value"))
+            object.value = options.bytes === String ? $util.base64.encode(message.value, 0, message.value.length) : options.bytes === Array ? Array.prototype.slice.call(message.value) : message.value;
+        return object;
+    };
+
+    /**
+     * Converts this RequestReplicaPut to JSON.
+     * @function toJSON
+     * @memberof RequestReplicaPut
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    RequestReplicaPut.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for RequestReplicaPut
+     * @function getTypeUrl
+     * @memberof RequestReplicaPut
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    RequestReplicaPut.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/RequestReplicaPut";
+    };
+
+    return RequestReplicaPut;
+})();
+
+export const RequestStoreHint = $root.RequestStoreHint = (() => {
+
+    /**
+     * Properties of a RequestStoreHint.
+     * @exports IRequestStoreHint
+     * @interface IRequestStoreHint
+     * @property {string|null} [intendedNode] RequestStoreHint intendedNode
+     * @property {string|null} [key] RequestStoreHint key
+     * @property {Uint8Array|null} [value] RequestStoreHint value
+     */
+
+    /**
+     * Constructs a new RequestStoreHint.
+     * @exports RequestStoreHint
+     * @classdesc Represents a RequestStoreHint.
+     * @implements IRequestStoreHint
+     * @constructor
+     * @param {IRequestStoreHint=} [properties] Properties to set
+     */
+    function RequestStoreHint(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * RequestStoreHint intendedNode.
+     * @member {string} intendedNode
+     * @memberof RequestStoreHint
+     * @instance
+     */
+    RequestStoreHint.prototype.intendedNode = "";
+
+    /**
+     * RequestStoreHint key.
+     * @member {string} key
+     * @memberof RequestStoreHint
+     * @instance
+     */
+    RequestStoreHint.prototype.key = "";
+
+    /**
+     * RequestStoreHint value.
+     * @member {Uint8Array} value
+     * @memberof RequestStoreHint
+     * @instance
+     */
+    RequestStoreHint.prototype.value = $util.newBuffer([]);
+
+    /**
+     * Creates a new RequestStoreHint instance using the specified properties.
+     * @function create
+     * @memberof RequestStoreHint
+     * @static
+     * @param {IRequestStoreHint=} [properties] Properties to set
+     * @returns {RequestStoreHint} RequestStoreHint instance
+     */
+    RequestStoreHint.create = function create(properties) {
+        return new RequestStoreHint(properties);
+    };
+
+    /**
+     * Encodes the specified RequestStoreHint message. Does not implicitly {@link RequestStoreHint.verify|verify} messages.
+     * @function encode
+     * @memberof RequestStoreHint
+     * @static
+     * @param {IRequestStoreHint} message RequestStoreHint message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    RequestStoreHint.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.intendedNode != null && Object.hasOwnProperty.call(message, "intendedNode"))
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.intendedNode);
+        if (message.key != null && Object.hasOwnProperty.call(message, "key"))
+            writer.uint32(/* id 2, wireType 2 =*/18).string(message.key);
+        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+            writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.value);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified RequestStoreHint message, length delimited. Does not implicitly {@link RequestStoreHint.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof RequestStoreHint
+     * @static
+     * @param {IRequestStoreHint} message RequestStoreHint message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    RequestStoreHint.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a RequestStoreHint message from the specified reader or buffer.
+     * @function decode
+     * @memberof RequestStoreHint
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {RequestStoreHint} RequestStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    RequestStoreHint.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.RequestStoreHint();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            case 1: {
+                    message.intendedNode = reader.string();
+                    break;
+                }
+            case 2: {
+                    message.key = reader.string();
+                    break;
+                }
+            case 3: {
+                    message.value = reader.bytes();
+                    break;
+                }
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a RequestStoreHint message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof RequestStoreHint
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {RequestStoreHint} RequestStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    RequestStoreHint.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a RequestStoreHint message.
+     * @function verify
+     * @memberof RequestStoreHint
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    RequestStoreHint.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.intendedNode != null && message.hasOwnProperty("intendedNode"))
+            if (!$util.isString(message.intendedNode))
+                return "intendedNode: string expected";
+        if (message.key != null && message.hasOwnProperty("key"))
+            if (!$util.isString(message.key))
+                return "key: string expected";
+        if (message.value != null && message.hasOwnProperty("value"))
+            if (!(message.value && typeof message.value.length === "number" || $util.isString(message.value)))
+                return "value: buffer expected";
+        return null;
+    };
+
+    /**
+     * Creates a RequestStoreHint message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof RequestStoreHint
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {RequestStoreHint} RequestStoreHint
+     */
+    RequestStoreHint.fromObject = function fromObject(object) {
+        if (object instanceof $root.RequestStoreHint)
+            return object;
+        let message = new $root.RequestStoreHint();
+        if (object.intendedNode != null)
+            message.intendedNode = String(object.intendedNode);
+        if (object.key != null)
+            message.key = String(object.key);
+        if (object.value != null)
+            if (typeof object.value === "string")
+                $util.base64.decode(object.value, message.value = $util.newBuffer($util.base64.length(object.value)), 0);
+            else if (object.value.length >= 0)
+                message.value = object.value;
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a RequestStoreHint message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof RequestStoreHint
+     * @static
+     * @param {RequestStoreHint} message RequestStoreHint
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    RequestStoreHint.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        let object = {};
+        if (options.defaults) {
+            object.intendedNode = "";
+            object.key = "";
+            if (options.bytes === String)
+                object.value = "";
+            else {
+                object.value = [];
+                if (options.bytes !== Array)
+                    object.value = $util.newBuffer(object.value);
+            }
+        }
+        if (message.intendedNode != null && message.hasOwnProperty("intendedNode"))
+            object.intendedNode = message.intendedNode;
+        if (message.key != null && message.hasOwnProperty("key"))
+            object.key = message.key;
+        if (message.value != null && message.hasOwnProperty("value"))
+            object.value = options.bytes === String ? $util.base64.encode(message.value, 0, message.value.length) : options.bytes === Array ? Array.prototype.slice.call(message.value) : message.value;
+        return object;
+    };
+
+    /**
+     * Converts this RequestStoreHint to JSON.
+     * @function toJSON
+     * @memberof RequestStoreHint
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    RequestStoreHint.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for RequestStoreHint
+     * @function getTypeUrl
+     * @memberof RequestStoreHint
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    RequestStoreHint.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/RequestStoreHint";
+    };
+
+    return RequestStoreHint;
+})();
+
 export const Response = $root.Response = (() => {
 
     /**
@@ -6500,6 +7069,8 @@ export const Response = $root.Response = (() => {
      * @property {IResponsePut|null} [put] Response put
      * @property {IResponseDelete|null} ["delete"] Response delete
      * @property {IResponseHas|null} [has] Response has
+     * @property {IResponseReplicaPut|null} [replicaPut] Response replicaPut
+     * @property {IResponseStoreHint|null} [storeHint] Response storeHint
      */
 
     /**
@@ -6605,17 +7176,33 @@ export const Response = $root.Response = (() => {
      */
     Response.prototype.has = null;
 
+    /**
+     * Response replicaPut.
+     * @member {IResponseReplicaPut|null|undefined} replicaPut
+     * @memberof Response
+     * @instance
+     */
+    Response.prototype.replicaPut = null;
+
+    /**
+     * Response storeHint.
+     * @member {IResponseStoreHint|null|undefined} storeHint
+     * @memberof Response
+     * @instance
+     */
+    Response.prototype.storeHint = null;
+
     // OneOf field names bound to virtual getters and setters
     let $oneOfFields;
 
     /**
      * Response responseType.
-     * @member {"ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|undefined} responseType
+     * @member {"ping"|"fetchRing"|"gossipJoin"|"getHashSpace"|"get"|"put"|"delete"|"has"|"replicaPut"|"storeHint"|undefined} responseType
      * @memberof Response
      * @instance
      */
     Object.defineProperty(Response.prototype, "responseType", {
-        get: $util.oneOfGetter($oneOfFields = ["ping", "fetchRing", "gossipJoin", "getHashSpace", "get", "put", "delete", "has"]),
+        get: $util.oneOfGetter($oneOfFields = ["ping", "fetchRing", "gossipJoin", "getHashSpace", "get", "put", "delete", "has", "replicaPut", "storeHint"]),
         set: $util.oneOfSetter($oneOfFields)
     });
 
@@ -6665,6 +7252,10 @@ export const Response = $root.Response = (() => {
             $root.ResponseDelete.encode(message["delete"], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
         if (message.has != null && Object.hasOwnProperty.call(message, "has"))
             $root.ResponseHas.encode(message.has, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+        if (message.replicaPut != null && Object.hasOwnProperty.call(message, "replicaPut"))
+            $root.ResponseReplicaPut.encode(message.replicaPut, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+        if (message.storeHint != null && Object.hasOwnProperty.call(message, "storeHint"))
+            $root.ResponseStoreHint.encode(message.storeHint, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
         return writer;
     };
 
@@ -6743,6 +7334,14 @@ export const Response = $root.Response = (() => {
                 }
             case 18: {
                     message.has = $root.ResponseHas.decode(reader, reader.uint32());
+                    break;
+                }
+            case 19: {
+                    message.replicaPut = $root.ResponseReplicaPut.decode(reader, reader.uint32());
+                    break;
+                }
+            case 20: {
+                    message.storeHint = $root.ResponseStoreHint.decode(reader, reader.uint32());
                     break;
                 }
             default:
@@ -6868,6 +7467,26 @@ export const Response = $root.Response = (() => {
                     return "has." + error;
             }
         }
+        if (message.replicaPut != null && message.hasOwnProperty("replicaPut")) {
+            if (properties.responseType === 1)
+                return "responseType: multiple values";
+            properties.responseType = 1;
+            {
+                let error = $root.ResponseReplicaPut.verify(message.replicaPut);
+                if (error)
+                    return "replicaPut." + error;
+            }
+        }
+        if (message.storeHint != null && message.hasOwnProperty("storeHint")) {
+            if (properties.responseType === 1)
+                return "responseType: multiple values";
+            properties.responseType = 1;
+            {
+                let error = $root.ResponseStoreHint.verify(message.storeHint);
+                if (error)
+                    return "storeHint." + error;
+            }
+        }
         return null;
     };
 
@@ -6928,6 +7547,16 @@ export const Response = $root.Response = (() => {
             if (typeof object.has !== "object")
                 throw TypeError(".Response.has: object expected");
             message.has = $root.ResponseHas.fromObject(object.has);
+        }
+        if (object.replicaPut != null) {
+            if (typeof object.replicaPut !== "object")
+                throw TypeError(".Response.replicaPut: object expected");
+            message.replicaPut = $root.ResponseReplicaPut.fromObject(object.replicaPut);
+        }
+        if (object.storeHint != null) {
+            if (typeof object.storeHint !== "object")
+                throw TypeError(".Response.storeHint: object expected");
+            message.storeHint = $root.ResponseStoreHint.fromObject(object.storeHint);
         }
         return message;
     };
@@ -6995,6 +7624,16 @@ export const Response = $root.Response = (() => {
             object.has = $root.ResponseHas.toObject(message.has, options);
             if (options.oneofs)
                 object.responseType = "has";
+        }
+        if (message.replicaPut != null && message.hasOwnProperty("replicaPut")) {
+            object.replicaPut = $root.ResponseReplicaPut.toObject(message.replicaPut, options);
+            if (options.oneofs)
+                object.responseType = "replicaPut";
+        }
+        if (message.storeHint != null && message.hasOwnProperty("storeHint")) {
+            object.storeHint = $root.ResponseStoreHint.toObject(message.storeHint, options);
+            if (options.oneofs)
+                object.responseType = "storeHint";
         }
         return object;
     };
@@ -8634,6 +9273,360 @@ export const ResponseHas = $root.ResponseHas = (() => {
     };
 
     return ResponseHas;
+})();
+
+export const ResponseReplicaPut = $root.ResponseReplicaPut = (() => {
+
+    /**
+     * Properties of a ResponseReplicaPut.
+     * @exports IResponseReplicaPut
+     * @interface IResponseReplicaPut
+     */
+
+    /**
+     * Constructs a new ResponseReplicaPut.
+     * @exports ResponseReplicaPut
+     * @classdesc Represents a ResponseReplicaPut.
+     * @implements IResponseReplicaPut
+     * @constructor
+     * @param {IResponseReplicaPut=} [properties] Properties to set
+     */
+    function ResponseReplicaPut(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * Creates a new ResponseReplicaPut instance using the specified properties.
+     * @function create
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {IResponseReplicaPut=} [properties] Properties to set
+     * @returns {ResponseReplicaPut} ResponseReplicaPut instance
+     */
+    ResponseReplicaPut.create = function create(properties) {
+        return new ResponseReplicaPut(properties);
+    };
+
+    /**
+     * Encodes the specified ResponseReplicaPut message. Does not implicitly {@link ResponseReplicaPut.verify|verify} messages.
+     * @function encode
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {IResponseReplicaPut} message ResponseReplicaPut message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseReplicaPut.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified ResponseReplicaPut message, length delimited. Does not implicitly {@link ResponseReplicaPut.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {IResponseReplicaPut} message ResponseReplicaPut message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseReplicaPut.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a ResponseReplicaPut message from the specified reader or buffer.
+     * @function decode
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ResponseReplicaPut} ResponseReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseReplicaPut.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ResponseReplicaPut();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a ResponseReplicaPut message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {ResponseReplicaPut} ResponseReplicaPut
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseReplicaPut.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a ResponseReplicaPut message.
+     * @function verify
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    ResponseReplicaPut.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        return null;
+    };
+
+    /**
+     * Creates a ResponseReplicaPut message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {ResponseReplicaPut} ResponseReplicaPut
+     */
+    ResponseReplicaPut.fromObject = function fromObject(object) {
+        if (object instanceof $root.ResponseReplicaPut)
+            return object;
+        return new $root.ResponseReplicaPut();
+    };
+
+    /**
+     * Creates a plain object from a ResponseReplicaPut message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {ResponseReplicaPut} message ResponseReplicaPut
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    ResponseReplicaPut.toObject = function toObject() {
+        return {};
+    };
+
+    /**
+     * Converts this ResponseReplicaPut to JSON.
+     * @function toJSON
+     * @memberof ResponseReplicaPut
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    ResponseReplicaPut.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for ResponseReplicaPut
+     * @function getTypeUrl
+     * @memberof ResponseReplicaPut
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    ResponseReplicaPut.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/ResponseReplicaPut";
+    };
+
+    return ResponseReplicaPut;
+})();
+
+export const ResponseStoreHint = $root.ResponseStoreHint = (() => {
+
+    /**
+     * Properties of a ResponseStoreHint.
+     * @exports IResponseStoreHint
+     * @interface IResponseStoreHint
+     */
+
+    /**
+     * Constructs a new ResponseStoreHint.
+     * @exports ResponseStoreHint
+     * @classdesc Represents a ResponseStoreHint.
+     * @implements IResponseStoreHint
+     * @constructor
+     * @param {IResponseStoreHint=} [properties] Properties to set
+     */
+    function ResponseStoreHint(properties) {
+        if (properties)
+            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * Creates a new ResponseStoreHint instance using the specified properties.
+     * @function create
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {IResponseStoreHint=} [properties] Properties to set
+     * @returns {ResponseStoreHint} ResponseStoreHint instance
+     */
+    ResponseStoreHint.create = function create(properties) {
+        return new ResponseStoreHint(properties);
+    };
+
+    /**
+     * Encodes the specified ResponseStoreHint message. Does not implicitly {@link ResponseStoreHint.verify|verify} messages.
+     * @function encode
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {IResponseStoreHint} message ResponseStoreHint message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseStoreHint.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified ResponseStoreHint message, length delimited. Does not implicitly {@link ResponseStoreHint.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {IResponseStoreHint} message ResponseStoreHint message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseStoreHint.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a ResponseStoreHint message from the specified reader or buffer.
+     * @function decode
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ResponseStoreHint} ResponseStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseStoreHint.decode = function decode(reader, length, error) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ResponseStoreHint();
+        while (reader.pos < end) {
+            let tag = reader.uint32();
+            if (tag === error)
+                break;
+            switch (tag >>> 3) {
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a ResponseStoreHint message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {ResponseStoreHint} ResponseStoreHint
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseStoreHint.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a ResponseStoreHint message.
+     * @function verify
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    ResponseStoreHint.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        return null;
+    };
+
+    /**
+     * Creates a ResponseStoreHint message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {ResponseStoreHint} ResponseStoreHint
+     */
+    ResponseStoreHint.fromObject = function fromObject(object) {
+        if (object instanceof $root.ResponseStoreHint)
+            return object;
+        return new $root.ResponseStoreHint();
+    };
+
+    /**
+     * Creates a plain object from a ResponseStoreHint message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {ResponseStoreHint} message ResponseStoreHint
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    ResponseStoreHint.toObject = function toObject() {
+        return {};
+    };
+
+    /**
+     * Converts this ResponseStoreHint to JSON.
+     * @function toJSON
+     * @memberof ResponseStoreHint
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    ResponseStoreHint.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for ResponseStoreHint
+     * @function getTypeUrl
+     * @memberof ResponseStoreHint
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    ResponseStoreHint.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/ResponseStoreHint";
+    };
+
+    return ResponseStoreHint;
 })();
 
 export { $root as default };

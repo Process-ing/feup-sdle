@@ -83,8 +83,9 @@ export function ShoppingListDetail({
 		setLoading(false);
 
 		return dbList;
-	}, [listId]);
 
+		return dbList;
+	}, [listId]);
 
 	const handleReceivedList = useCallback(async (listReceived: ShoppingList) => {
 		if (listReceived.getListId() !== listId) return;
@@ -135,6 +136,7 @@ export function ShoppingListDetail({
 			refreshList();
 		}
 	}, [listId, socket]);
+
 
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {

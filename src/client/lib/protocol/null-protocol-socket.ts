@@ -21,4 +21,8 @@ export default class NullProtocolSocket implements ProtocolSocket {
     getUrl(): string {
         return "null://";
     }
+
+    isConnected(): boolean {
+        return false;
+    }
 }

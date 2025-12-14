@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sdle-server/communication"
 	pb "sdle-server/proto"
+	"sdle-server/replication"
 	"sdle-server/ringview"
 	"sdle-server/storage"
 	"strconv"
@@ -30,6 +31,8 @@ type Node struct {
 	httpServer    *http.Server
 	stopCh        chan struct{}
 	wg            sync.WaitGroup
+	replConfig replication.Config
+	hintStore  *replication.HintStore
 	subController *SubController
 }
 
@@ -57,7 +60,9 @@ func NewNode(id string, baseDir string) (*Node, error) {
 		return nil, err
 	}
 
-	// Configure websockets
+	replConfig := replication.DefaultConfig()
+	hintStore := replication.NewHintStore(store.GetDB())
+
 	host, portStr, err := net.SplitHostPort(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid node ID format: %w", err)
@@ -78,6 +83,8 @@ func NewNode(id string, baseDir string) (*Node, error) {
 		store:         *store,
 		repSock:       rep,
 		stopCh:        make(chan struct{}),
+		replConfig:    replConfig,
+		hintStore:     hintStore,
 		subController: NewSubController(nil), // Will set node reference later
 	}
 
@@ -103,9 +110,10 @@ func (n *Node) ID() string {
 
 // Starts completely the node (ZMQ receiver and WebSocket server)
 func (n *Node) Start(errCh chan<- error) {
-	n.wg.Add(2)
+	n.wg.Add(3)
 	go n.startZMQLoop(errCh)
 	go n.startHTTPLoop(errCh)
+	go n.StartPeriodicTasks(errCh)
 }
 
 func (n *Node) startHTTPLoop(errCh chan<- error) {
@@ -113,6 +121,24 @@ func (n *Node) startHTTPLoop(errCh chan<- error) {
 	n.log("starting WebSocket server at " + n.wsAddr)
 	if err := n.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errCh <- fmt.Errorf("WebSocket server error: %w", err)
+	}
+}
+
+func (n *Node) StartPeriodicTasks(errCh chan<- error) {
+	defer n.wg.Done()
+	n.log("Periodic tasks started")
+	ticker := time.NewTicker(10 * time.Second)
+
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-n.stopCh:
+			n.log("Periodic tasks stopping.")
+			return
+		case <-ticker.C:
+			n.sendAllHintedHandoffs()
+		}
 	}
 }
 
@@ -177,6 +203,10 @@ func (n *Node) startZMQLoop(errCh chan<- error) {
 			n.handleDelete(&req)
 		case *pb.Request_Has:
 			n.handleHas(&req)
+		case *pb.Request_ReplicaPut:
+			n.handleReplicaPut(&req)
+		case *pb.Request_StoreHint:
+			n.handleStoreHint(&req)
 		default:
 			_ = n.sendResponseError("unknown request type")
 		}
@@ -285,16 +315,17 @@ func (n *Node) JoinToRing(targetAddr string) error {
 	return err
 }
 
+func (n *Node) log(msg string) {
+	ts := time.Now().Format("15:04:05.000")
+	fmt.Printf("[%s] [Node %s]: %s\n", ts, n.id, msg)
+}
+
 func NodeIdToZMQAddr(id string) string {
 	return "tcp://" + id
 }
 
 func ZMQAddrToNodeId(addr string) string {
 	return addr[len("tcp://"):]
-}
-
-func (n *Node) log(msg string) {
-	fmt.Printf("[Node %s]: %s\n", n.id, msg)
 }
 
 func (n *Node) GetAddress() string {
