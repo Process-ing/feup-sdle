@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
 	// Define the title (using Metadata is disallowed with 'use client')
 	useEffect(() => {
-		document.title = "Mariana";
+		document.title = "SDLE Shopping Lists";
 	}, []);
 
 	return (
