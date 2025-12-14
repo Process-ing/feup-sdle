@@ -2,6 +2,10 @@ syntax = "proto3";
 
 option go_package = "gitlab.up.pt/classes/sdle/2025/t2/g01";
 
+message RingView {
+  map<uint64, string> token_to_node = 1;
+}
+
 message Request {
   string origin = 1; // id of the node that sent the request
   oneof request_type {
@@ -94,7 +98,7 @@ message ResponsePing {
 }
 
 message ResponseFetchRing {
-  map<uint64, string> token_to_node = 1;
+  RingView ring_view = 1;
 }
 
 message ResponseGossipJoin {

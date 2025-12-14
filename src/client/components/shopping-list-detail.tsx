@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Frown, Plus } from "lucide-react";
+import { ArrowLeft, Frown, Plus, WifiOff } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { ShoppingListItem } from "@/components/shopping-list-item";
@@ -13,13 +13,15 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useProtocolSocket } from "./provider/protocol-socket";
 import { ShoppingListDetailSkeleton } from "./shopping-list-detail-skeleton";
 import { ShoppingList } from "@/types";
 import { db } from "@/lib/storage/db";
-import GetShoppingListRequest from "@/lib/protocol/get-shopping-list-request";
 import { ServerResponse } from "@/lib/proto/client";
 import SubscribeShoppingListRequest from "@/lib/protocol/subscribe-shopping-list-request";
+import NullProtocolSocket from "@/lib/protocol/null-protocol-socket";
+import { useSocketCoordinator } from "./provider/socket-coordinator";
+import ProtocolSocket from "@/lib/protocol/protocol-socket";
+import ProtocolRequest from "@/lib/protocol/protocol-entity";
 
 interface ShoppingListDetailProps {
 	listId: string;
@@ -35,7 +37,40 @@ export function ShoppingListDetail({
 	const [notFound, setNotFound] = useState(false);
 	const [itemName, setItemName] = useState("");
 	const [itemQuantity, setItemQuantity] = useState("1");
-	const socket = useProtocolSocket();
+	const [socket, setSocket] = useState<ProtocolSocket>(new NullProtocolSocket());
+	const coordinator = useSocketCoordinator();
+	const [connected, setConnected] = useState(false);
+
+
+	useEffect(() => {
+		const setupSocket = async () => {
+			await coordinator.updateMembership();
+			const sock = await coordinator.getBestSocketForList(listId);
+			setSocket(sock);
+			setConnected(sock.isConnected());
+		};
+
+		// Run once first
+		setupSocket();
+
+		// Then, run periodically
+		const intervalId = setInterval(setupSocket, Number(process.env.NEXT_PUBLIC_MEMBERSHIP_UPDATE_INTERVAL || "10000"));
+
+		// Cleanup on unmount
+		return () => clearInterval(intervalId);
+	}, [coordinator, listId]);
+
+	useEffect(() => {
+		setConnected(socket.isConnected());
+	}, [socket]);
+
+	const sendToSocket = useCallback((request: ProtocolRequest, handler: (response: ServerResponse) => Promise<boolean>) => {
+		if (socket.isConnected()) {
+			socket.send(request, handler);
+		}
+		setConnected(socket.isConnected());
+	}, [socket]);
+
 
 	const refreshList = useCallback(async (): Promise<ShoppingList | undefined> => {
 		const dbList = await db.getList(listId);
@@ -48,8 +83,9 @@ export function ShoppingListDetail({
 		setLoading(false);
 
 		return dbList;
-	}, [listId]);
 
+		return dbList;
+	}, [listId]);
 
 	const handleReceivedList = useCallback(async (listReceived: ShoppingList) => {
 		if (listReceived.getListId() !== listId) return;
@@ -90,20 +126,24 @@ export function ShoppingListDetail({
 		const initializeSubscription = async () => {
 			const list = await refreshList();
 			if (list)
-				socket.send(list, handleSubscribeResponse);
-
-			socket.send(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
+				sendToSocket(list, handleSubscribeResponse);
+			sendToSocket(new SubscribeShoppingListRequest(listId), handleSubscribeResponse);
 		};
 
-		initializeSubscription();
+		if (socket.isConnected()) {
+			initializeSubscription();
+		} else {
+			refreshList();
+		}
 	}, [listId, socket]);
+
 
 
 	const updateList = useCallback(async (updatedList: ShoppingList, delta: ShoppingList) => {
 		await db.updateList(updatedList);
-		socket.send(delta, handleServerResponse);
+		sendToSocket(delta, handleServerResponse);
 		await refreshList();
-	}, [listId]);
+	}, [socket, listId]);
 
 
 	const handleAddItem = async (e: React.FormEvent) => {
@@ -187,6 +227,15 @@ export function ShoppingListDetail({
 
 	return (
 		<div>
+			{!connected && (
+				<div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+					<WifiOff className="w-5 h-5" />
+					<span className="text-sm font-medium">
+						Disconnected from server. Changes will sync when reconnected.
+					</span>
+				</div>
+			)}
+
 			<Button variant="ghost" onClick={onBack} className="mb-4">
 				<ArrowLeft className="w-4 h-4 mr-2" />
 				Back to Lists

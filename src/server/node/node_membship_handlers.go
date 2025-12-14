@@ -25,7 +25,9 @@ func (n *Node) handleFetchRing(req *pb.Request) error {
 	response := &pb.Response{
 		ResponseType: &pb.Response_FetchRing{
 			FetchRing: &pb.ResponseFetchRing{
-				TokenToNode: n.ringView.GetTokenToNode(),
+				RingView: &pb.RingView{
+					TokenToNode: n.ringView.GetTokenToNode(),
+				},
 			},
 		},
 	}

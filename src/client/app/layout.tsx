@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+"use client";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { WebProtocolSocketProvider } from "@/components/provider/protocol-socket";
 import Header from "@/components/ui/header";
+import { SocketCoordinatorProvider } from "@/components/provider/socket-coordinator";
+import { useEffect } from "react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -14,16 +16,16 @@ const geistMono = Geist_Mono({
 	subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-	title: "Mariana",
-	description: "A local-first distributed shopping list app for SDLE 2025",
-};
-
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	// Define the title (using Metadata is disallowed with 'use client')
+	useEffect(() => {
+		document.title = "SDLE Shopping Lists";
+	}, []);
+
 	return (
 		<html lang="en">
 			<body
@@ -32,9 +34,9 @@ export default function RootLayout({
 				<main className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 md:p-8">
 					<div className="max-w-3xl mx-auto">
 						<Header />
-						<WebProtocolSocketProvider>
+						<SocketCoordinatorProvider>
 							{children}
-						</WebProtocolSocketProvider>
+						</SocketCoordinatorProvider>
 					</div>
 				</main>
 			</body>

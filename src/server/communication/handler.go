@@ -60,97 +60,119 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		switch req.GetRequestType().(type) {
-			case *pb.ClientRequest_ShoppingList:
-				list := crdt.ShoppingListFromProto(req.GetShoppingList(), h.node.ID())
+		case *pb.ClientRequest_ShoppingList:
+			list := crdt.ShoppingListFromProto(req.GetShoppingList(), h.node.ID())
 
-				if err := h.node.HandleShoppingList(list); err != nil {
-					log.Println("Error handling shopping list:", err)
-				}
+			if err := h.node.HandleShoppingList(list); err != nil {
+				log.Println("Error handling shopping list:", err)
+			}
 
-			case *pb.ClientRequest_GetShoppingList_:
-				getShoppingListReq := req.GetGetShoppingList_()
+		case *pb.ClientRequest_GetShoppingList_:
+			getShoppingListReq := req.GetGetShoppingList_()
 
-				list, err := h.node.GetShoppingList(getShoppingListReq.GetId())
-				if err != nil {
-					log.Println("Error getting shopping list:", err)
+			list, err := h.node.GetShoppingList(getShoppingListReq.GetId())
+			if err != nil {
+				log.Println("Error getting shopping list:", err)
 
-					notFoundRes := &pb.ServerResponse{
-						MessageId: req.MessageId,
-						ResponseType: &pb.ServerResponse_Error{
-							Error: pb.ErrorCode_NOT_FOUND,
-						},
-					}
-
-					resBytes, err := proto.Marshal(notFoundRes)
-					if err != nil {
-						log.Println("Failed to marshal not found response:", err)
-						continue
-					}
-
-					if err := conn.WriteMessage(websocket.BinaryMessage, resBytes); err != nil {
-						log.Println("Error writing message:", err)
-						break
-					}
-
-					continue
-				}
-
-				// Send the shopping list back to the client
-				serverResp := &pb.ServerResponse{
+				notFoundRes := &pb.ServerResponse{
 					MessageId: req.MessageId,
-					ResponseType: &pb.ServerResponse_ShoppingList{
-						ShoppingList: list,
+					ResponseType: &pb.ServerResponse_Error{
+						Error: pb.ErrorCode_NOT_FOUND,
 					},
 				}
 
-				respBytes, err := proto.Marshal(serverResp)
+				resBytes, err := proto.Marshal(notFoundRes)
 				if err != nil {
-					log.Println("Failed to marshal shopping list:", err)
+					log.Println("Failed to marshal not found response:", err)
 					continue
 				}
 
-				if err := conn.WriteMessage(websocket.BinaryMessage, respBytes); err != nil {
+				if err := conn.WriteMessage(websocket.BinaryMessage, resBytes); err != nil {
 					log.Println("Error writing message:", err)
 					break
 				}
 
-			case *pb.ClientRequest_SubscribeShoppingList:
-				subscribeReq := req.GetSubscribeShoppingList()
+				continue
+			}
 
-				err := h.node.SubscribeShoppingList(subscribeReq.GetId(), req.MessageId, conn)
-				if err != nil {
-					log.Println("Error handling subscribe shopping list:", err)
-				}
-				defer h.node.UnsubscribeShoppingList(subscribeReq.GetId(), req.MessageId)
+			// Send the shopping list back to the client
+			serverResp := &pb.ServerResponse{
+				MessageId: req.MessageId,
+				ResponseType: &pb.ServerResponse_ShoppingList{
+					ShoppingList: list,
+				},
+			}
 
-				// Synchronize client with local state
-				list, err := h.node.GetShoppingList(subscribeReq.GetId())
-				if err != nil {
-					log.Println("Error getting shopping list for synchronization:", err)
-					continue
-				}
+			respBytes, err := proto.Marshal(serverResp)
+			if err != nil {
+				log.Println("Failed to marshal shopping list:", err)
+				continue
+			}
 
-				syncResp := &pb.ServerResponse{
-					MessageId: req.MessageId,
-					ResponseType: &pb.ServerResponse_ShoppingList{
-						ShoppingList: list,
+			if err := conn.WriteMessage(websocket.BinaryMessage, respBytes); err != nil {
+				log.Println("Error writing message:", err)
+				break
+			}
+
+		case *pb.ClientRequest_SubscribeShoppingList:
+			subscribeReq := req.GetSubscribeShoppingList()
+
+			err := h.node.SubscribeShoppingList(subscribeReq.GetId(), req.MessageId, conn)
+			if err != nil {
+				log.Println("Error handling subscribe shopping list:", err)
+			}
+			defer h.node.UnsubscribeShoppingList(subscribeReq.GetId(), req.MessageId)
+
+			// Synchronize client with local state
+			list, err := h.node.GetShoppingList(subscribeReq.GetId())
+			if err != nil {
+				log.Println("Error getting shopping list for synchronization:", err)
+				continue
+			}
+
+			syncResp := &pb.ServerResponse{
+				MessageId: req.MessageId,
+				ResponseType: &pb.ServerResponse_ShoppingList{
+					ShoppingList: list,
+				},
+			}
+
+			syncBytes, err := proto.Marshal(syncResp)
+			if err != nil {
+				log.Println("Failed to marshal synchronization shopping list:", err)
+				continue
+			}
+
+			if err := conn.WriteMessage(websocket.BinaryMessage, syncBytes); err != nil {
+				log.Println("Error writing synchronization message:", err)
+				break
+			}
+
+		case *pb.ClientRequest_RingView:
+			ringView := h.node.GetRingView()
+
+			ringViewResp := &pb.ServerResponse{
+				MessageId: req.MessageId,
+				ResponseType: &pb.ServerResponse_RingView{
+					RingView: &pb.RingView{
+						TokenToNode: ringView.GetTokenToNode(),
 					},
-				}
+				},
+			}
 
-				syncBytes, err := proto.Marshal(syncResp)
-				if err != nil {
-					log.Println("Failed to marshal synchronization shopping list:", err)
-					continue
-				}
+			ringViewBytes, err := proto.Marshal(ringViewResp)
+			if err != nil {
+				log.Println("Failed to marshal ring view response:", err)
+				continue
+			}
 
-				if err := conn.WriteMessage(websocket.BinaryMessage, syncBytes); err != nil {
-					log.Println("Error writing synchronization message:", err)
-					break
-				}
+			if err := conn.WriteMessage(websocket.BinaryMessage, ringViewBytes); err != nil {
+				log.Println("Error writing ring view message:", err)
+				break
+			}
 
-			default:
-				log.Println("Unknown request type")
+		default:
+			log.Println("Unknown request type")
 		}
 	}
 }
-
