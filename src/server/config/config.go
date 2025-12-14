@@ -24,7 +24,7 @@ func DefaultConfig() Config {
 		TokensPerNode:        3,
 		HashSpaceSize:        65536,
 		HintDeliveryInterval: 10 * time.Second,
-		RequestTimeout:       250 * time.Millisecond,
+		RequestTimeout:       100 * time.Millisecond,
 	}
 }
 
